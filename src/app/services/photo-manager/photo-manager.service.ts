@@ -3,6 +3,7 @@ import { User } from '../database/user/user.entity';
 import { userService } from '../database/user/user.service';
 import { Vocabulary } from '../database/vocabulary/vocabulary.entity';
 import { vocabularyService } from '../database/vocabulary/vocabulary.service';
+import { imgurService } from '../imgur';
 
 class PhotoManagerService {
     #listActive: string[] = [];
@@ -19,7 +20,11 @@ class PhotoManagerService {
 
         for(const flashcardNoPhoto of flashcardsNoPhoto) {
             try {
-                flashcardNoPhoto.photoUrl = await photoGeneratorService.generate(flashcardNoPhoto.word);
+                const url = await photoGeneratorService.generate(flashcardNoPhoto.word);
+
+                if(url) {
+                    flashcardNoPhoto.photoUrl = await imgurService.upload(url);
+                }
 
                 console.log(flashcardNoPhoto.photoUrl);
 
