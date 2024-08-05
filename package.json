@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "tsnd --respawn main.ts"
+    "start": "tsnd --respawn ./src/main.ts"
   },
   "author": "Dmytro Reshetylo",
   "license": "ISC",
