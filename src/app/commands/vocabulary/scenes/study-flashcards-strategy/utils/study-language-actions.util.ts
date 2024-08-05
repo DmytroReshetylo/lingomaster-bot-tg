@@ -1,7 +1,6 @@
 import { translate } from '../../../../../../core/language-interface/translate.alghoritm';
-import { createButtonKeyboard } from '../../../../../../core/telegram-utils';
+import { createBigButtonKeyboard } from '../../../../../../core/telegram-utils';
 import { Ctx } from '../../../../../../core/types';
-import { transformToButtonActions } from '../../../../../shared/utils';
 import { ShowFlashcardFormatWithOptions, ShowFlashcardFormatWithoutPhotoAndOptions, ShowFlashcardFormatWithPhoto, ShowFlashcardFormatWithPhotoAndOptions } from './show-flashcard-format-list';
 
 function getQuestion(ctx: Ctx) {
@@ -14,7 +13,7 @@ export const studyLanguageActions: any = {
         sendMessage: async(ctx: Ctx) => {
             const sentMessage = await ctx.reply(
                 getQuestion(ctx),
-                createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage))
+                createBigButtonKeyboard(ctx.wizard.state.flashcard.answerOptions || [])
             );
 
             ctx.wizard.state.queueOnDelete.push(sentMessage.message_id);
@@ -25,7 +24,7 @@ export const studyLanguageActions: any = {
         sendMessage: async(ctx: Ctx) => {
             const sentMessage = await ctx.reply(
                 getQuestion(ctx),
-                createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage))
+                createBigButtonKeyboard(ctx.wizard.state.flashcard.answerOptions || [])
             );
 
             ctx.wizard.state.queueOnDelete.push(sentMessage.message_id);
@@ -44,7 +43,8 @@ export const studyLanguageActions: any = {
                 ctx.wizard.state.flashcard.photo,
                 {
                     caption: getQuestion(ctx),
-                    ...createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage))
+                    ...createBigButtonKeyboard(ctx.wizard.state.flashcard.answerOptions || [])
+            
                 }
             );
 
@@ -64,7 +64,7 @@ export const studyLanguageActions: any = {
                 ctx.wizard.state.flashcard.photo,
                 {
                     caption: getQuestion(ctx),
-                    ...createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage))
+                    ...createBigButtonKeyboard(ctx.wizard.state.flashcard.answerOptions || [])
                 }
             );
 

@@ -57,9 +57,10 @@ export class VocabularyStudyFlashcardsScene implements Scene {
 
         ctx.wizard.state.queueOnDelete = [];
 
-        const options: string[] = ctx.wizard.state.flashcard.answerOptions || [];
-
-        await ctx.reply(translate('VOCABULARY.STUDY_LANGUAGE.STUDYING.STARTED', ctx.session.user.interfaceLanguage), createBigButtonKeyboard(options));
+        await ctx.reply(translate(
+            'VOCABULARY.STUDY_LANGUAGE.STUDYING.STARTED', ctx.session.user.interfaceLanguage), 
+            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage)
+        ));
 
         studyLanguageActions[ctx.wizard.state.model].sendMessage(ctx);
 
@@ -91,9 +92,7 @@ export class VocabularyStudyFlashcardsScene implements Scene {
 
         ctx.wizard.state.flashcard = ctx.wizard.state.studyStrategy.getNextFlashcard() as ShowFlashcardFormat;
 
-        const options: string[] = ctx.wizard.state.flashcard.answerOptions || [];
-
-        const sentMessage = await ctx.reply(result, createBigButtonKeyboard(options));
+        const sentMessage = await ctx.reply(result);
 
         ctx.wizard.state.queueOnDelete.push(sentMessage.message_id);
 

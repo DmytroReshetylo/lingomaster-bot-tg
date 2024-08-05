@@ -34,7 +34,7 @@ export function GetFlashcardPriorityList(): ((flashcards: Flashcard[], queueFlas
             return flashcards[index];
         },
         (flashcards: Flashcard[], queueFlashcards: number[], queueFailedFlashcards: number[]) => {
-            if(!queueFlashcards.length) {
+            if(queueFlashcards.length) {
                 return null;
             }
 
