@@ -1,0 +1,104 @@
+{
+  "LANGUAGES": {
+    "UKRAINIAN": "Ukrainian",
+    "ENGLISH": "English",
+    "SPANISH": "Spanish",
+    "GERMAN": "German",
+    "FRENCH": "French",
+    "POLISH": "Polish",
+    "RUSSIAN": "Russian",
+    "ITALIAN": "Italian",
+    "PORTUGUESE": "Portuguese"
+  },
+  "HELP": {
+    "START": "Sign up",
+    "VOCABULARY": "Dictionary management",
+    "INTERFACE": "Change interface language"
+  },
+  "SIGN_UP": {
+    "SELECT_NATIVE_LANGUAGE": "Select native language",
+    "INPUT_NAME": "Input your name",
+    "SUCCESS_REGISTERED": "You have successfully signed up"
+  },
+  "SELECT_INTERFACE_LANGUAGE": {
+    "ASK": "Select a new interface language",
+    "FINISHED": "The new interface language has been set!"
+  },
+  "VOCABULARY": {
+    "SEE_FLASHCARDS": {
+      "TITLE": "See flashcards"
+    },
+    "STUDY_NEW_LANGUAGE": {
+      "TITLE": "Add a new language to study",
+      "FINISHED": "The language has been added to study"
+    },
+    "STUDY_LANGUAGE": {
+      "TITLE": "Study flashcards",
+      "ASK_MODEL": "Select a model to study",
+      "MODELS": {
+        "WITHOUT_PHOTO_AND_OPTIONS": "Write answer",
+        "WITH_OPTIONS": "Select answer",
+        "WITH_PHOTO": "Photo as word descriptor + write answer",
+        "WITH_PHOTO_AND_OPTIONS": "Photo as word descriptor + select answer"
+      },
+      "STUDYING": {
+        "STARTED": "Started!",
+        "ASK": "Next word: ",
+        "CORRECT_ANSWER": "You are right!",
+        "ALMOST_CORRECT_ANSWER": "You are almost right! The correct answer is ",
+        "INCORRECT_ANSWER": "Wrong! The correct answer is "
+      }
+    },
+    "ADD_FLASHCARDS": {
+      "TITLE": "Add flashcards",
+      "ASK_INPUT": "Input flashcards in format: word/phrase - translation\nWrite each flashcard on a new line to add them",
+      "FINISHED": "The flashcards have been added successfully!"
+    },
+    "DEL_FLASHCARDS": {
+      "TITLE": "Remove some flashcards",
+      "ASK_INPUT": "Input words you want to remove. Write each flashcard on a new line to remove them",
+      "FINISHED": "The flashcards have been removed successfully!"
+    },
+    "CHANGE_FLASHCARD": {
+      "TITLE": "Change a flashcard",
+      "ASK_INPUT": "Input the word you want to change",
+      "ASK_INPUT_NEW_WORD": "Input the updated word",
+      "ASK_INPUT_NEW_TRANSLATE": "Input the updated translation",
+      "FINISHED": "The flashcard has been updated"
+    }
+  },
+  "BUTTONS": {
+    "CANCEL": "Cancel"
+  },
+  "INFO": {
+    "CANCELLED": "Cancelled",
+    "SELECT_ACTION": "Select action",
+    "CHOOSE_LANGUAGE": "Choose language",
+    "COMMAND_DONT_EXIST": "The command doesn't exist"
+  },
+  "MIDDLEWARES": {
+    "USER_ALREADY_REGISTERED": "You have already signed up",
+    "USER_NOT_REGISTERED": "You must sign up",
+    "YOU_CANT_BE_BOT": "You can't be a bot",
+    "MUST_BE_PRIVATE_CHAT": "The chat must be private",
+    "YOU_DONT_LEARN_THE_LANGUAGE": "You are not learning the selected language",
+    "YOU_ALREADY_LEARN_THE_LANGUAGE": "You are already studying the language",
+    "WORD_NOT_FOUND": "The input word is not found in your vocabulary",
+    "ALL_LANGUAGES_ALREADY_STUDY": "You are already studying all languages",
+    "MUST_BE_MIN_10_FLASHCARDS": "Must have at least 10 flashcards in vocabulary to study them",
+    "ALREADY_SELECTED_INTERFACE_LANGUAGE": "The language is already set as your interface language",
+    "EMPTY_VOCABULARY": "The vocabulary is empty",
+    "CANT_STUDY_NATIVE_LANGUAGE": "You can't study your native language"
+  },
+  "VALIDATORS": {
+    "THE_VALUE_MUST_BE_LESS_LENGTH": "The input must be shorter",
+    "WORD_INCORRECT_LANGUAGE": "The input or its part is in an incorrect language. Words must be written in the learning language",
+    "INCORRECT_FORMAT_INPUT": "Incorrect input format!",
+    "NOT_DIFFERENCE_OLD_NEW_VER_FLASHCARD": "The new version of the flashcard is the same as the old version"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": "Unknown error! Please try again later!",
+    "COMMAND_NOT_FOUND": "The command does not exist",
+    "AI_ERROR": "AI generation failed. Please wait"
+  }
+}

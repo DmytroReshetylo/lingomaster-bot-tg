@@ -1,0 +1,104 @@
+{
+  "LANGUAGES": {
+    "UKRAINIAN": "Українська",
+    "ENGLISH": "Англійська",
+    "SPANISH": "Іспанська",
+    "GERMAN": "Німецька",
+    "FRENCH": "Французька",
+    "POLISH": "Польська",
+    "RUSSIAN": "Російська",
+    "ITALIAN": "Італійська",
+    "PORTUGUESE": "Португальська"
+  },
+  "HELP": {
+    "START": "Регістрація",
+    "VOCABULARY": "Керування словарями",
+    "INTERFACE": "Змінити мову інтерфейсу"
+  },
+  "SIGN_UP": {
+    "SELECT_NATIVE_LANGUAGE": "Оберіть рідну мову",
+    "INPUT_NAME": "Введіть ім'я",
+    "SUCCESS_REGISTERED": "Ви успішно зареєструвалися"
+  },
+  "SELECT_INTERFACE_LANGUAGE": {
+    "ASK": "Оберіть нову мову інтерфейсу",
+    "FINISHED": "Нова мова інтерфейсу була встановлена!"
+  },
+  "VOCABULARY": {
+    "SEE_FLASHCARDS": {
+      "TITLE": "Переглянути флешкарти"
+    },
+    "STUDY_NEW_LANGUAGE": {
+      "TITLE": "Добавити нову мову до вивчаємих",
+      "FINISHED": "Дана мова була добавлена до вивчаємих"
+    },
+    "STUDY_LANGUAGE": {
+      "TITLE": "Вивчати флешкарти",
+      "ASK_MODEL": "Оберіть модель вивчення",
+      "MODELS": {
+        "WITHOUT_PHOTO_AND_OPTIONS": "Ручна відповідь",
+        "WITH_OPTIONS": "Варіанти відповіді",
+        "WITH_PHOTO": "Фото як описувач слова + ручна відповідь",
+        "WITH_PHOTO_AND_OPTIONS": "Фото як описувач слова  + варіанти відповіді"
+      },
+      "STUDYING": {
+        "STARTED": "Розпочинаємо!",
+        "ASK": "Наступне слова: ",
+        "CORRECT_ANSWER": "Правильно!",
+        "ALMOST_CORRECT_ANSWER": "Майже правильно. Правильна відповідь: ",
+        "INCORRECT_ANSWER": "Неправильно! Правильна відповідь: "
+      }
+    },
+    "ADD_FLASHCARDS": {
+      "TITLE": "Добавити нові флешкарти",
+      "ASK_INPUT": "Введіть флешкарти у форматі: слово/фраза - переклад\nПишіть кожну флешкарту з наступного рядка, щоб добавити декілька",
+      "FINISHED": "Флешкарти були добавлені"
+    },
+    "DEL_FLASHCARDS": {
+      "TITLE": "Видалити декілька флешкарт",
+      "ASK_INPUT": "Введіть слова що хочете видалити. Пишіть кожне слово з наступного рядка, щоб видалити декілька",
+      "FINISHED": "Введені флешкарти було видалено"
+    },
+    "CHANGE_FLASHCARD": {
+      "TITLE": "Змінити флешкарту",
+      "ASK_INPUT": "Введіть слово що змінити",
+      "ASK_INPUT_NEW_WORD": "Введіть оновлене слово",
+      "ASK_INPUT_NEW_TRANSLATE": "Введіть оновлений переклад",
+      "FINISHED": "Флешкарта була оновлена успішно"
+    }
+  },
+  "BUTTONS": {
+    "CANCEL": "Відмінити"
+  },
+  "INFO": {
+    "CANCELLED": "Відмінено",
+    "SELECT_ACTION": "Оберіть дію",
+    "CHOOSE_LANGUAGE": "Оберіть мову",
+    "COMMAND_DONT_EXIST": "Даної команди не існує"
+  },
+  "MIDDLEWARES": {
+    "USER_ALREADY_REGISTERED": "Ви вже зареєстровані",
+    "USER_NOT_REGISTERED": "Ви маєте зареєструватись",
+    "YOU_CANT_BE_BOT": "Ви не маєте бути ботом",
+    "MUST_BE_PRIVATE_CHAT": "Бот може використовуватися лише в приватному чаті",
+    "YOU_DONT_LEARN_THE_LANGUAGE": "Дана мова не вивчається вами",
+    "YOU_ALREADY_LEARN_THE_LANGUAGE": "Дана мова вже вивчається вами",
+    "WORD_NOT_FOUND": "Введене слово не було знайдено в вашому словнику",
+    "ALL_LANGUAGES_ALREADY_STUDY": "Ви вже вивчаєте усі мови",
+    "MUST_BE_MIN_10_FLASHCARDS": "Має бути не менше 10 флешкарт у словнику щоб вивчати їх",
+    "ALREADY_SELECTED_INTERFACE_LANGUAGE": "Дана мова вже використовується як мова інтерфейсу",
+    "EMPTY_VOCABULARY": "Даний словар пустий",
+    "CANT_STUDY_NATIVE_LANGUAGE": "Ви не можете вивчати рідну мову"
+  },
+  "VALIDATORS": {
+    "THE_VALUE_MUST_BE_LESS_LENGTH": "Ввод має бути меншої довжини",
+    "WORD_INCORRECT_LANGUAGE": "Ввод або його певна частина має бути іншою мовою.\nСлова мають писатися обраною мовою для вивчення",
+    "INCORRECT_FORMAT_INPUT": "Некоректний формат!",
+    "NOT_DIFFERENCE_OLD_NEW_VER_FLASHCARD": "Нова версія флешкарти не відрізняється від старої"
+  },
+  "ERRORS": {
+    "UNKNOWN_ERROR": "Невідома помилка. Будь ласка зачекайте та повторіть спробу",
+    "COMMAND_NOT_FOUND": "Введеної команди не існує",
+    "AI_ERROR": "Помилка ШІ генерації. Будь ласка, спробуйте пізніше"
+  }
+}
