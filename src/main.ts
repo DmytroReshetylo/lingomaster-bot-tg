@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { connectToDB } from './app/services/database';
 import { photoManagerService } from './app/services/photo-manager/photo-manager.service';
 import { languageDetectorService } from './app/services/language-detector';
@@ -7,10 +6,9 @@ import { start } from './core';
 import { runSequentially } from './core/run-sequentially.alghoritm';
 import { registerLanguages } from './core/language-interface/translate.alghoritm';
 import * as fs from 'fs';
+import * as path from 'path';
 
-require('dotenv').config();
-
-runSequentially(
+export const launchProject = () => runSequentially(
     registerLanguages.bind(null, languageConfig),
     languageDetectorService.connect.bind(languageDetectorService),
     connectToDB,

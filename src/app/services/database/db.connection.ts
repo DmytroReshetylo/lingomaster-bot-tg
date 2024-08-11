@@ -2,8 +2,6 @@ import { DataSource } from 'typeorm';
 import { User } from './user/user.entity';
 import { Vocabulary } from './vocabulary/vocabulary.entity';
 
-require('dotenv').config();
-
 //@ts-ignore
 export const dbConnection = new DataSource({
     type: 'postgres',

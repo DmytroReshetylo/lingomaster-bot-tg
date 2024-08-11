@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { generateAsync } from 'stability-client';
 import { PhotoGeneratorConfig } from '../configs';
 import { PhotoGenerator } from './types';
