@@ -35,7 +35,7 @@ export const startBotConfig = {
     ],
 
     commandConfiguration: async(ctx: Ctx) => {
-        if(!ctx.session.idTelegram || !ctx.session.user) {
+        if(!ctx.session.user) {
             ctx.session.idTelegram = String(ctx.message.from.id);
 
             ctx.session.user = await userService.getAccount(ctx.session.idTelegram);
