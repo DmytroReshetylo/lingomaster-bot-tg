@@ -1,10 +1,10 @@
 import { plainToClass } from 'class-transformer';
 import { Apply, CreateScene } from '../../../../core';
+import { TelegramContext } from '../../../../core/ctx.class';
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
 import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { Ctx } from '../../../../core/types';
 import { createButtonKeyboard } from '../../../../core/telegram-utils';
 import { photoManagerService } from '../../../services/photo-manager/photo-manager.service';
 import { Flashcard } from '../../../services/database/vocabulary/types';
@@ -19,38 +19,38 @@ import { getStudyLanguage, getVocabulary } from './shared/utils';
 
 @CreateScene('vocabulary-add-flashcards-scene')
 export class VocabularyAddFlashcardsScene implements Scene {
-    async start(ctx: Ctx) {
+    async start(ctx: TelegramContext) {
         ctx.reply(
-            translate('INFO.CHOOSE_LANGUAGE', ctx.session.user.interfaceLanguage),
+            translate('INFO.CHOOSE_LANGUAGE', ctx.session['user'].interfaceLanguage),
             createButtonKeyboard(
                 transformToButtonActions([
-                    ...transformLanguageToJsonFormat(getStudyLanguage(ctx.session.vocabularies)),
+                    ...transformLanguageToJsonFormat(getStudyLanguage(ctx.session['vocabularies'])),
                     'BUTTONS.CANCEL'],
-                    ctx.session.user.interfaceLanguage
+                    ctx.session['user'].interfaceLanguage
                 )
             )
         )
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
     @CreateSelectButtonComposer('language', transformLanguageToJsonFormat(Object.values(Languages) as Languages[]), true)
     @Apply({middlewares: [IsLearningLanguageMiddleware], possibleErrors: []})
-    afterSelectLanguage(ctx: Ctx) {
-        ctx.wizard.state.language = translate(ctx.wizard.state.language, Languages.en);
+    afterSelectLanguage(ctx: TelegramContext) {
+        ctx.scene.states.language = translate(ctx.scene.states.language, Languages.en);
 
         ctx.reply(
-            translate('VOCABULARY.ADD_FLASHCARDS.ASK_INPUT', ctx.session.user.interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage))
+            translate('VOCABULARY.ADD_FLASHCARDS.ASK_INPUT', ctx.session['user'].interfaceLanguage),
+            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session['user'].interfaceLanguage))
         );
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('text', true)
     @Apply({middlewares: [], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
-    async afterInputFlashcards(ctx: Ctx) {
-        const input: string[] = ctx.wizard.state.text.split('\n');
+    async afterInputFlashcards(ctx: TelegramContext) {
+        const input: string[] = ctx.scene.states.text.split('\n');
 
         const flashcards: Flashcard[] = await Promise.all(input.map(async (row: string) => {
             const [word, translate, ...sth] = row.replace(/[\u2012-\u2015]/g, '-').split(' - ');
@@ -61,7 +61,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
 
             const addFlashcardDto = plainToClass(
                 AddFlashcardDto,
-                {word, translate, wordLanguage: ctx.wizard.state.language}
+                {word, translate, wordLanguage: ctx.scene.states.language}
             );
 
             await checkValid(addFlashcardDto);
@@ -69,7 +69,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
             return addFlashcardDto.toFlashcardFormat();
         }));
 
-        const vocabulary = getVocabulary(ctx.session.vocabularies, ctx.wizard.state.language);
+        const vocabulary = getVocabulary(ctx.session['vocabularies'], ctx.scene.states.language);
 
         const newFlashcards = [
             ...vocabulary.flashcards,
@@ -77,20 +77,20 @@ export class VocabularyAddFlashcardsScene implements Scene {
         ];
 
         await vocabularyService.updateFlashcards(
-            ctx.session.user,
-            ctx.wizard.state.language,
+            ctx.session['user'],
+            ctx.scene.states.language,
             newFlashcards
         );
 
         vocabulary.flashcards = newFlashcards;
 
-        photoManagerService.generatePhotoDescriptorsForUser(ctx.session.user, vocabulary);
+        photoManagerService.generatePhotoDescriptorsForUser(ctx.session['user'], vocabulary);
 
         ctx.reply(
-            translate('VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session.user.interfaceLanguage),
+            translate('VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage),
             getNavigationButtons()
         );
 
-        ctx.scene.leave();
+        ctx.scene.leaveScene();
     }
 }

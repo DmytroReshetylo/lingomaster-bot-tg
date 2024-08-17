@@ -1,8 +1,8 @@
-import { Ctx } from '../../../../../../core/types';
+import { TelegramContext } from '../../../../../../core/ctx.class';
 import { transformLanguageToJsonFormat } from '../../../../../shared/utils';
 
-export function IsNotNativeLanguageMiddleware(ctx: Ctx) {
-    if(transformLanguageToJsonFormat([ctx.session.user.nativeLanguage])[0] === ctx.wizard.state.language) {
+export function IsNotNativeLanguageMiddleware(ctx: TelegramContext) {
+    if(transformLanguageToJsonFormat([ctx.session['user'].nativeLanguage])[0] === ctx.scene.states.language) {
         return 'MIDDLEWARES.CANT_STUDY_NATIVE_LANGUAGE';
     }
 

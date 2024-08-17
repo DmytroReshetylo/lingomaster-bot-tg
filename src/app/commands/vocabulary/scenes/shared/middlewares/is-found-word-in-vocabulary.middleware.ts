@@ -1,15 +1,15 @@
-import { Ctx } from '../../../../../../core/types';
+import { TelegramContext } from '../../../../../../core/ctx.class';
 import { Vocabulary } from '../../../../../services/database/vocabulary/vocabulary.entity';
 import { similarityDetectorService } from '../../../../../services/similarity-detector';
 import { getVocabulary } from '../utils';
 
-export function IsFoundWordInVocabularyMiddleware(ctx: Ctx) {
-    ctx.wizard.state.vocabulary = getVocabulary(ctx.session.vocabularies, ctx.wizard.state.language);
+export function IsFoundWordInVocabularyMiddleware(ctx: TelegramContext) {
+    ctx.scene.states.vocabulary = getVocabulary(ctx.session['vocabularies'], ctx.scene.states.language);
 
-    ctx.wizard.state.id = (ctx.wizard.state.vocabulary as Vocabulary)
-    .flashcards.findIndex(flashcard => similarityDetectorService.detect(flashcard.word, ctx.wizard.state.word))
+    ctx.scene.states.id = (ctx.scene.states.vocabulary as Vocabulary)
+    .flashcards.findIndex(flashcard => similarityDetectorService.detect(flashcard.word, ctx.scene.states.word))
 
-    if(ctx.wizard.state.id === -1) {
+    if(ctx.scene.states.id === -1) {
         return 'MIDDLEWARES.WORD_NOT_FOUND';
     }
 

@@ -1,3 +1,4 @@
+import { TelegramContext } from '../../../core/ctx.class';
 import { Command, Ctx } from '../../../core/types';
 import { Apply, CreateCommand } from '../../../core';
 import { IsRegisteredMiddleware } from '../../shared/middlewares';
@@ -6,7 +7,7 @@ import { IsRegisteredMiddleware } from '../../shared/middlewares';
 export class VocabularyCommand implements Command {
 
     @Apply({middlewares: [IsRegisteredMiddleware], possibleErrors: []})
-    command(ctx: Ctx) {
-        ctx.scene.enter('vocabulary-choose-action-scene');
+    command(ctx: TelegramContext) {
+        ctx.scene.enterScene('vocabulary-choose-action-scene');
     }
 }

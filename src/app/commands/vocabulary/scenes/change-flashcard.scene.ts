@@ -1,11 +1,11 @@
 import { plainToClass } from 'class-transformer';
 import { Apply, CreateScene } from '../../../../core';
+import { TelegramContext } from '../../../../core/ctx.class';
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
 import { translate } from '../../../../core/language-interface/translate.alghoritm';
 import { createBigButtonKeyboard, createButtonKeyboard } from '../../../../core/telegram-utils';
-import { Ctx } from '../../../../core/types';
 import { photoManagerService } from '../../../services/photo-manager/photo-manager.service';
 import { Flashcard } from '../../../services/database/vocabulary/types';
 import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
@@ -19,56 +19,56 @@ import { getStudyLanguage } from './shared/utils';
 
 @CreateScene('vocabulary-change-flashcard-scene')
 export class VocabularyChangeFlashcardScene implements Scene {
-    start(ctx: Ctx) {
+    start(ctx: TelegramContext) {
         ctx.reply(
-            translate('INFO.CHOOSE_LANGUAGE', ctx.session.user.interfaceLanguage),
+            translate('INFO.CHOOSE_LANGUAGE', ctx.session['user'].interfaceLanguage),
             createButtonKeyboard(
                 transformToButtonActions([
-                    ...transformLanguageToJsonFormat(getStudyLanguage(ctx.session.vocabularies)),
+                    ...transformLanguageToJsonFormat(getStudyLanguage(ctx.session['vocabularies'])),
                     'BUTTONS.CANCEL'],
-                    ctx.session.user.interfaceLanguage
+                    ctx.session['user'].interfaceLanguage
                 )
             )
         );
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
     @CreateSelectButtonComposer('language', transformLanguageToJsonFormat(Object.values(Languages) as Languages[]), true)
     @Apply({middlewares: [IsLearningLanguageMiddleware], possibleErrors: []})
-    afterSelectLanguage(ctx: Ctx) {
-        ctx.wizard.state.language = translate(ctx.wizard.state.language, Languages.en);
+    afterSelectLanguage(ctx: TelegramContext) {
+        ctx.scene.states.language = translate(ctx.scene.states.language, Languages.en);
 
         ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT', ctx.session.user.interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session.user.interfaceLanguage))
+            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT', ctx.session['user'].interfaceLanguage),
+            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session['user'].interfaceLanguage))
         );
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('word', true)
     @Apply({middlewares: [IsFoundWordInVocabularyMiddleware], possibleErrors: []})
-    afterInputWordToChange(ctx: Ctx) {
-        ctx.wizard.state.newFlashcard = plainToClass(
+    afterInputWordToChange(ctx: TelegramContext) {
+        ctx.scene.states.newFlashcard = plainToClass(
             ChangeFlashcardDto,
             {
                 word: '',
-                wordLanguage: ctx.wizard.state.language,
+                wordLanguage: ctx.scene.states.language,
                 translate: '',
-                oldFlashcardVersion: ctx.wizard.state.vocabulary.flashcards[ctx.wizard.state.id]
+                oldFlashcardVersion: ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id]
             }
         );
 
         ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_WORD', ctx.session.user.interfaceLanguage),
+            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_WORD', ctx.session['user'].interfaceLanguage),
             createBigButtonKeyboard([
-                ctx.wizard.state.newFlashcard.oldFlashcardVersion.word,
-                translate('BUTTONS.CANCEL', ctx.session.user.interfaceLanguage)
+                ctx.scene.states.newFlashcard.oldFlashcardVersion.word,
+                translate('BUTTONS.CANCEL', ctx.session['user'].interfaceLanguage)
             ]),
         );
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('newWord', false, true)
@@ -76,20 +76,20 @@ export class VocabularyChangeFlashcardScene implements Scene {
         middlewares: [],
         possibleErrors: [WordLanguageIncorrectPossibleError]
     })
-    async afterInputNewWord(ctx: Ctx) {
-        ctx.wizard.state.newFlashcard.word = ctx.wizard.state.newWord;
+    async afterInputNewWord(ctx: TelegramContext) {
+        ctx.scene.states.newFlashcard.word = ctx.scene.states.newWord;
 
-        await checkValid(ctx.wizard.state.newFlashcard);
+        await checkValid(ctx.scene.states.newFlashcard);
 
         ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_TRANSLATE', ctx.session.user.interfaceLanguage),
+            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_TRANSLATE', ctx.session['user'].interfaceLanguage),
             createBigButtonKeyboard([
-                ctx.wizard.state.newFlashcard.oldFlashcardVersion.translate,
-                translate('BUTTONS.CANCEL', ctx.session.user.interfaceLanguage)
+                ctx.scene.states.newFlashcard.oldFlashcardVersion.translate,
+                translate('BUTTONS.CANCEL', ctx.session['user'].interfaceLanguage)
             ]),
         );
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('newTranslate', false, true)
@@ -97,28 +97,28 @@ export class VocabularyChangeFlashcardScene implements Scene {
         middlewares: [],
         possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]
     })
-    async afterInputNewTranslate(ctx: Ctx) {
-        ctx.wizard.state.newFlashcard.translate = ctx.wizard.state.newTranslate;
+    async afterInputNewTranslate(ctx: TelegramContext) {
+        ctx.scene.states.newFlashcard.translate = ctx.scene.states.newTranslate;
 
-        await checkValid(ctx.wizard.state.newFlashcard);
+        await checkValid(ctx.scene.states.newFlashcard);
 
-        const flashcards = [...ctx.wizard.state.vocabulary.flashcards] as Flashcard[];
+        const flashcards = [...ctx.scene.states.vocabulary.flashcards] as Flashcard[];
 
-        flashcards[ctx.wizard.state.id] = ctx.wizard.state.newFlashcard.toFlashcardFormat();
+        flashcards[ctx.scene.states.id] = ctx.scene.states.newFlashcard.toFlashcardFormat();
 
-        await vocabularyService.updateFlashcards(ctx.session.user, ctx.wizard.state.language, flashcards);
+        await vocabularyService.updateFlashcards(ctx.session['user'], ctx.scene.states.language, flashcards);
 
-        ctx.wizard.state.vocabulary.flashcards[ctx.wizard.state.id] = flashcards[ctx.wizard.state.id];
+        ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id] = flashcards[ctx.scene.states.id];
 
-        if(!flashcards[ctx.wizard.state.id].photoUrl) {
-            photoManagerService.generatePhotoDescriptorsForUser(ctx.session.user, ctx.wizard.state.vocabulary);
+        if(!flashcards[ctx.scene.states.id].photoUrl) {
+            photoManagerService.generatePhotoDescriptorsForUser(ctx.session['user'], ctx.scene.states.vocabulary);
         }
 
         ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session.user.interfaceLanguage),
+            translate('VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session['user'].interfaceLanguage),
             getNavigationButtons()
         );
 
-        ctx.scene.leave();
+        ctx.scene.leaveScene();
     }
 }

@@ -1,4 +1,5 @@
 import { Apply, CreateCommand } from '../../../core';
+import { TelegramContext } from '../../../core/ctx.class';
 import { Command } from '../../../core/decorators/create-command/types';
 import { Ctx } from '../../../core/types';
 import { IsNotBotAndNotGroupMiddleware, IsRegisteredMiddleware } from '../../shared/middlewares';
@@ -7,8 +8,8 @@ import { IsNotBotAndNotGroupMiddleware, IsRegisteredMiddleware } from '../../sha
 export class SelectInterfaceLanguageCommand implements Command {
 
     @Apply({middlewares: [IsNotBotAndNotGroupMiddleware, IsRegisteredMiddleware], possibleErrors: []})
-    command(ctx: Ctx) {
-        ctx.scene.enter('select-interface-language-scene');
+    command(ctx: TelegramContext) {
+        ctx.scene.enterScene('select-interface-language-scene');
     }
 
 }

@@ -1,3 +1,4 @@
+import { TelegramContext } from '../../ctx.class';
 import { Ctx, Middleware, PossibleError } from '../../types';
 import { applyDecoratorConfig } from './configs';
 import { checkSomething } from './utils';
@@ -6,7 +7,7 @@ export function Apply(config: { middlewares: Middleware[], possibleErrors: Possi
     return function (target: any, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) {
         const command = descriptor.value;
 
-        descriptor.value = descriptor.value = async(ctx: Ctx) => {
+        descriptor.value = async(ctx: TelegramContext) => {
             try {
                 const result = await checkSomething(ctx, config.middlewares);
 
