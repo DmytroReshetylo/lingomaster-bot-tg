@@ -1,5 +1,5 @@
 import { TelegramContext } from '../../../core/ctx.class';
-import { Command, Ctx } from '../../../core/types';
+import { Command } from '../../../core/types';
 import { Apply, CreateCommand } from '../../../core';
 import { IsRegisteredMiddleware } from '../../shared/middlewares';
 

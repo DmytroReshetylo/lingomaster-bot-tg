@@ -1,6 +1,5 @@
 import { Scenes } from 'telegraf';
 import { TelegramContext } from '../../ctx.class';
-import { Ctx } from '../../types';
 
 export const listScenes: Function[] = [];
 
@@ -24,7 +23,7 @@ export function CreateScene(sceneName: string) {
             composers[0]!,
             {
                 value: () => {
-                    return (ctx: Ctx) => {
+                    return (ctx: any) => {
                         const tgCtx = new TelegramContext(ctx);
 
                         startComposer(tgCtx);

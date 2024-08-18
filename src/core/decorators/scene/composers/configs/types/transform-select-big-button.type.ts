@@ -1,3 +1,2 @@
-import { Ctx } from '../../../../../types';
 
-export type TransformSelectBigButton = (data: string, ctx: Ctx) => string;
+export type TransformSelectBigButton = (data: string, ctx: any) => string;

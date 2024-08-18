@@ -5,7 +5,6 @@ import { Scene } from '../../../../core/decorators/scene/types';
 import { createBigButtonKeyboard, createButtonKeyboard } from '../../../../core/telegram-utils';
 import { Languages } from '../../../../core/language-interface/enums';
 import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { Ctx } from '../../../../core/types';
 import { userService } from '../../../services/database/user/user.service';
 import { AvailableInterfaceLanguages } from '../../../shared/constants';
 import { getNavigationButtons, transformLanguageToJsonFormat } from '../../../shared/utils';

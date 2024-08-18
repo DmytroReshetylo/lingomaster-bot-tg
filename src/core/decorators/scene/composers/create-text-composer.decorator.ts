@@ -1,6 +1,5 @@
 import { Composer } from 'telegraf';
 import { TelegramContext } from '../../../ctx.class';
-import { Ctx } from '../../../types';
 import { buttonConfig } from './configs';
 
 export function CreateTextComposer(param: string, isButtonCancel?: boolean, isBigButtonCancel?: boolean) {
@@ -9,7 +8,7 @@ export function CreateTextComposer(param: string, isButtonCancel?: boolean, isBi
         const composer = new Composer<any>();
 
         descriptor.value = () => {
-            composer!.on('text', (ctx: Ctx) => {
+            composer!.on('text', (ctx: any) => {
                 const tgCtx = new TelegramContext(ctx);
 
                 ctx.wizard.state[param] = ctx.text;
@@ -24,7 +23,7 @@ export function CreateTextComposer(param: string, isButtonCancel?: boolean, isBi
             });
 
             if(isButtonCancel) {
-                composer.on('callback_query', (ctx: Ctx) => {
+                composer.on('callback_query', (ctx: any) => {
                     const tgCtx = new TelegramContext(ctx);
 
                     if(buttonConfig.signalCancel(ctx.callbackQuery.data, tgCtx)) {

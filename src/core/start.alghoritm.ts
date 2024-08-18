@@ -7,7 +7,7 @@ import { MessageCancel, SignalCancel, TransformSelectBigButton } from './decorat
 import { Scene } from './decorators/scene/types';
 import { registerScenes } from './decorators/scene/create-scene.decorator';
 import { registerNotFoundCommand } from './decorators/create-command/not-found';
-import { Command, Ctx } from './types';
+import { Command } from './types';
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -17,8 +17,8 @@ export async function start(config: {
     token: string,
     commands: (Constructor<Command>)[],
     scenes: (Constructor<Scene>)[],
-    commandConfiguration: (ctx: Ctx) => void,
-    messageCommandNotFound: (ctx: Ctx) => void;
+    commandConfiguration: (ctx: any) => void,
+    messageCommandNotFound: (ctx: any) => void;
     transformSelectBigButtonData: TransformSelectBigButton,
     transformApplyDecoratorMessage: TransformApplyDecoratorMessage,
     unknownCommandMessage: UnknownCommandMessage,

@@ -1,6 +1,5 @@
 import { TelegramContext } from '../../ctx.class';
 import { bot } from '../../start.alghoritm';
-import { Ctx } from '../../types';
 
 const listCommands: ((globalConfiguration: (ctx: TelegramContext) => void) => void)[] = [];
 
@@ -15,7 +14,7 @@ export function CreateCommand(commandName: string) {
         const commandMethod = Object.getOwnPropertyDescriptor(target.prototype, command!)!.value as (ctx: TelegramContext) => void;
 
         listCommands.push((globalConfiguration: (ctx: TelegramContext) => void) => {
-            bot.command(commandName, async(ctx: Ctx) => {
+            bot.command(commandName, async(ctx: any) => {
                 const tgCtx = new TelegramContext(ctx);
 
                 await globalConfiguration(tgCtx);

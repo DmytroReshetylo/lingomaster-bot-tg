@@ -1,5 +1,5 @@
 import { TelegramContext } from '../../ctx.class';
-import { Ctx, Middleware, PossibleError } from '../../types';
+import { Middleware, PossibleError } from '../../types';
 import { applyDecoratorConfig } from './configs';
 import { checkSomething } from './utils';
 

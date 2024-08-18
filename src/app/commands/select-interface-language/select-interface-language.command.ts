@@ -1,7 +1,6 @@
 import { Apply, CreateCommand } from '../../../core';
 import { TelegramContext } from '../../../core/ctx.class';
 import { Command } from '../../../core/decorators/create-command/types';
-import { Ctx } from '../../../core/types';
 import { IsNotBotAndNotGroupMiddleware, IsRegisteredMiddleware } from '../../shared/middlewares';
 
 @CreateCommand('interface')

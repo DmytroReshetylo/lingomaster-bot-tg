@@ -1,6 +1,5 @@
 import { Composer } from 'telegraf';
 import { TelegramContext } from '../../../ctx.class';
-import { Ctx } from '../../../types';
 import { buttonConfig } from './configs';
 export function CreateSelectButtonComposer(param: string, actions: string[] | 'any',  isCancel?: boolean) {
     return function (target: any, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) {
@@ -8,7 +7,7 @@ export function CreateSelectButtonComposer(param: string, actions: string[] | 'a
         const composer = new Composer<any>();
 
         descriptor.value = () => {
-            composer!.on('callback_query', (ctx: Ctx) => {
+            composer!.on('callback_query', (ctx: any) => {
                 const tgCtx = new TelegramContext(ctx);
 
                 ctx.wizard.state[param] = ctx.callbackQuery.data;

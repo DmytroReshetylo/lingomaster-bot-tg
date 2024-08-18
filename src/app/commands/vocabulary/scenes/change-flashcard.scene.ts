@@ -6,7 +6,6 @@ import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
 import { translate } from '../../../../core/language-interface/translate.alghoritm';
 import { createBigButtonKeyboard, createButtonKeyboard } from '../../../../core/telegram-utils';
-import { photoManagerService } from '../../../services/photo-manager/photo-manager.service';
 import { Flashcard } from '../../../services/database/vocabulary/types';
 import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
@@ -109,10 +108,6 @@ export class VocabularyChangeFlashcardScene implements Scene {
         await vocabularyService.updateFlashcards(ctx.session['user'], ctx.scene.states.language, flashcards);
 
         ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id] = flashcards[ctx.scene.states.id];
-
-        if(!flashcards[ctx.scene.states.id].photoUrl) {
-            photoManagerService.generatePhotoDescriptorsForUser(ctx.session['user'], ctx.scene.states.vocabulary);
-        }
 
         ctx.reply(
             translate('VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session['user'].interfaceLanguage),
