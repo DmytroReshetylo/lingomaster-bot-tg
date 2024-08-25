@@ -29,7 +29,7 @@ export class VocabularyChooseActionScene implements Scene {
             case 'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE': {
                 return ctx.scene.enterScene('vocabulary-study-new-language-scene');
             }
-            case 'TESTINGTITLE': {
+            case 'VOCABULARY.STUDY_FLASHCARDS.TITLE': {
                 return ctx.scene.enterScene('vocabulary-study-language-scene');
             }
             case 'VOCABULARY.ADD_FLASHCARDS.TITLE': {
