@@ -1,8 +1,8 @@
 import { Apply, CreateCommand } from '../../../core';
 import { TelegramContext } from '../../../core/ctx.class';
+import { Command } from '../../../core/decorators/create-command/types';
 import { Languages } from '../../../core/language-interface/enums';
 import { translate } from '../../../core/language-interface/translate.alghoritm';
-import { Command } from '../../../core/types';
 import { IsNotBotAndNotGroupMiddleware } from '../../shared/middlewares';
 import { getNavigationButtons } from '../../shared/utils';
 

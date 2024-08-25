@@ -38,8 +38,8 @@ export const startBotConfig = {
         if(!ctx.session['user']) {
             ctx.session['idTelegram'] = String(ctx.message.from.id);
 
-            ctx.session['user'] = await userService.getAccount(ctx.session['idTelegram']);
-            ctx.session['vocabularies'] = await vocabularyService.getAllVocabulary(ctx.session['user']) || [];
+            ctx.session['user'] = await userService.getEntity({idTelegram: ctx.session['idTelegram']});
+            ctx.session['vocabularies'] = await vocabularyService.getEntities({user: ctx.session['user']}) || [];
         }
     },
 

@@ -1,0 +1,1 @@
+export type FailedQueueInfo = {index: number, moveLastTrying: number};

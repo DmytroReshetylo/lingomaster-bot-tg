@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Languages } from '../../../../core/language-interface/enums';
 import { Flashcard } from './types';
 import { User } from '../user/user.entity';
@@ -17,8 +17,7 @@ export class Vocabulary {
     @Column('json')
     flashcards!: Flashcard[];
 
-    @BeforeInsert()
-    @BeforeInsert()
+    @BeforeUpdate()
     regulateProgress() {
         this.flashcards = this.flashcards.map((flashcard) => {
             if(flashcard.progress > 10) {

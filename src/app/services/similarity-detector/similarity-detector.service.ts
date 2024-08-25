@@ -1,10 +1,19 @@
-import { JaroWinklerDistance, WordNet } from 'natural';
+import { DataRecord, JaroWinklerDistance, WordNet } from 'natural';
 
 class SimilarityDetectorService {
+    #wordNet = new WordNet();
 
     async #getSynonyms(s: string) {
         return new Promise((resolve, reject) => {
-            
+            this.#wordNet.lookup(s, res => {
+                const synonyms = res
+                    .map(record => {
+                        return record.synonyms.map(syn => syn.replace(/_/g, ' '))
+                    })
+                    .reduce((acc, syn) => [...acc, ...syn], []);
+
+                resolve(new Set(synonyms));
+            })
         });
     }
 
@@ -14,8 +23,16 @@ class SimilarityDetectorService {
         return result >= 0.90;
     }
 
-    detectWithSynonyms(s1: string, s2: string) {
+    async detectWithSynonyms(s1: string, s2: string) {
+        const synonyms = await this.#getSynonyms(s2) as Set<string>;
 
+        for(const synonym of synonyms) {
+            if(this.detect(s1, synonym)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

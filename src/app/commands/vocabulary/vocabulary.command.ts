@@ -1,6 +1,6 @@
 import { TelegramContext } from '../../../core/ctx.class';
-import { Command } from '../../../core/types';
 import { Apply, CreateCommand } from '../../../core';
+import { Command } from '../../../core/decorators/create-command/types';
 import { IsRegisteredMiddleware } from '../../shared/middlewares';
 
 @CreateCommand('vocabulary')

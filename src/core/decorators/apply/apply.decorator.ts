@@ -1,6 +1,7 @@
 import { TelegramContext } from '../../ctx.class';
-import { Middleware, PossibleError } from '../../types';
 import { applyDecoratorConfig } from './configs';
+import { Middleware } from './types/middleware.type';
+import { PossibleError } from './types/possible-errors.type';
 import { checkSomething } from './utils';
 
 export function Apply(config: { middlewares: Middleware[], possibleErrors: PossibleError[] }) {
@@ -21,10 +22,13 @@ export function Apply(config: { middlewares: Middleware[], possibleErrors: Possi
                 const result = await checkSomething(err, config.possibleErrors);
 
                 if(result) {
-                    return ctx.reply(applyDecoratorConfig.transformApplyDecoratorMessage(result as string, ctx));
+                    ctx.reply(applyDecoratorConfig.transformApplyDecoratorMessage(result as string, ctx));
                 } else {
                     console.log(err);
-                    ctx.reply(applyDecoratorConfig.unknownCommandMessage(ctx))
+
+                    ctx.reply(applyDecoratorConfig.unknownCommandMessage(ctx));
+
+                    return ctx.scene.leaveScene();
                 }
             }
         }

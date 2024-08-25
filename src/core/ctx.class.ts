@@ -1,3 +1,4 @@
+import { Markup } from 'telegraf';
 import { MessageInfo, SceneManaging } from './types';
 
 export class TelegramContext {
@@ -15,17 +16,12 @@ export class TelegramContext {
         return await this.#ctx.reply(s);
     }
 
-
-    async sendPhoto(url: string, caption?: string, buttons?: any): Promise<MessageInfo> {
-        if(buttons) {
-            return await this.#ctx.sendPhoto(url, {caption: caption || '', ...buttons as any});
-        }
-
-        return await this.#ctx.sendPhoto(url, {caption: caption || '', ...buttons as any});
+    async sendPhoto(url: string, caption = '', buttons?: any): Promise<MessageInfo> {
+        return await this.#ctx.sendPhoto(url, {caption: caption, ...buttons || []});
     }
 
     deleteMessage(idMessage: number) {
-        this.#ctx.deleteMessages(idMessage);
+        this.#ctx.deleteMessage(idMessage);
     }
 
     get message(): MessageInfo {

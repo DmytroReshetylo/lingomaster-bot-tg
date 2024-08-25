@@ -40,13 +40,6 @@
         "WITH_OPTIONS": "Select answer",
         "WITH_PHOTO": "Photo as word descriptor + write answer",
         "WITH_PHOTO_AND_OPTIONS": "Photo as word descriptor + select answer"
-      },
-      "STUDYING": {
-        "STARTED": "Started!",
-        "ASK": "Next word: ",
-        "CORRECT_ANSWER": "You are right!",
-        "ALMOST_CORRECT_ANSWER": "You are almost right! The correct answer is ",
-        "INCORRECT_ANSWER": "Wrong! The correct answer is "
       }
     },
     "ADD_FLASHCARDS": {
@@ -66,6 +59,14 @@
       "ASK_INPUT_NEW_TRANSLATE": "Input the updated translation",
       "FINISHED": "The flashcard has been updated"
     }
+  },
+  "STUDYING": {
+    "STARTED": "Started!",
+    "ASK": "Next word: ",
+    "CORRECT_ANSWER": "You are right!",
+    "ALMOST_CORRECT_ANSWER": "You are almost right! The correct answer is ",
+    "INCORRECT_ANSWER": "Wrong! The correct answer is ",
+    "SYNONYM": "You are right, but you wrote a synonym. Really answer is "
   },
   "BUTTONS": {
     "CANCEL": "Cancel"
@@ -88,7 +89,8 @@
     "MUST_BE_MIN_10_FLASHCARDS": "Must have at least 10 flashcards in vocabulary to study them",
     "ALREADY_SELECTED_INTERFACE_LANGUAGE": "The language is already set as your interface language",
     "EMPTY_VOCABULARY": "The vocabulary is empty",
-    "CANT_STUDY_NATIVE_LANGUAGE": "You can't study your native language"
+    "CANT_STUDY_NATIVE_LANGUAGE": "You can't study your native language",
+    "IS_NOT_LEARN_ANY_LANGUAGE": "You have not been learning any language"
   },
   "VALIDATORS": {
     "THE_VALUE_MUST_BE_LESS_LENGTH": "The input must be shorter",

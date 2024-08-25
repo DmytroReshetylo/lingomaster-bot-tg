@@ -1,110 +1,110 @@
 import { Apply, CreateScene } from '../../../../core';
 import { TelegramContext } from '../../../../core/ctx.class';
+import { ModifyParams } from '../../../../core/decorators/modify-params/modify-params.decorator';
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
-import { Languages } from '../../../../core/language-interface/enums';
 import { translate } from '../../../../core/language-interface/translate.alghoritm';
 import { createButtonKeyboard } from '../../../../core/telegram-utils';
-import { similarityDetectorService } from '../../../services/similarity-detector';
+import { Flashcard } from '../../../services/database/vocabulary/types';
+import { Vocabulary } from '../../../services/database/vocabulary/vocabulary.entity';
+import { SelectLanguageAction } from '../../../shared/actions/select-learning-language.action';
+import { VocabularyManaging } from '../../../shared/classes';
+import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { deleteMessages, transformLanguageToJsonFormat, transformToButtonActions } from '../../../shared/utils';
+import { GetVocabularyManaging } from '../../../shared/modify-params';
+import { transformToButtonActions } from '../../../shared/utils';
+import { TestManaging } from '../../../testing-alghoritm/types';
+import { RandomSide } from '../../../testing-alghoritm/word-formats/utils';
 import { MinTenFlashcardsMiddleware } from './shared/middlewares';
-import { getStudyLanguage, getVocabulary } from './shared/utils';
-import { StudyFlashcardsStrategy } from './study-flashcards-strategy/study-flashcards.strategy';
-import { studyLanguageActions } from './study-flashcards-strategy/utils';
-import { ShowFlashcardFormat } from './study-flashcards-strategy/utils/types';
+import { AvailableTestFlashcardModel } from './study-flashcards-strategy/enums';
+import { GetTestFlashcardsManaging } from './study-flashcards-strategy/modify-params/get-test-flashcards-managing.modify-param';
 
 @CreateScene('vocabulary-study-language-scene')
 export class VocabularyStudyFlashcardsScene implements Scene {
 
-    start(ctx: TelegramContext) {
-        ctx.reply(
-            translate('INFO.CHOOSE_LANGUAGE', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(
-                transformToButtonActions([
-                        ...transformLanguageToJsonFormat(getStudyLanguage(ctx.session['vocabularies'])),
-                        'BUTTONS.CANCEL'],
-                    ctx.session['user'].interfaceLanguage
-                )
-            )
-        );
-
-        ctx.scene.nextAction();
+    @ModifyParams()
+    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
+        SelectLanguageAction(ctx, vocabularyManaging, true);
     }
 
-    @CreateSelectButtonComposer('language', transformLanguageToJsonFormat(Object.values(Languages) as Languages[]), true)
+    @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
     @Apply({middlewares: [IsLearningLanguageMiddleware, MinTenFlashcardsMiddleware], possibleErrors: []})
     afterSelectLanguage(ctx: TelegramContext) {
         ctx.reply(
             translate('INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(Object.keys(studyLanguageActions), ctx.session['user'].interfaceLanguage))
+            createButtonKeyboard(transformToButtonActions(Object.values(AvailableTestFlashcardModel), ctx.session['user'].interfaceLanguage))
         );
 
         ctx.scene.nextAction();
     }
 
-    @CreateSelectButtonComposer('model', Object.keys(studyLanguageActions), true)
+    @CreateSelectButtonComposer('model', Object.values(AvailableTestFlashcardModel), true)
     @Apply({middlewares: [], possibleErrors: []})
-    async afterSelectModel(ctx: TelegramContext) {
-        ctx.scene.states.studyStrategy = new StudyFlashcardsStrategy(
-            ctx.session['user'],
-            ctx.scene.states.language,
-            getVocabulary(ctx.session['vocabularies'], ctx.scene.states.language).flashcards,
-            studyLanguageActions[ctx.scene.states.model].showNextFlashcard
+    @ModifyParams()
+    async afterSelectModel(
+        ctx: TelegramContext,
+        @GetVocabularyManaging() vocabularyManaging: VocabularyManaging,
+        @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary, AvailableTestFlashcardModel>
+    ) {
+        await testFlashcardsManaging.testMessageProvider.sendStarted()
+
+        const wordID = testFlashcardsManaging.strategy.getNextWordIndex();
+
+        const flashcards = vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards;
+
+        ctx.scene.states.currectWord = testFlashcardsManaging.transformWord.transform(
+            ctx.scene.states.model,
+            {
+                rightData: flashcards[wordID],
+                dataArr: flashcards,
+                showSide: RandomSide()
+            }
         );
 
-        ctx.scene.states.flashcard = ctx.scene.states.studyStrategy.getNextFlashcard() as ShowFlashcardFormat;
+        const message = await testFlashcardsManaging.testMessageProvider.sendQuestion(ctx.scene.states.currectWord);
 
-        ctx.scene.states.queueOnDelete = [];
-
-        await ctx.reply(translate(
-            'VOCABULARY.STUDY_LANGUAGE.STUDYING.STARTED', ctx.session['user'].interfaceLanguage), 
-            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session['user'].interfaceLanguage)
-        ));
-
-        studyLanguageActions[ctx.scene.states.model].sendMessage(ctx);
+        testFlashcardsManaging.queueOnDelete.push(message.message_id);
 
         ctx.scene.nextAction();
     }
 
     @CreateTextComposer('answer', true)
     @Apply({middlewares: [], possibleErrors: []})
-    async afterInputAnswer(ctx: TelegramContext) {
-        ctx.scene.states.queueOnDelete.push(ctx.message.message_id);
+    @ModifyParams()
+    async afterInputAnswer(
+        ctx: TelegramContext,
+        @GetVocabularyManaging() vocabularyManaging: VocabularyManaging,
+        @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary, AvailableTestFlashcardModel>
+    ) {
+        testFlashcardsManaging.queueOnDelete.push(ctx.message.message_id);
 
-        let result = '';
+        const result = await testFlashcardsManaging.testAnswerHandler.check(
+            ctx.scene.states.answer,
+            ctx.scene.states.currectWord
+        );
 
-        if(ctx.scene.states.answer === ctx.scene.states.flashcard.backSide) {
-            result = translate('VOCABULARY.STUDY_LANGUAGE.STUDYING.CORRECT_ANSWER', ctx.session['user'].interfaceLanguage);
+        let message = await testFlashcardsManaging.testMessageProvider.sendAnswer(result, ctx.scene.states.currectWord);
 
-            ctx.scene.states.studyStrategy.changeProgress(ctx.scene.states.flashcard.index, true);
-        }
-        else if(similarityDetectorService.detect(ctx.scene.states.answer, ctx.scene.states.flashcard.backSide)) {
-            result = `${translate('VOCABULARY.STUDY_LANGUAGE.STUDYING.ALMOST_CORRECT_ANSWER', ctx.session['user'].interfaceLanguage)} ${ctx.scene.states.flashcard.backSide}`;
+        testFlashcardsManaging.queueOnDelete.push(message.message_id);
 
-            ctx.scene.states.studyStrategy.changeProgress(ctx.scene.states.flashcard.index, true);
-        }
-        else {
-            result = `${translate('VOCABULARY.STUDY_LANGUAGE.STUDYING.INCORRECT_ANSWER', ctx.session['user'].interfaceLanguage)} ${ctx.scene.states.flashcard.backSide}`;
+        testFlashcardsManaging.queueOnDelete.deleteAllMessagesInQueue(3000);
 
-            ctx.scene.states.studyStrategy.changeProgress(ctx.scene.states.flashcard.index, false);
-        }
+        const wordID = testFlashcardsManaging.strategy.getNextWordIndex();
 
-        ctx.scene.states.flashcard = ctx.scene.states.studyStrategy.getNextFlashcard() as ShowFlashcardFormat;
+        const flashcards = vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards;
 
-        const sentMessage = await ctx.reply(result);
+        ctx.scene.states.currectWord = testFlashcardsManaging.transformWord.transform(
+            ctx.scene.states.model,
+            {
+                rightData: flashcards[wordID],
+                dataArr: flashcards,
+                showSide: RandomSide()
+            }
+        );
 
-        ctx.scene.states.queueOnDelete.push(sentMessage.message_id);
+        message = await testFlashcardsManaging.testMessageProvider.sendQuestion(ctx.scene.states.currectWord);
 
-        const queue = [...ctx.scene.states.queueOnDelete];
-
-        setTimeout(() => {
-            deleteMessages(ctx, queue);
-        }, 3000);
-
-        ctx.scene.states.queueOnDelete = [];
-
-        studyLanguageActions[ctx.scene.states.model].sendMessage(ctx);
+        testFlashcardsManaging.queueOnDelete.push(message.message_id);
     }
 
 }

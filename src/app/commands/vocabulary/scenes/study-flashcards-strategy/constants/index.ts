@@ -1,1 +1,1 @@
-export * from './progress-failed-changes.constant'
+export * from './progress-failed-changes.constant';

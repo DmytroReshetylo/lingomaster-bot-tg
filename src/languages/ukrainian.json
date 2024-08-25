@@ -40,13 +40,6 @@
         "WITH_OPTIONS": "Варіанти відповіді",
         "WITH_PHOTO": "Фото як описувач слова + ручна відповідь",
         "WITH_PHOTO_AND_OPTIONS": "Фото як описувач слова  + варіанти відповіді"
-      },
-      "STUDYING": {
-        "STARTED": "Розпочинаємо!",
-        "ASK": "Наступне слова: ",
-        "CORRECT_ANSWER": "Правильно!",
-        "ALMOST_CORRECT_ANSWER": "Майже правильно. Правильна відповідь: ",
-        "INCORRECT_ANSWER": "Неправильно! Правильна відповідь: "
       }
     },
     "ADD_FLASHCARDS": {
@@ -66,6 +59,14 @@
       "ASK_INPUT_NEW_TRANSLATE": "Введіть оновлений переклад",
       "FINISHED": "Флешкарта була оновлена успішно"
     }
+  },
+  "STUDYING": {
+    "STARTED": "Розпочинаємо!",
+    "ASK": "Наступне слова: ",
+    "CORRECT_ANSWER": "Правильно!",
+    "ALMOST_CORRECT_ANSWER": "Майже правильно. Правильна відповідь: ",
+    "INCORRECT_ANSWER": "Неправильно! Правильна відповідь: ",
+    "SYNONYM": "Відповідь правильна, проте вона є синонімом. Точна відповідь: "
   },
   "BUTTONS": {
     "CANCEL": "Відмінити"
@@ -88,7 +89,8 @@
     "MUST_BE_MIN_10_FLASHCARDS": "Має бути не менше 10 флешкарт у словнику щоб вивчати їх",
     "ALREADY_SELECTED_INTERFACE_LANGUAGE": "Дана мова вже використовується як мова інтерфейсу",
     "EMPTY_VOCABULARY": "Даний словар пустий",
-    "CANT_STUDY_NATIVE_LANGUAGE": "Ви не можете вивчати рідну мову"
+    "CANT_STUDY_NATIVE_LANGUAGE": "Ви не можете вивчати рідну мову",
+    "IS_NOT_LEARN_ANY_LANGUAGE": "Ви не вивчаєте жодної мови"
   },
   "VALIDATORS": {
     "THE_VALUE_MUST_BE_LESS_LENGTH": "Ввод має бути меншої довжини",
