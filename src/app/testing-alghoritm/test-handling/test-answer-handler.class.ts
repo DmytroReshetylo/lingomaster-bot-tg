@@ -7,15 +7,15 @@ export class TestAnswerHandler {
     async check(answer: string, displayFormat: ShowTestDataFormat) {
         switch (true) {
             case(answer === displayFormat.backSide): {
-                return AnswerResult.Correct;
+                return {correct: true, message: AnswerResult.Correct};
             }
             case(similarityDetectorService.detect(answer, displayFormat.backSide)): {
-                return AnswerResult.AlmostCorrect;
+                return {correct: true, message: AnswerResult.AlmostCorrect};
             }
             case(await similarityDetectorService.detectWithSynonyms(answer, displayFormat.backSide)): {
-                return AnswerResult.Synonym;
+                return {correct: true, message: AnswerResult.Synonym};
             }
-            default: return AnswerResult.Incorrect;
+            default: return {correct: false, message: AnswerResult.Correct};
         }
     }
 }

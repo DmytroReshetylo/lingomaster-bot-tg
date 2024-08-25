@@ -47,7 +47,7 @@ export class VocabularyStudyFlashcardsScene implements Scene {
     ) {
         await testFlashcardsManaging.testMessageProvider.sendStarted()
 
-        const wordID = testFlashcardsManaging.strategy.getNextWordIndex();
+        ctx.scene.states.wordID = testFlashcardsManaging.strategy.getNextWordIndex();
 
         const flashcards = vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards;
 
@@ -56,7 +56,7 @@ export class VocabularyStudyFlashcardsScene implements Scene {
         ctx.scene.states.currectWord = testFlashcardsManaging.transformWord.transform(
             ctx.scene.states.model,
             {
-                rightData: flashcards[wordID],
+                rightData: flashcards[ctx.scene.states.wordID],
                 dataArr: flashcards,
                 showSide: showSide,
                 backSide: showSide === 'word' ? 'translate' : 'word'
@@ -85,13 +85,15 @@ export class VocabularyStudyFlashcardsScene implements Scene {
             ctx.scene.states.currectWord
         );
 
-        let message = await testFlashcardsManaging.testMessageProvider.sendAnswer(result, ctx.scene.states.currectWord);
+        testFlashcardsManaging.strategy.changeProgress(ctx.scene.states.wordID, result.correct);
+
+        let message = await testFlashcardsManaging.testMessageProvider.sendAnswer(result.message, ctx.scene.states.currectWord);
 
         testFlashcardsManaging.queueOnDelete.push(message.message_id);
 
         testFlashcardsManaging.queueOnDelete.deleteAllMessagesInQueue(3000);
 
-        const wordID = testFlashcardsManaging.strategy.getNextWordIndex();
+        ctx.scene.states.wordID = testFlashcardsManaging.strategy.getNextWordIndex();
 
         const flashcards = vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards;
 
@@ -100,7 +102,7 @@ export class VocabularyStudyFlashcardsScene implements Scene {
         ctx.scene.states.currectWord = testFlashcardsManaging.transformWord.transform(
             ctx.scene.states.model,
             {
-                rightData: flashcards[wordID],
+                rightData: flashcards[ctx.scene.states.wordID],
                 dataArr: flashcards,
                 showSide: showSide,
                 backSide: showSide === 'word' ? 'translate' : 'word'
