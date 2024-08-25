@@ -62,6 +62,8 @@ export class TestGetNextFlashcard extends GetNextWord<Flashcard> {
             this.testing.sendProgress();
         }
 
+         console.log(2);
+
         for(const info of this.priority) {
             if(info.condition(info.streakUse)) {
                 const index = info.get.apply(this as any);
