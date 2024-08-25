@@ -2,14 +2,12 @@ import { CreateScene } from '../../../../core';
 import { TelegramContext } from '../../../../core/ctx.class';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
-import { createButtonKeyboard } from '../../../../core/telegram-utils';
-import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { transformToButtonActions } from '../../../shared/utils';
+import { CreateReplyAction } from '../../../shared/actions';
 
 const actions = [
     'VOCABULARY.SEE_FLASHCARDS.TITLE',
     'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE',
-    'VOCABULARY.STUDY_LANGUAGE.TITLE',
+    'VOCABULARY.STUDY_FLASHCARDS.TITLE',
     'VOCABULARY.ADD_FLASHCARDS.TITLE',
     'VOCABULARY.CHANGE_FLASHCARD.TITLE',
     'VOCABULARY.DEL_FLASHCARDS.TITLE',
@@ -19,12 +17,7 @@ const actions = [
 @CreateScene('vocabulary-choose-action-scene')
 export class VocabularyChooseActionScene implements Scene {
     start(ctx: TelegramContext) {
-        ctx.reply(
-            translate('INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(actions, ctx.session['user'].interfaceLanguage))
-        );
-
-        ctx.scene.nextAction();
+        CreateReplyAction(ctx, 'INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage, 'button', actions);
     }
 
     @CreateSelectButtonComposer('action', actions, true)
@@ -36,7 +29,7 @@ export class VocabularyChooseActionScene implements Scene {
             case 'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE': {
                 return ctx.scene.enterScene('vocabulary-study-new-language-scene');
             }
-            case 'VOCABULARY.STUDY_LANGUAGE.TITLE': {
+            case 'TESTINGTITLE': {
                 return ctx.scene.enterScene('vocabulary-study-language-scene');
             }
             case 'VOCABULARY.ADD_FLASHCARDS.TITLE': {

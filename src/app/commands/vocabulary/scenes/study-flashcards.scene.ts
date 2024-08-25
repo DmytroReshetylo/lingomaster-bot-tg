@@ -4,19 +4,17 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { createButtonKeyboard } from '../../../../core/telegram-utils';
 import { Flashcard } from '../../../services/database/vocabulary/types';
 import { Vocabulary } from '../../../services/database/vocabulary/vocabulary.entity';
-import { SelectLanguageAction } from '../../../shared/actions/select-learning-language.action';
+import { CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetVocabularyManaging } from '../../../shared/modify-params';
-import { transformToButtonActions } from '../../../shared/utils';
 import { TestManaging } from '../../../testing-alghoritm/types';
 import { RandomSide } from '../../../testing-alghoritm/word-formats/utils';
 import { MinTenFlashcardsMiddleware } from './shared/middlewares';
-import { AvailableTestFlashcardModel } from './study-flashcards-strategy/enums';
+import { AvailableTestModel } from './study-flashcards-strategy/enums';
 import { GetTestFlashcardsManaging } from './study-flashcards-strategy/modify-params/get-test-flashcards-managing.modify-param';
 
 @CreateScene('vocabulary-study-language-scene')
@@ -30,21 +28,22 @@ export class VocabularyStudyFlashcardsScene implements Scene {
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
     @Apply({middlewares: [IsLearningLanguageMiddleware, MinTenFlashcardsMiddleware], possibleErrors: []})
     afterSelectLanguage(ctx: TelegramContext) {
-        ctx.reply(
-            translate('INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(Object.values(AvailableTestFlashcardModel), ctx.session['user'].interfaceLanguage))
+        CreateReplyAction(
+            ctx,
+            'INFO.SELECT_ACTION',
+            ctx.session['user'].interfaceLanguage,
+            'button',
+            Object.values(AvailableTestModel)
         );
-
-        ctx.scene.nextAction();
     }
 
-    @CreateSelectButtonComposer('model', Object.values(AvailableTestFlashcardModel), true)
+    @CreateSelectButtonComposer('model', Object.values(AvailableTestModel), true)
     @Apply({middlewares: [], possibleErrors: []})
     @ModifyParams()
     async afterSelectModel(
         ctx: TelegramContext,
         @GetVocabularyManaging() vocabularyManaging: VocabularyManaging,
-        @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary, AvailableTestFlashcardModel>
+        @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary>
     ) {
         await testFlashcardsManaging.testMessageProvider.sendStarted()
 
@@ -52,12 +51,15 @@ export class VocabularyStudyFlashcardsScene implements Scene {
 
         const flashcards = vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards;
 
+        const showSide = RandomSide();
+
         ctx.scene.states.currectWord = testFlashcardsManaging.transformWord.transform(
             ctx.scene.states.model,
             {
                 rightData: flashcards[wordID],
                 dataArr: flashcards,
-                showSide: RandomSide()
+                showSide: showSide,
+                backSide: showSide === 'word' ? 'translate' : 'word'
             }
         );
 
@@ -74,7 +76,7 @@ export class VocabularyStudyFlashcardsScene implements Scene {
     async afterInputAnswer(
         ctx: TelegramContext,
         @GetVocabularyManaging() vocabularyManaging: VocabularyManaging,
-        @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary, AvailableTestFlashcardModel>
+        @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary>
     ) {
         testFlashcardsManaging.queueOnDelete.push(ctx.message.message_id);
 
@@ -93,12 +95,15 @@ export class VocabularyStudyFlashcardsScene implements Scene {
 
         const flashcards = vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards;
 
+        const showSide = RandomSide();
+
         ctx.scene.states.currectWord = testFlashcardsManaging.transformWord.transform(
             ctx.scene.states.model,
             {
                 rightData: flashcards[wordID],
                 dataArr: flashcards,
-                showSide: RandomSide()
+                showSide: showSide,
+                backSide: showSide === 'word' ? 'translate' : 'word'
             }
         );
 

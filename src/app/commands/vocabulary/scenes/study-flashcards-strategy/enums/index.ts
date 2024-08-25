@@ -1,1 +1,1 @@
-export * from './test-flashcard-model.enum';
+export * from './test-model.enum';

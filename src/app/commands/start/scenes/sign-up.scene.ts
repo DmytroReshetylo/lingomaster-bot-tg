@@ -3,15 +3,13 @@ import { TelegramContext } from '../../../../core/ctx.class';
 import { ModifyParams } from '../../../../core/decorators/modify-params/modify-params.decorator';
 import { CreateSelectBigButtonComposer, CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
-import { createBigButtonKeyboard, createButtonKeyboard } from '../../../../core/telegram-utils';
+import { createBigButtonKeyboard } from '../../../../core/telegram-utils';
 import { InterfaceLanguages, Languages } from '../../../../core/language-interface/enums';
-import { translate } from '../../../../core/language-interface/translate.alghoritm';
 import { userService } from '../../../services/database/user/user.service';
+import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { AvailableInterfaceLanguages, LanguageJsonFormat } from '../../../shared/constants';
 import { AvailableInterfaceLanguagesJsonFormat } from '../../../shared/constants';
 import { TransformLanguage } from '../../../shared/modify-params';
-import { getNavigationButtons } from '../../../shared/utils';
-import { transformToButtonActions } from '../../../shared/utils';
 
 @CreateScene('sign-up-scene')
 export class SignUpScene implements Scene {
@@ -25,22 +23,13 @@ export class SignUpScene implements Scene {
     @CreateSelectBigButtonComposer('interfaceLanguage', AvailableInterfaceLanguagesJsonFormat, false)
     @ModifyParams()
     afterSelectInterfaceLanguage(ctx: TelegramContext, @TransformLanguage('interfaceLanguage') interfaceLanguage: Languages) {
-        ctx.reply(
-            translate('SIGN_UP.SELECT_NATIVE_LANGUAGE', interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(LanguageJsonFormat, interfaceLanguage))
-        );
-
-        ctx.scene.nextAction();
+        CreateReplyAction(ctx, 'SIGN_UP.SELECT_NATIVE_LANGUAGE', interfaceLanguage, 'button', LanguageJsonFormat);
     }
 
     @CreateSelectButtonComposer('nativeLanguage', LanguageJsonFormat, false)
     @ModifyParams()
     afterSelectNativeLanguage(ctx: TelegramContext, @TransformLanguage('interfaceLanguage') interfaceLanguage: Languages) {
-        ctx.reply(
-            translate('SIGN_UP.INPUT_NAME', interfaceLanguage)
-        );
-
-        ctx.scene.nextAction();
+        CreateReplyAction(ctx, 'SIGN_UP.INPUT_NAME', interfaceLanguage);
     }
 
     @CreateTextComposer('name')
@@ -56,16 +45,8 @@ export class SignUpScene implements Scene {
             name: ctx.scene.states.name,
             interfaceLanguage: interfaceLanguage,
             nativeLanguage: nativeLanguage
-        })
+        });
 
-        ctx.reply(
-            translate(
-                'SIGN_UP.SUCCESS_REGISTERED',
-                interfaceLanguage
-            ),
-            getNavigationButtons()
-        )
-
-        ctx.scene.leaveScene();
+        CreateFinishReplyAction(ctx, 'SIGN_UP.SUCCESS_REGISTERED', interfaceLanguage);
     }
 }

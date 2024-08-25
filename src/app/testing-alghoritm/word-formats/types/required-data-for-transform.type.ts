@@ -1,5 +1,6 @@
-export type RequiredParamsForTransform<T> = {
-    rightData: T ,
-    showSide: 'word' | 'translate',
+export type RequiredParamsForTransform<T extends Record<string, any>> = {
+    rightData: T,
+    showSide: string,
+    backSide: string,
     dataArr?: T[]
 }

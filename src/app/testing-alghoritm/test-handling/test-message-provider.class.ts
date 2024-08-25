@@ -5,11 +5,11 @@ import { MessageInfo } from '../../../core/types';
 import { getNavigationButtons, transformToButtonActions } from '../../shared/utils';
 import { ShowTestDataFormat } from '../word-formats/types';
 import { AnswerResult } from './enums';
-import { QuestionProvider } from './question-provider.class';
+import { QuestionProvider } from './question-provider.abstract-class';
 
 export class TestMessageProvider {
     private ctx: TelegramContext;
-    private questionProvider: QuestionProvider<any>;
+    private questionProvider: QuestionProvider;
     protected listAnswers: {type: AnswerResult, answer: (data: ShowTestDataFormat) => Promise<MessageInfo> }[] = [
         {
             type: AnswerResult.Correct,
@@ -29,7 +29,7 @@ export class TestMessageProvider {
         }
     ];
 
-    constructor(ctx: TelegramContext, questionProvider: QuestionProvider<any>) {
+    constructor(ctx: TelegramContext, questionProvider: QuestionProvider) {
         this.ctx = ctx;
         this.questionProvider = questionProvider;
     }

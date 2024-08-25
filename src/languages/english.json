@@ -33,14 +33,7 @@
       "FINISHED": "The language has been added to study"
     },
     "STUDY_LANGUAGE": {
-      "TITLE": "Study flashcards",
-      "ASK_MODEL": "Select a model to study",
-      "MODELS": {
-        "WITHOUT_PHOTO_AND_OPTIONS": "Write answer",
-        "WITH_OPTIONS": "Select answer",
-        "WITH_PHOTO": "Photo as word descriptor + write answer",
-        "WITH_PHOTO_AND_OPTIONS": "Photo as word descriptor + select answer"
-      }
+      "TITLE": "Study flashcards"
     },
     "ADD_FLASHCARDS": {
       "TITLE": "Add flashcards",
@@ -66,7 +59,14 @@
     "CORRECT_ANSWER": "You are right!",
     "ALMOST_CORRECT_ANSWER": "You are almost right! The correct answer is ",
     "INCORRECT_ANSWER": "Wrong! The correct answer is ",
-    "SYNONYM": "You are right, but you wrote a synonym. Really answer is "
+    "SYNONYM": "You are right, but you wrote a synonym. Really answer is ",
+    "ASK_MODEL": "Select a model to study",
+    "MODELS": {
+      "WITHOUT_PHOTO_AND_OPTIONS": "Write answer",
+      "WITH_OPTIONS": "Select answer",
+      "WITH_PHOTO": "Photo as word descriptor + write answer",
+      "WITH_PHOTO_AND_OPTIONS": "Photo as word descriptor + select answer"
+    }
   },
   "BUTTONS": {
     "CANCEL": "Cancel"

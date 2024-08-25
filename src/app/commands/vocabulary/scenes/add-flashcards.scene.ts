@@ -5,21 +5,19 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { createButtonKeyboard } from '../../../../core/telegram-utils';
 import { photoManagerService } from '../../../services/photo-manager/photo-manager.service';
 import { Flashcard } from '../../../services/database/vocabulary/types';
 import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
-import { SelectLanguageAction } from '../../../shared/actions/select-learning-language.action';
+import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
+import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetVocabularyManaging } from '../../../shared/modify-params';
 import { TransformLanguage } from '../../../shared/modify-params';
 import { InputIncorrectPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
-import { checkValid, transformToButtonActions } from '../../../shared/utils';
+import { checkValid } from '../../../shared/utils';
 import { deleteEquallyRows } from '../../../shared/utils';
-import { getNavigationButtons } from '../../../shared/utils';
 import { AddFlashcardDto } from './shared/dto';
 import { getVocabulary } from './shared/utils';
 
@@ -34,12 +32,13 @@ export class VocabularyAddFlashcardsScene implements Scene {
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
     @Apply({middlewares: [IsLearningLanguageMiddleware], possibleErrors: []})
     afterSelectLanguage(ctx: TelegramContext) {
-        ctx.reply(
-            translate('VOCABULARY.ADD_FLASHCARDS.ASK_INPUT', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session['user'].interfaceLanguage))
+        CreateReplyAction(
+            ctx,
+            'VOCABULARY.ADD_FLASHCARDS.ASK_INPUT',
+            ctx.session['user'].interfaceLanguage,
+            'button',
+            ['BUTTONS.CANCEL']
         );
-
-        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('text', true)
@@ -81,11 +80,6 @@ export class VocabularyAddFlashcardsScene implements Scene {
 
         photoManagerService.generatePhotoDescriptorsForUser(ctx.session['user'], vocabulary);
 
-        ctx.reply(
-            translate('VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage),
-            getNavigationButtons()
-        );
-
-        ctx.scene.leaveScene();
+        CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage);
     }
 }

@@ -5,19 +5,17 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { createBigButtonKeyboard, createButtonKeyboard } from '../../../../core/telegram-utils';
 import { Flashcard } from '../../../services/database/vocabulary/types';
 import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
-import { SelectLanguageAction } from '../../../shared/actions/select-learning-language.action';
+import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
+import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetVocabularyManaging } from '../../../shared/modify-params';
-import { TransformLanguage } from '../../../shared/modify-params/transform-language.modify-param';
+import { TransformLanguage } from '../../../shared/modify-params';
 import { IsDifferenceBetweenOldNewVersionsFlashcardPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
-import { checkValid, transformToButtonActions } from '../../../shared/utils';
-import { getNavigationButtons } from '../../../shared/utils';
+import { checkValid } from '../../../shared/utils';
 import { ChangeFlashcardDto } from './shared/dto';
 import { IsFoundWordInVocabularyMiddleware } from './shared/middlewares';
 
@@ -31,12 +29,13 @@ export class VocabularyChangeFlashcardScene implements Scene {
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
     @Apply({middlewares: [IsLearningLanguageMiddleware], possibleErrors: []})
     afterSelectLanguage(ctx: TelegramContext) {
-        ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], ctx.session['user'].interfaceLanguage))
+        CreateReplyAction(
+            ctx,
+            'VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT',
+            ctx.session['user'].interfaceLanguage,
+            'button',
+            ['BUTTONS.CANCEL']
         );
-
-        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('word', true)
@@ -53,15 +52,13 @@ export class VocabularyChangeFlashcardScene implements Scene {
             }
         );
 
-        ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_WORD', ctx.session['user'].interfaceLanguage),
-            createBigButtonKeyboard([
-                ctx.scene.states.newFlashcard.oldFlashcardVersion.word,
-                translate('BUTTONS.CANCEL', ctx.session['user'].interfaceLanguage)
-            ]),
+        CreateReplyAction(
+            ctx,
+            'VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_WORD',
+            ctx.session['user'].interfaceLanguage,
+            'bigButton',
+            [ctx.scene.states.newFlashcard.oldFlashcardVersion.word, 'BUTTONS.CANCEL']
         );
-
-        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('newWord', false, true)
@@ -71,15 +68,13 @@ export class VocabularyChangeFlashcardScene implements Scene {
 
         await checkValid(ctx.scene.states.newFlashcard);
 
-        ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_TRANSLATE', ctx.session['user'].interfaceLanguage),
-            createBigButtonKeyboard([
-                ctx.scene.states.newFlashcard.oldFlashcardVersion.translate,
-                translate('BUTTONS.CANCEL', ctx.session['user'].interfaceLanguage)
-            ]),
+        CreateReplyAction(
+            ctx,
+            'VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_TRANSLATE',
+            ctx.session['user'].interfaceLanguage,
+            'bigButton',
+            [ctx.scene.states.newFlashcard.oldFlashcardVersion.translate, 'BUTTONS.CANCEL']
         );
-
-        ctx.scene.nextAction();
     }
 
     @CreateTextComposer('newTranslate', false, true)
@@ -100,11 +95,6 @@ export class VocabularyChangeFlashcardScene implements Scene {
 
         ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id] = flashcards[ctx.scene.states.id];
 
-        ctx.reply(
-            translate('VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session['user'].interfaceLanguage),
-            getNavigationButtons()
-        );
-
-        ctx.scene.leaveScene();
+        CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session['user'].interfaceLanguage);
     }
 }

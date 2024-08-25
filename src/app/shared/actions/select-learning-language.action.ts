@@ -1,8 +1,8 @@
 import { TelegramContext } from '../../../core/ctx.class';
 import { translate } from '../../../core/language-interface/translate.alghoritm';
-import { createButtonKeyboard } from '../../../core/telegram-utils';
 import { VocabularyManaging } from '../classes';
-import { transformLanguageToJsonFormat, transformToButtonActions } from '../utils';
+import { transformLanguageToJsonFormat } from '../utils';
+import { CreateReplyAction } from './create-reply.action';
 
 export function SelectLanguageAction(ctx: TelegramContext, vocabularyManaging: VocabularyManaging, needSelected: boolean ) {
     const languages = needSelected ? vocabularyManaging.getSelectedLanguagesWithoutNative() : vocabularyManaging.getNotSelectedLanguages();
@@ -18,19 +18,14 @@ export function SelectLanguageAction(ctx: TelegramContext, vocabularyManaging: V
         return ctx.scene.leaveScene();
     }
     else {
-        ctx.reply(
-            translate('INFO.CHOOSE_LANGUAGE', ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(
-                transformToButtonActions(
-                    [
-                        ...transformLanguageToJsonFormat(needSelected ? vocabularyManaging.getSelectedLanguagesWithoutNative() : vocabularyManaging.getNotSelectedLanguages()),
-                        'BUTTONS.CANCEL'
-                    ],
-                    ctx.session['user'].interfaceLanguage
-                )
-            )
-        )
+        const languages = needSelected ? vocabularyManaging.getSelectedLanguagesWithoutNative() : vocabularyManaging.getNotSelectedLanguages();
 
-        ctx.scene.nextAction();
+        CreateReplyAction(
+            ctx,
+            'INFO.CHOOSE_LANGUAGE',
+            ctx.session['user'].interfaceLanguage,
+            'button',
+            [...transformLanguageToJsonFormat(languages), 'BUTTONS.CANCEL']
+        )
     }
 }

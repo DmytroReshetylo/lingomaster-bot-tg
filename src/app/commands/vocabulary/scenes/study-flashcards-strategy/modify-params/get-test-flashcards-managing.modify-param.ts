@@ -3,11 +3,12 @@ import { Flashcard } from '../../../../../services/database/vocabulary/types';
 import { Vocabulary } from '../../../../../services/database/vocabulary/vocabulary.entity';
 import { vocabularyService } from '../../../../../services/database/vocabulary/vocabulary.service';
 import { QueueOnDelete } from '../../../../../shared/classes';
+import { QuestionProvider } from '../../../../../testing-alghoritm/test-handling/question-provider.abstract-class';
 import { TestAnswerHandler } from '../../../../../testing-alghoritm/test-handling/test-answer-handler.class';
 import { TestMessageProvider } from '../../../../../testing-alghoritm/test-handling/test-message-provider.class';
 import { Testing } from '../../../../../testing-alghoritm/test-strategy/testing.class';
-import { TestFlashcardChangeProgress, TestFlashcardQuestionProvider, TestGetNextFlashcard } from '../classes';
-import { TestFlashcardTransform } from '../classes/test-flashcard-transform.class';
+import { TransformWord } from '../../../../../testing-alghoritm/word-formats/transform-word';
+import { TestFlashcardChangeProgress, TestGetNextFlashcard } from '../classes';
 
 export const GetTestFlashcardsManaging = createModifyParam(ctx => {
     if(!ctx.scene.states.testMananing) {
@@ -26,10 +27,10 @@ export const GetTestFlashcardsManaging = createModifyParam(ctx => {
 
             testMessageProvider: new TestMessageProvider(
                 ctx,
-                new TestFlashcardQuestionProvider(ctx, ctx.scene.states.model)
+                new QuestionProvider(ctx, ctx.scene.states.model)
             ),
 
-            transformWord: new TestFlashcardTransform(),
+            transformWord: new TransformWord<Flashcard>(),
 
             testAnswerHandler: new TestAnswerHandler()
         }
