@@ -1,9 +1,7 @@
+import { TelegramContext } from '../../ctx.class';
 import { bot } from '../../start.alghoritm';
-import { Ctx } from '../../types';
-import { UserService } from '../../../app/services/database/user/user.service';
-import { VocabularyService } from '../../../app/services/database/vocabulary/vocabulary.service';
 
-const listCommands: ((globalConfiguration: (ctx: Ctx) => void) => void)[] = [];
+const listCommands: ((globalConfiguration: (ctx: TelegramContext) => void) => void)[] = [];
 
 export function CreateCommand(commandName: string) {
     return function (target: any) {
@@ -13,14 +11,15 @@ export function CreateCommand(commandName: string) {
             throw Error('The class has no command method');
         }
 
-        const commandMethod = Object.getOwnPropertyDescriptor(target.prototype, command!)!.value as (ctx: Ctx) => void;
+        const commandMethod = Object.getOwnPropertyDescriptor(target.prototype, command!)!.value as (ctx: TelegramContext) => void;
 
-        listCommands.push((globalConfiguration: (ctx: Ctx) => void) => {
-            bot.command(commandName, async(ctx: Ctx) => {
+        listCommands.push((globalConfiguration: (ctx: TelegramContext) => void) => {
+            bot.command(commandName, async(ctx: any) => {
+                const tgCtx = new TelegramContext(ctx);
 
-                await globalConfiguration(ctx);
+                await globalConfiguration(tgCtx);
 
-                commandMethod(ctx);
+                commandMethod(tgCtx);
             });
         });
 
@@ -28,7 +27,7 @@ export function CreateCommand(commandName: string) {
     }
 }
 
-export function registerCommands(globalConfiguration: (ctx: Ctx) => void) {
+export function registerCommands(globalConfiguration: (ctx: TelegramContext) => void) {
     listCommands.forEach((command) => {
         command(globalConfiguration);
     });

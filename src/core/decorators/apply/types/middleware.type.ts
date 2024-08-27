@@ -1,3 +1,3 @@
-import { Ctx } from '../../../types';
+import { TelegramContext } from '../../../ctx.class';
 
-export type Middleware = (ctx: Ctx) => (null | string) | Promise<null | string>;
+export type Middleware = (ctx: TelegramContext) => (null | string) | Promise<null | string>;

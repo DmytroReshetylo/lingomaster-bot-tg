@@ -1,65 +1,52 @@
 import { Apply, CreateScene } from '../../../../core';
+import { TelegramContext } from '../../../../core/ctx.class';
+import { ModifyParams } from '../../../../core/decorators/modify-params/modify-params.decorator';
 import { CreateSelectBigButtonComposer, CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
-import { createBigButtonKeyboard, createButtonKeyboard } from '../../../../core/telegram-utils';
-import { Languages } from '../../../../core/language-interface/enums';
-import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { Ctx } from '../../../../core/types';
+import { createBigButtonKeyboard } from '../../../../core/telegram-utils';
+import { InterfaceLanguages, Languages } from '../../../../core/language-interface/enums';
 import { userService } from '../../../services/database/user/user.service';
-import { AvailableInterfaceLanguages } from '../../../shared/constants';
-import { getNavigationButtons, transformLanguageToJsonFormat } from '../../../shared/utils';
-import { transformToButtonActions } from '../../../shared/utils';
+import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
+import { AvailableInterfaceLanguages, LanguageJsonFormat } from '../../../shared/constants';
+import { AvailableInterfaceLanguagesJsonFormat } from '../../../shared/constants';
+import { TransformLanguage } from '../../../shared/modify-params';
 
 @CreateScene('sign-up-scene')
 export class SignUpScene implements Scene {
 
-    start(ctx: Ctx) {
+    start(ctx: TelegramContext) {
         ctx.reply('Select interface language', createBigButtonKeyboard(AvailableInterfaceLanguages));
 
-        ctx.wizard.next();
+        ctx.scene.nextAction();
     }
 
-    @CreateSelectBigButtonComposer('interfaceLanguage', transformLanguageToJsonFormat(AvailableInterfaceLanguages), false)
-    afterSelectInterfaceLanguage(ctx: Ctx) {
-        ctx.wizard.state.interfaceLanguage = translate(ctx.wizard.state.interfaceLanguage, Languages.en);
-
-        ctx.reply(
-            translate('SIGN_UP.SELECT_NATIVE_LANGUAGE', ctx.wizard.state.interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(transformLanguageToJsonFormat(Object.values(Languages) as Languages[]), ctx.wizard.state.interfaceLanguage))
-        );
-
-        ctx.wizard.next();
+    @CreateSelectBigButtonComposer('interfaceLanguage', AvailableInterfaceLanguagesJsonFormat, false)
+    @ModifyParams()
+    afterSelectInterfaceLanguage(ctx: TelegramContext, @TransformLanguage('interfaceLanguage') interfaceLanguage: Languages) {
+        CreateReplyAction(ctx, 'SIGN_UP.SELECT_NATIVE_LANGUAGE', interfaceLanguage, 'button', LanguageJsonFormat);
     }
 
-    @CreateSelectButtonComposer('nativeLanguage', transformLanguageToJsonFormat(Object.values(Languages) as Languages[]), false)
-    afterSelectNativeLanguage(ctx: Ctx) {
-        ctx.wizard.state.nativeLanguage = translate(ctx.wizard.state.nativeLanguage, Languages.en);
-
-        ctx.reply(
-            translate('SIGN_UP.INPUT_NAME', ctx.wizard.state.interfaceLanguage)
-        );
-
-        ctx.wizard.next();
+    @CreateSelectButtonComposer('nativeLanguage', LanguageJsonFormat, false)
+    @ModifyParams()
+    afterSelectNativeLanguage(ctx: TelegramContext, @TransformLanguage('interfaceLanguage') interfaceLanguage: Languages) {
+        CreateReplyAction(ctx, 'SIGN_UP.INPUT_NAME', interfaceLanguage);
     }
 
     @CreateTextComposer('name')
     @Apply({middlewares: [], possibleErrors: []})
-    async afterInputName(ctx: Ctx) {
-        await userService.createAccount(
-            ctx.session.idTelegram,
-            ctx.wizard.state.name,
-            ctx.wizard.state.interfaceLanguage,
-            ctx.wizard.state.nativeLanguage,
-        )
+    @ModifyParams()
+    async afterInputName(
+        ctx: TelegramContext,
+        @TransformLanguage('nativeLanguage') nativeLanguage: Languages,
+        @TransformLanguage('interfaceLanguage') interfaceLanguage: InterfaceLanguages
+    ) {
+        await userService.insert({
+            idTelegram: ctx.session['idTelegram'],
+            name: ctx.scene.states.name,
+            interfaceLanguage: interfaceLanguage,
+            nativeLanguage: nativeLanguage
+        });
 
-        ctx.reply(
-            translate(
-                'SIGN_UP.SUCCESS_REGISTERED',
-                ctx.wizard.state.interfaceLanguage
-            ),
-            getNavigationButtons()
-        )
-
-        ctx.scene.leave();
+        CreateFinishReplyAction(ctx, 'SIGN_UP.SUCCESS_REGISTERED', interfaceLanguage);
     }
 }

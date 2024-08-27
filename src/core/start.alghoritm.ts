@@ -2,14 +2,13 @@ import { Context, Scenes, session, Telegraf } from 'telegraf';
 import { applyDecoratorConfig } from './decorators/apply/configs';
 import { TransformApplyDecoratorMessage, UnknownCommandMessage } from './decorators/apply/configs/types';
 import { registerCommands } from './decorators/create-command/create-command.decorator';
+import { Command } from './decorators/create-command/types';
 import { buttonConfig } from './decorators/scene/composers/configs';
 import { MessageCancel, SignalCancel, TransformSelectBigButton } from './decorators/scene/composers/configs/types';
 import { Scene } from './decorators/scene/types';
 import { registerScenes } from './decorators/scene/create-scene.decorator';
 import { registerNotFoundCommand } from './decorators/create-command/not-found';
-import { Command, Ctx } from './types';
-
-type Constructor<T> = new (...args: any[]) => T;
+import { Constructor } from './types';
 
 export let bot!: Telegraf<Context>;
 
@@ -17,8 +16,8 @@ export async function start(config: {
     token: string,
     commands: (Constructor<Command>)[],
     scenes: (Constructor<Scene>)[],
-    commandConfiguration: (ctx: Ctx) => void,
-    messageCommandNotFound: (ctx: Ctx) => void;
+    commandConfiguration: (ctx: any) => void,
+    messageCommandNotFound: (ctx: any) => void;
     transformSelectBigButtonData: TransformSelectBigButton,
     transformApplyDecoratorMessage: TransformApplyDecoratorMessage,
     unknownCommandMessage: UnknownCommandMessage,

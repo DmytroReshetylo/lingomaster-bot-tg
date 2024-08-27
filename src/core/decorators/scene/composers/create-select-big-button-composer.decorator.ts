@@ -1,5 +1,5 @@
 import { Composer } from 'telegraf';
-import { Ctx } from '../../../types';
+import { TelegramContext } from '../../../ctx.class';
 import { buttonConfig } from './configs';
 
 export function CreateSelectBigButtonComposer(param: string, actions: string[] | 'any', isCancel?: boolean) {
@@ -8,17 +8,19 @@ export function CreateSelectBigButtonComposer(param: string, actions: string[] |
         const composer = new Composer<any>();
 
         descriptor.value = () => {
-            composer!.on('text', (ctx: Ctx) => {
-                ctx.wizard.state[param] = buttonConfig.transformSelectBigButton(ctx.text, ctx);
+            composer!.on('text', (ctx: any) => {
+                const tgCtx = new TelegramContext(ctx);
+
+                ctx.wizard.state[param] = buttonConfig.transformSelectBigButton(ctx.text, tgCtx);
 
                 if(isCancel && buttonConfig.signalCancel(ctx.wizard.state[param], ctx)) {
-                    buttonConfig.messageCancel(ctx);
+                    buttonConfig.messageCancel(tgCtx);
 
                     return ctx.scene.leave();
                 }
 
                 if(actions !== 'any' && actions.includes(ctx.wizard.state[param])) {
-                    method(ctx);
+                    method(tgCtx);
                 }
             });
 

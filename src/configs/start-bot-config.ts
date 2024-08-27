@@ -8,9 +8,9 @@ import { VocabularyCommand } from '../app/commands/vocabulary/vocabulary.command
 import { userService } from '../app/services/database/user/user.service';
 import { vocabularyService } from '../app/services/database/vocabulary/vocabulary.service';
 import { getNavigationButtons } from '../app/shared/utils';
+import { TelegramContext } from '../core/ctx.class';
 import { Languages } from '../core/language-interface/enums';
 import { findInJson, translate } from '../core/language-interface/translate.alghoritm';
-import { Ctx } from '../core/types';
 
 export const startBotConfig = {
     token: process.env.telegram as string,
@@ -34,34 +34,34 @@ export const startBotConfig = {
         VocabularyStudyFlashcardsScene
     ],
 
-    commandConfiguration: async(ctx: Ctx) => {
-        if(!ctx.session.user) {
-            ctx.session.idTelegram = String(ctx.message.from.id);
+    commandConfiguration: async(ctx: TelegramContext) => {
+        if(!ctx.session['user']) {
+            ctx.session['idTelegram'] = String(ctx.message.from.id);
 
-            ctx.session.user = await userService.getAccount(ctx.session.idTelegram);
-            ctx.session.vocabularies = await vocabularyService.getAllVocabulary(ctx.session.user) || [];
+            ctx.session['user'] = await userService.getEntity({idTelegram: ctx.session['idTelegram']});
+            ctx.session['vocabularies'] = await vocabularyService.getEntities({user: ctx.session['user']}) || [];
         }
     },
 
-    messageCommandNotFound: (ctx: Ctx) => ctx.reply(
-        translate('INFO.COMMAND_DONT_EXIST', ctx.session.user ? ctx.session.user.interfaceLanguage : Languages.en)
+    messageCommandNotFound: (ctx: TelegramContext) => ctx.reply(
+        translate('INFO.COMMAND_DONT_EXIST', ctx.session['user'] ? ctx.session['user'].interfaceLanguage : Languages.en)
     ),
 
-    transformSelectBigButtonData: (data: string, ctx: Ctx) => findInJson(data, ctx.session.user ? ctx.session.user.interfaceLanguage : Languages.en),
+    transformSelectBigButtonData: (data: string, ctx: TelegramContext) => findInJson(data, ctx.session['user'] ? ctx.session['user'].interfaceLanguage : Languages.en),
 
-    transformApplyDecoratorMessage: (message: string, ctx: Ctx) => translate(
+    transformApplyDecoratorMessage: (message: string, ctx: TelegramContext) => translate(
         message,
-        ctx.session.user ? ctx.session.user.interfaceLanguage : Languages.en
+        ctx.session['user'] ? ctx.session['user'].interfaceLanguage : Languages.en
     ),
 
-    unknownCommandMessage: (ctx: Ctx) => translate(
+    unknownCommandMessage: (ctx: TelegramContext) => translate(
         'ERRORS.UNKNOWN_ERROR',
-        ctx.session.user ? ctx.session.user.interfaceLanguage : Languages.en
+        ctx.session['user'] ? ctx.session['user'].interfaceLanguage : Languages.en
     ),
 
-    signalCancel: (data: string, ctx: Ctx) => {
+    signalCancel: (data: string, ctx: TelegramContext) => {
         return data === 'BUTTONS.CANCEL';
     },
 
-    messageCancel: (ctx: Ctx) => ctx.reply(translate('INFO.CANCELLED', ctx.session.user.interfaceLanguage), getNavigationButtons())
+    messageCancel: (ctx: TelegramContext) => ctx.reply(translate('INFO.CANCELLED', ctx.session['user'].interfaceLanguage), getNavigationButtons())
 }

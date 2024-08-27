@@ -1,6 +1,6 @@
-import { Ctx } from '../../../core/types';
+import { TelegramContext } from '../../../core/ctx.class';
 
-export function IsNotBotAndNotGroupMiddleware(ctx: Ctx) {
+export function IsNotBotAndNotGroupMiddleware(ctx: TelegramContext) {
     if(ctx.message.from.is_bot) {
         return 'MIDDLEWARES.YOU_CANT_BE_BOT';
     }

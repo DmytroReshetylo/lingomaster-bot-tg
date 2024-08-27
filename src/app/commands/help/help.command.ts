@@ -1,7 +1,8 @@
 import { Apply, CreateCommand } from '../../../core';
+import { TelegramContext } from '../../../core/ctx.class';
+import { Command } from '../../../core/decorators/create-command/types';
 import { Languages } from '../../../core/language-interface/enums';
 import { translate } from '../../../core/language-interface/translate.alghoritm';
-import { Command, Ctx } from '../../../core/types';
 import { IsNotBotAndNotGroupMiddleware } from '../../shared/middlewares';
 import { getNavigationButtons } from '../../shared/utils';
 
@@ -24,9 +25,9 @@ const commandList: {name: string, description: string}[] = [
 @CreateCommand('help')
 export class HelpCommand implements Command {
     @Apply({middlewares: [IsNotBotAndNotGroupMiddleware], possibleErrors: []})
-    command(ctx: Ctx): void {
+    command(ctx: TelegramContext): void {
         const s = commandList.reduce((acc: string, command) => {
-            return `${acc}${command.name} - ${translate(command.description, ctx.session.user ? ctx.session.user.interfaceLanguage : Languages.en)}\n`;
+            return `${acc}${command.name} - ${translate(command.description, ctx.session['user'] ? ctx.session['user'].interfaceLanguage : Languages.en)}\n`;
         }, '');
 
         ctx.reply(s, getNavigationButtons());

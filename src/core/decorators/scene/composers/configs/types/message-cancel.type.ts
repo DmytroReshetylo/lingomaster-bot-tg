@@ -1,3 +1,2 @@
-import { Ctx } from '../../../../../types';
 
-export type MessageCancel = (ctx: Ctx) => void;
+export type MessageCancel = (ctx: any) => void;

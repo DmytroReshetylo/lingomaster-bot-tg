@@ -1,5 +1,5 @@
-import { Ctx } from '../../../types';
+import { TelegramContext } from '../../../ctx.class';
 
 export type Scene = {
-    start: (ctx: Ctx) => void;
+    start: (ctx: TelegramContext, ...args: any) => void;
 }

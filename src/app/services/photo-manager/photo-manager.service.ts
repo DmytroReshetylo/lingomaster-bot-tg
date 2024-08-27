@@ -31,7 +31,10 @@ class PhotoManagerService {
             }catch (err: any) {}
         }
 
-        await vocabularyService.updateFlashcards(user, vocabulary.language, vocabulary.flashcards);
+        await vocabularyService.update(
+            {user, language: vocabulary.language},
+            {flashcards: vocabulary.flashcards}
+        );
 
         this.#listActive = this.#listActive.filter(idTelegram => idTelegram !== user.idTelegram);
     }
@@ -46,7 +49,7 @@ class PhotoManagerService {
         const users = await userService.getAll();
 
         for(const user of users) {
-            const vocabularies = await vocabularyService.getAllVocabulary(user);
+            const vocabularies = await vocabularyService.getEntities({user});
 
             if(!vocabularies) continue;
 

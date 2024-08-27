@@ -1,40 +1,27 @@
 import { Apply, CreateScene } from '../../../../core';
+import { TelegramContext } from '../../../../core/ctx.class';
+import { ModifyParams } from '../../../../core/decorators/modify-params/modify-params.decorator';
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
-import { Languages } from '../../../../core/language-interface/enums';
-import { translate } from '../../../../core/language-interface/translate.alghoritm';
-import { createButtonKeyboard } from '../../../../core/telegram-utils';
-import { Ctx } from '../../../../core/types';
+import { CreateFinishReplyAction, SelectLanguageAction } from '../../../shared/actions';
+import { VocabularyManaging } from '../../../shared/classes';
+import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { getNavigationButtons, toStringFlashcards, transformLanguageToJsonFormat, transformToButtonActions } from '../../../shared/utils';
+import { GetVocabularyManaging } from '../../../shared/modify-params';
+import { toStringFlashcards } from '../../../shared/utils';
 import { IsNotEmptyVocabularyMiddleware } from './shared/middlewares';
-import { getStudyLanguage, getVocabulary } from './shared/utils';
 
 @CreateScene('vocabulary-see-flashcards-scene')
 export class VocabularySeeFlashcardsScene implements Scene {
-    start(ctx: Ctx) {
-        ctx.reply(
-            translate('INFO.CHOOSE_LANGUAGE', ctx.session.user.interfaceLanguage),
-            createButtonKeyboard(
-                transformToButtonActions([
-                    ...transformLanguageToJsonFormat(getStudyLanguage(ctx.session.vocabularies)),
-                    'BUTTONS.CANCEL'],
-                    ctx.session.user.interfaceLanguage
-                )
-            )
-        );
 
-        ctx.wizard.next();
+    @ModifyParams()
+    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
+        SelectLanguageAction(ctx, vocabularyManaging, true);
     }
 
-    @CreateSelectButtonComposer('language', transformLanguageToJsonFormat(Object.values(Languages) as Languages[]), true)
+    @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
     @Apply({middlewares: [IsLearningLanguageMiddleware, IsNotEmptyVocabularyMiddleware], possibleErrors: []})
-    afterSelectLanguage(ctx: Ctx) {
-        ctx.reply(
-            toStringFlashcards(ctx.wizard.state.vocabulary),
-            getNavigationButtons()
-        );
-
-        ctx.scene.leave();
+    afterSelectLanguage(ctx: TelegramContext) {
+        CreateFinishReplyAction(ctx, toStringFlashcards(ctx.scene.states.vocabulary));
     }
 }
