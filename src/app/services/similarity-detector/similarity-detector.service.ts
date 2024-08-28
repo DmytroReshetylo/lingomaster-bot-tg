@@ -18,6 +18,10 @@ class SimilarityDetectorService {
     }
 
     detect(s1: string, s2: string) {
+        if(s2.includes(s1) || s1.includes(s2)) {
+            return true;
+        }
+
         const result = JaroWinklerDistance(s1, s2);
 
         return result >= 0.90;
