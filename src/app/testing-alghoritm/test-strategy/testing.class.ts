@@ -1,13 +1,13 @@
-import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
 import { Languages } from '../../../core/language-interface/enums';
-import { Constructor } from '../../../core/types';
 import { Service } from '../../services/database';
 import { User } from '../../services/database/user/user.entity';
 import { ChangeProgress } from './change-progress.abstract-class';
 import { GetNextWord } from './get-word.abstract-class';
 import { FailedQueueInfo } from './types';
+import { ServiceJson } from '../../services/database/service-json.type';
 
-export class Testing<T, TT extends { user: User; language: Languages } & ObjectLiteral> {
+export class Testing<T, TT extends ServiceJson> {
     protected user: User;
     readonly dataTest: T[];
     protected service: Service<TT>;
