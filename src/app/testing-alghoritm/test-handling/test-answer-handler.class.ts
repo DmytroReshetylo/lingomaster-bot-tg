@@ -15,7 +15,7 @@ export class TestAnswerHandler {
             case(await similarityDetectorService.detectWithSynonyms(answer, displayFormat.backSide)): {
                 return {correct: true, message: AnswerResult.Synonym};
             }
-            default: return {correct: false, message: AnswerResult.Correct};
+            default: return {correct: false, message: AnswerResult.Incorrect};
         }
     }
 }
