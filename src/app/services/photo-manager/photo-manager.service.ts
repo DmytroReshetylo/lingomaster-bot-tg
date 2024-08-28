@@ -1,40 +1,37 @@
 import { photoGeneratorService } from '../ai';
+import { ServiceLearning } from '../database/service-learning.abstract-class';
 import { User } from '../database/user/user.entity';
 import { userService } from '../database/user/user.service';
-import { Vocabulary } from '../database/vocabulary/vocabulary.entity';
-import { vocabularyService } from '../database/vocabulary/vocabulary.service';
 import { imgurService } from '../imgur';
+import { PhotoManagerSubscribers } from './photo-manager.subscribers';
 
 class PhotoManagerService {
     #listActive: string[] = [];
     #generateAllUsersActive: boolean = false;
 
-    async generatePhotoDescriptorsForUser(user: User, vocabulary: Vocabulary) {
+    async generatePhotoDescriptorsForUser<T>(user: User, service: ServiceLearning<T, any, any, any>, entity: T) {
         if(this.#listActive.includes(user.idTelegram)) {
             return;
         }
 
         this.#listActive.push(user.idTelegram);
 
-        const flashcardsNoPhoto = vocabulary.flashcards.filter(flashcard => !flashcard.photoUrl);
+        const dataWithoutPhoto = service.getJSON(entity).filter(data => !data.photoUrl);
 
-        for(const flashcardNoPhoto of flashcardsNoPhoto) {
+        for(const data of dataWithoutPhoto) {
             try {
-                const url = await photoGeneratorService.generate(flashcardNoPhoto.word);
+                const url = await photoGeneratorService.generate(service.getDataDifferenceValue(data));
 
                 if(url) {
-                    flashcardNoPhoto.photoUrl = await imgurService.upload(url);
+                    data.photoUrl = await imgurService.upload(url);
                 }
 
-                console.log(flashcardNoPhoto.photoUrl);
+                console.log(data.photoUrl);
 
             }catch (err: any) {}
         }
 
-        await vocabularyService.update(
-            {user, language: vocabulary.language},
-            {flashcards: vocabulary.flashcards}
-        );
+        await service.updateFullRecords(user, entity.language, service.getJSON(entity))
 
         this.#listActive = this.#listActive.filter(idTelegram => idTelegram !== user.idTelegram);
     }
@@ -49,12 +46,15 @@ class PhotoManagerService {
         const users = await userService.getAll();
 
         for(const user of users) {
-            const vocabularies = await vocabularyService.getEntities({user});
+            for(const service of PhotoManagerSubscribers) {
 
-            if(!vocabularies) continue;
+                const entities = await service.getEntities({user});
 
-            for(const vocabulary of vocabularies) {
-                await this.generatePhotoDescriptorsForUser(user, vocabulary);
+                if(!entities.length) continue;
+
+                for(const entity of entities) {
+                    await this.generatePhotoDescriptorsForUser(user, service, entity);
+                }
             }
         }
 

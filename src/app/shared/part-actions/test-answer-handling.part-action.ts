@@ -1,10 +1,10 @@
-import { ServiceJson } from '../../services/database/service-json.type';
+import { ServiceWithJson } from '../../services/database/service-with-json.type';
 import { TelegramContext } from '../../../core/ctx.class';
 import { TestManaging } from '../../testing-alghoritm/types';
 
 export async function TestAnswerHandlingPartAction<
     T extends Record<string, any>,
-    TT extends ServiceJson,
+    TT extends ServiceWithJson,
 >(
    ctx: TelegramContext,
    testManaging: TestManaging<T, TT>,

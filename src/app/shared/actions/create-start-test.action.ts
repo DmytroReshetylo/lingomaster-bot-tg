@@ -1,13 +1,13 @@
 import { TestManaging } from '../../testing-alghoritm/types';
-import { ServiceJson } from '../../services/database/service-json.type';
+import { ServiceWithJson } from '../../services/database/service-with-json.type';
 import { TelegramContext } from '../../../core/ctx.class';
 import { AvailableTestModel } from '../../commands/vocabulary/scenes/study-flashcards-strategy/enums';
 import { DifferentKeys } from '../../testing-alghoritm/word-formats/utils';
-import { TestSendQuestionPartAction } from '../part-actions/test-send-question.part-action';
+import { TestSendQuestionPartAction } from '../part-actions';
 
 export async function CreateStartTestAction<
     T extends Record<string, any>,
-    TT extends ServiceJson,
+    TT extends ServiceWithJson,
     K1 extends keyof T & string,
     K2 extends DifferentKeys<T, K1> & string
 >(

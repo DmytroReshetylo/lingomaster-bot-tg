@@ -40,6 +40,8 @@ export const startBotConfig = {
 
             ctx.session['user'] = await userService.getEntity({idTelegram: ctx.session['idTelegram']});
             ctx.session['vocabularies'] = await vocabularyService.getEntities({user: ctx.session['user']}) || [];
+
+            console.log(ctx.session['user'] );
         }
     },
 
