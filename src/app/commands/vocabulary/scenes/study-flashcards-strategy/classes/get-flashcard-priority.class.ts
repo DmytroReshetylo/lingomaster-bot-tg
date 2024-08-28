@@ -56,13 +56,13 @@ export class TestGetNextFlashcard extends GetNextWord<Flashcard> {
     }
 
      getNextWordIndex() {
-        if(!this.testing.queue.length && !this.testing.queueFailed.length) {
+        if(!this.testing.queue.length && !this.testing.queueFailed.length || this.testing.move === 20) {
             this.testing.startRound();
-
-            this.testing.sendProgress();
         }
 
-         console.log(2);
+        if(this.testing.move !== 0 && this.testing.move % 5 === 0) {
+            this.testing.sendProgress();
+        }
 
         for(const info of this.priority) {
             if(info.condition(info.streakUse)) {

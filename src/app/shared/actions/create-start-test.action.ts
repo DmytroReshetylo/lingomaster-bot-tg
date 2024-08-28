@@ -3,7 +3,7 @@ import { ServiceJson } from '../../services/database/service-json.type';
 import { TelegramContext } from '../../../core/ctx.class';
 import { AvailableTestModel } from '../../commands/vocabulary/scenes/study-flashcards-strategy/enums';
 import { DifferentKeys } from '../../testing-alghoritm/word-formats/utils';
-import { CreateTestSendQuestionAction } from './create-test-send-question.action';
+import { TestSendQuestionPartAction } from '../part-actions/test-send-question.part-action';
 
 export async function CreateStartTestAction<
     T extends Record<string, any>,
@@ -18,5 +18,7 @@ export async function CreateStartTestAction<
 ) {
     await testManaging.testMessageProvider.sendStarted();
 
-    await CreateTestSendQuestionAction(ctx, testManaging, model, paramSides);
+    await TestSendQuestionPartAction(ctx, testManaging, model, paramSides);
+
+    ctx.scene.nextAction();
 }

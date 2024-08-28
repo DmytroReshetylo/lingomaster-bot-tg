@@ -4,7 +4,7 @@ import { ServiceJson } from '../../services/database/service-json.type';
 import { TestManaging } from '../../testing-alghoritm/types';
 import { AvailableTestModel } from '../../commands/vocabulary/scenes/study-flashcards-strategy/enums';
 
-export async function CreateTestSendQuestionAction<
+export async function TestSendQuestionPartAction<
     T extends Record<string, any>,
     TT extends ServiceJson,
     K1 extends keyof T & string,
@@ -34,6 +34,4 @@ export async function CreateTestSendQuestionAction<
     const message = await testManaging.testMessageProvider.sendQuestion(ctx.scene.states.currectWord);
 
     testManaging.queueOnDelete.push(message.message_id);
-
-    ctx.scene.nextAction();
 }

@@ -16,7 +16,7 @@ import { AvailableTestModel } from './study-flashcards-strategy/enums';
 import { GetTestFlashcardsManaging } from './study-flashcards-strategy/modify-params/get-test-flashcards-managing.modify-param';
 import { CreateStartTestAction } from '../../../shared/actions/create-start-test.action';
 import { TestAnswerHandlingPartAction } from '../../../shared/part-actions/test-answer-handling.part-action';
-import { CreateTestSendQuestionAction } from '../../../shared/actions/create-test-send-question.action';
+import { TestSendQuestionPartAction } from '../../../shared/part-actions/test-send-question.part-action';
 
 @CreateScene('vocabulary-study-language-scene')
 export class VocabularyStudyFlashcardsScene implements Scene {
@@ -43,7 +43,6 @@ export class VocabularyStudyFlashcardsScene implements Scene {
     @ModifyParams()
     async afterSelectModel(
         ctx: TelegramContext,
-        @GetVocabularyManaging() vocabularyManaging: VocabularyManaging,
         @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary>
     ) {
         await CreateStartTestAction(ctx, testFlashcardsManaging, ctx.scene.states.model, ['word', 'translate']);
@@ -54,12 +53,11 @@ export class VocabularyStudyFlashcardsScene implements Scene {
     @ModifyParams()
     async afterInputAnswer(
         ctx: TelegramContext,
-        @GetVocabularyManaging() vocabularyManaging: VocabularyManaging,
         @GetTestFlashcardsManaging() testFlashcardsManaging: TestManaging<Flashcard, Vocabulary>
     ) {
         await TestAnswerHandlingPartAction(ctx, testFlashcardsManaging, ctx.scene.states.answer);
 
-        await CreateTestSendQuestionAction(ctx, testFlashcardsManaging, ctx.scene.states.model, ['word', 'translate']);
+        await TestSendQuestionPartAction(ctx, testFlashcardsManaging, ctx.scene.states.model, ['word', 'translate']);
     }
 
 }
