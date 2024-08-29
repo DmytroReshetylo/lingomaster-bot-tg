@@ -1,10 +1,11 @@
+import { ObjectLiteral } from 'typeorm';
 import { Testing } from './testing.class';
 
 
-export abstract class ChangeProgress<T> {
-    protected testing!: Testing<T, any>;
+export abstract class ChangeProgress<T extends ObjectLiteral & { photoUrl: string | null }> {
+    protected testing!: Testing<T>;
 
-    setTesting(testing: Testing<T, any>) {
+    setTesting(testing: Testing<T>) {
         this.testing = testing;
     }
 

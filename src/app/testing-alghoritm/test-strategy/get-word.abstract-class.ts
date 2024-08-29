@@ -1,9 +1,10 @@
+import { ObjectLiteral } from 'typeorm';
 import { Testing } from './testing.class';
 
-export abstract class GetNextWord<T> {
-    protected testing!: Testing<T, any>;
+export abstract class GetNextWord<T extends ObjectLiteral & { photoUrl: string | null }> {
+    protected testing!: Testing<T>;
 
-    setTesting(testing: Testing<T, any>) {
+    setTesting(testing: Testing<T>) {
         this.testing = testing;
     }
 

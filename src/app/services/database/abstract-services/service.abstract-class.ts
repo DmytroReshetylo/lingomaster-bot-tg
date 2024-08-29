@@ -1,7 +1,7 @@
 import { FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { Constructor } from '../../../core/types';
-import { dbConnection } from './db.connection';
+import { Constructor } from '../../../../core/types';
+import { dbConnection } from '../db.connection';
 
 export abstract class Service<T extends ObjectLiteral> {
     private repository: Repository<T>;

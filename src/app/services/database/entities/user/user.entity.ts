@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { InterfaceLanguages, Languages } from '../../../../core/language-interface/enums';
+import { InterfaceLanguages, Languages } from '../../../../../core/language-interface/enums';
 import { Vocabulary } from '../vocabulary/vocabulary.entity';
 
 @Entity('users')

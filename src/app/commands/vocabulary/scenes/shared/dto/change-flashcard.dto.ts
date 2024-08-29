@@ -1,6 +1,6 @@
 import { Validate } from 'class-validator';
 import { Languages } from '../../../../../../core/language-interface/enums';
-import { Flashcard } from '../../../../../services/database/vocabulary/types';
+import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
 import { similarityDetectorService } from '../../../../../services/similarity-detector';
 import { IsLanguageValid, IsNotSameOldAndNewVersionFlashcard } from './custom-validators';
 

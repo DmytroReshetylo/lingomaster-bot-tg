@@ -1,6 +1,6 @@
 import { TelegramContext } from '../../../core/ctx.class';
-import { User } from '../../services/database/user/user.entity';
-import { userService } from '../../services/database/user/user.service';
+import { User } from '../../services/database/entities/user/user.entity';
+import { userService } from '../../services/database/entities/user/user.service';
 import { SessionSubscribers } from './update-session-subscribers';
 
 export async function UpdateDataSessionSubscribers(ctx: TelegramContext) {

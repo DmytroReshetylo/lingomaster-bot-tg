@@ -1,10 +1,10 @@
-import { ServiceWithJson } from '../../services/database/service-with-json.type';
 import { TelegramContext } from '../../../core/ctx.class';
+import { EntityLearningType } from '../../services/database/types/entity-learning.type';
 import { TestManaging } from '../../testing-alghoritm/types';
 
 export async function TestAnswerHandlingPartAction<
-    T extends Record<string, any>,
-    TT extends ServiceWithJson,
+    T extends {photoUrl: string | null},
+    TT extends EntityLearningType<T>,
 >(
    ctx: TelegramContext,
    testManaging: TestManaging<T, TT>,

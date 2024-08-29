@@ -1,7 +1,7 @@
 import { createModifyParam } from '../../../../../../core/telegram-utils';
-import { Flashcard } from '../../../../../services/database/vocabulary/types';
-import { Vocabulary } from '../../../../../services/database/vocabulary/vocabulary.entity';
-import { vocabularyService } from '../../../../../services/database/vocabulary/vocabulary.service';
+import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
+import { Vocabulary } from '../../../../../services/database/entities/vocabulary/vocabulary.entity';
+import { vocabularyService } from '../../../../../services/database/entities/vocabulary/vocabulary.service';
 import { QueueOnDelete } from '../../../../../shared/classes';
 import { QuestionProvider } from '../../../../../testing-alghoritm/test-handling/question-provider.abstract-class';
 import { TestAnswerHandler } from '../../../../../testing-alghoritm/test-handling/test-answer-handler.class';
@@ -15,10 +15,10 @@ export const GetTestFlashcardsManaging = createModifyParam(ctx => {
         ctx.scene.states.testMananing = {
             queueOnDelete: new QueueOnDelete(ctx),
 
-            strategy: new Testing<Flashcard, Vocabulary>(
+            strategy: new Testing<Flashcard>(
                 ctx.session['user'],
                 ctx.scene.states.language,
-                ctx.scene.states.vocabularyManaging.getVocabulary(ctx.scene.states.language).flashcards,
+                ctx.scene.states.vocabularyManaging.getVocabulary(ctx.scene.states.language).json,
                 vocabularyService,
                 'flashcards',
                 new TestFlashcardChangeProgress(),

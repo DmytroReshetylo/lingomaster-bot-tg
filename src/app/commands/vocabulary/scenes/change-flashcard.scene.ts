@@ -5,7 +5,7 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
+import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
@@ -47,7 +47,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
                 word: '',
                 wordLanguage: language,
                 translate: '',
-                oldFlashcardVersion: ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id]
+                oldFlashcardVersion: ctx.scene.states.vocabulary.json[ctx.scene.states.id]
             }
         );
 

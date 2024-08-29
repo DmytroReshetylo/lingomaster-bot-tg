@@ -1,7 +1,7 @@
 import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { TelegramContext } from '../../../core/ctx.class';
-import { Service } from '../../services/database';
+import { Service } from '../../services/database/abstract-services/service.abstract-class';
 import { UpdateSessionSubscribers } from '../session/update-data-service-session.util';
 import { SessionSubscribers } from '../session/update-session-subscribers';
 
@@ -36,7 +36,7 @@ export async function ApplyServicePartAction<T extends ObjectLiteral, TT extends
     const data = await service.getSessionData(conditions);
 
     if(data && SessionSubscribers.has(service)) {
-        UpdateSessionSubscribers(ctx, service, data);
+        UpdateSessionSubscribers<T>(ctx, service, data);
     }
 
 }

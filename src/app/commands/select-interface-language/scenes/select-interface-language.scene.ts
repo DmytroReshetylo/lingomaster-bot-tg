@@ -4,9 +4,9 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectBigButtonComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { InterfaceLanguages } from '../../../../core/language-interface/enums';
-import { Service } from '../../../services/database';
-import { User } from '../../../services/database/user/user.entity';
-import { userService } from '../../../services/database/user/user.service';
+import { Service } from '../../../services/database/abstract-services/service.abstract-class';
+import { User } from '../../../services/database/entities/user/user.entity';
+import { userService } from '../../../services/database/entities/user/user.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { AvailableInterfaceLanguagesJsonFormat } from '../../../shared/constants';
 import { TransformLanguage } from '../../../shared/modify-params';

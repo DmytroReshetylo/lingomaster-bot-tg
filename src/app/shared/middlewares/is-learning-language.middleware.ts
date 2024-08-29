@@ -1,5 +1,5 @@
 import { TelegramContext } from '../../../core/ctx.class';
-import { Vocabulary } from '../../services/database/vocabulary/vocabulary.entity';
+import { Vocabulary } from '../../services/database/entities/vocabulary/vocabulary.entity';
 import { transformLanguageToJsonFormat } from '../utils';
 
 export function IsLearningLanguageMiddleware(ctx: TelegramContext) {

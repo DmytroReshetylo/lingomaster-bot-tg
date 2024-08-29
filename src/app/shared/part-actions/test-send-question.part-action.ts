@@ -1,12 +1,12 @@
+import { EntityLearningType } from '../../services/database/types/entity-learning.type';
 import { DifferentKeys, RandomSide } from '../../testing-alghoritm/word-formats/utils';
 import { TelegramContext } from '../../../core/ctx.class';
-import { ServiceWithJson } from '../../services/database/service-with-json.type';
 import { TestManaging } from '../../testing-alghoritm/types';
 import { AvailableTestModel } from '../../commands/vocabulary/scenes/study-flashcards-strategy/enums';
 
 export async function TestSendQuestionPartAction<
-    T extends Record<string, any>,
-    TT extends ServiceWithJson,
+    T extends {photoUrl: string | null},
+    TT extends EntityLearningType<T>,
     K1 extends keyof T & string,
     K2 extends DifferentKeys<T, K1> & string
 >(

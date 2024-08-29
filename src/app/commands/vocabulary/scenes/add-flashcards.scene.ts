@@ -5,9 +5,8 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { Flashcard } from '../../../services/database/vocabulary/types';
-import { Vocabulary } from '../../../services/database/vocabulary/vocabulary.entity';
-import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
+import { Flashcard } from '../../../services/database/entities/vocabulary/types';
+import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';

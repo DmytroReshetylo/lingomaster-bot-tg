@@ -1,16 +1,16 @@
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
 import { Languages } from '../../../core/language-interface/enums';
-import { ServiceLearning } from '../../services/database/service-learning.abstract-class';
-import { User } from '../../services/database/user/user.entity';
+import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
+import { User } from '../../services/database/entities/user/user.entity';
+import { EntityLearningType } from '../../services/database/types/entity-learning.type';
 import { ChangeProgress } from './change-progress.abstract-class';
 import { GetNextWord } from './get-word.abstract-class';
 import { FailedQueueInfo } from './types';
-import { ServiceWithJson } from '../../services/database/service-with-json.type';
 
-export class Testing<T, TT extends ServiceWithJson> {
+export class Testing<T extends ObjectLiteral & {photoUrl: string | null}> {
     protected user: User;
     readonly dataTest: T[];
-    protected service: ServiceLearning<TT, any, any>;
+    protected service: ServiceLearning<T, EntityLearningType<T>, any>;
     protected language: Languages;
     protected paramDataTest: string;
 
@@ -26,7 +26,7 @@ export class Testing<T, TT extends ServiceWithJson> {
         user: User,
         language: Languages,
         dataTest: T[],
-        service: ServiceLearning<TT, any, any>,
+        service: ServiceLearning<T, EntityLearningType<T>, any>,
         paramDataTest: string,
         changeProgressClass: ChangeProgress<T>,
         getWordClass: GetNextWord<T>
@@ -54,7 +54,7 @@ export class Testing<T, TT extends ServiceWithJson> {
         const changeOptions: any = {};
         changeOptions[this.paramDataTest] = this.dataTest;
 
-        await this.service.update({user: this.user, language: this.language} as FindOptionsWhere<TT>, changeOptions);
+        await this.service.update({user: this.user, language: this.language} as any, changeOptions);
     }
 
     getNextWordIndex() {

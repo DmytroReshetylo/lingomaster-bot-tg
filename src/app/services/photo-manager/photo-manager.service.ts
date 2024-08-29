@@ -1,8 +1,9 @@
+import { ObjectLiteral } from 'typeorm';
 import { photoGeneratorService } from '../ai';
-import { ServiceLearning } from '../database/service-learning.abstract-class';
-import { ServiceWithJson } from '../database/service-with-json.type';
-import { User } from '../database/user/user.entity';
-import { userService } from '../database/user/user.service';
+import { ServiceLearning } from '../database/abstract-services/service-learning.abstract-class';
+import { User } from '../database/entities/user/user.entity';
+import { userService } from '../database/entities/user/user.service';
+import { EntityLearningType } from '../database/types/entity-learning.type';
 import { imgurService } from '../imgur';
 import { PhotoManagerSubscribers } from './photo-manager.subscribers';
 
@@ -10,7 +11,14 @@ class PhotoManagerService {
     #listActive: string[] = [];
     #generateAllUsersActive: boolean = false;
 
-    async generatePhotoDescriptorsForUser<T extends ServiceWithJson>(user: User, service: ServiceLearning<T, any, any>, entity: T) {
+    async generatePhotoDescriptorsForUser<
+        T extends ObjectLiteral & { photoUrl: string | null },
+        TT extends EntityLearningType<T>
+    >(
+        user: User,
+        service: ServiceLearning<T, TT, keyof T>,
+        entity: TT
+    ) {
         if(this.#listActive.includes(user.idTelegram)) {
             return;
         }

@@ -8,7 +8,7 @@ export function IsNotEmptyVocabularyMiddleware(ctx: TelegramContext) {
 
     ctx.scene.states.vocabulary = getVocabulary(ctx.session['vocabularies'], ctx.scene.states.language);
 
-    if(!ctx.scene.states.vocabulary.flashcards.length) {
+    if(!ctx.scene.states.vocabulary.json.length) {
         return 'MIDDLEWARES.EMPTY_VOCABULARY';
     }
 

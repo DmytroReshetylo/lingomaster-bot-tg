@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { User } from './user/user.entity';
-import { Vocabulary } from './vocabulary/vocabulary.entity';
+import { User } from './entities/user/user.entity';
+import { Vocabulary } from './entities/vocabulary/vocabulary.entity';
 
 //@ts-ignore
 export const dbConnection = new DataSource({

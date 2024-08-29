@@ -3,7 +3,7 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { Scene } from '../../../../core/decorators/scene/types';
 import { InterfaceLanguages } from '../../../../core/language-interface/enums';
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
-import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
+import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction } from '../../../shared/actions';
 import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
@@ -27,7 +27,7 @@ export class VocabularyStudyNewLanguageScene implements Scene {
     @Apply({middlewares: [IsNotLearningLanguageMiddleware], possibleErrors: []})
     @ModifyParams()
     async afterSelectStudyLanguage(ctx: TelegramContext, @TransformLanguage('language') language: InterfaceLanguages) {
-        await ApplyServicePartAction(ctx,vocabularyService, 'add', {}, {user: ctx.session['user'], language, flashcards: []});
+        await ApplyServicePartAction(ctx,vocabularyService, 'add', {}, {user: ctx.session['user'], language, json: []});
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.STUDY_NEW_LANGUAGE.FINISHED', ctx.session['user'].interfaceLanguage);
     }

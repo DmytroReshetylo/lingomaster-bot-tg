@@ -1,6 +1,6 @@
 import { TelegramContext } from '../../../core/ctx.class';
 import { Languages } from '../../../core/language-interface/enums';
-import { Vocabulary } from '../../services/database/vocabulary/vocabulary.entity';
+import { Vocabulary } from '../../services/database/entities/vocabulary/vocabulary.entity';
 import { LanguagesList } from '../constants';
 
 export class VocabularyManaging {
@@ -11,6 +11,8 @@ export class VocabularyManaging {
     }
 
     getSelectedLanguages() {
+        console.log(this.#ctx.session);
+
         return [
             ...this.#ctx.session['vocabularies'].map((vocabulary: Vocabulary) => vocabulary.language),
             this.#ctx.session['user'].nativeLanguage
