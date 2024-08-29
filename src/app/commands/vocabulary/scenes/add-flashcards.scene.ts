@@ -5,21 +5,19 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { photoManagerService } from '../../../services/photo-manager/photo-manager.service';
 import { Flashcard } from '../../../services/database/vocabulary/types';
+import { Vocabulary } from '../../../services/database/vocabulary/vocabulary.entity';
 import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging } from '../../../shared/modify-params';
-import { TransformLanguage } from '../../../shared/modify-params';
+import { GetVocabularyManaging, TransformLanguage } from '../../../shared/modify-params';
+import { ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { InputIncorrectPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
 import { checkValid } from '../../../shared/utils';
-import { deleteEquallyRows } from '../../../shared/utils';
 import { AddFlashcardDto } from './shared/dto';
-import { getVocabulary } from './shared/utils';
 
 @CreateScene('vocabulary-add-flashcards-scene')
 export class VocabularyAddFlashcardsScene implements Scene {
@@ -64,21 +62,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
             return addFlashcardDto.toFlashcardFormat();
         }));
 
-        const vocabulary = getVocabulary(ctx.session['vocabularies'], language);
-
-        const newFlashcards = [
-            ...vocabulary.flashcards,
-            ...deleteEquallyRows(flashcards, vocabulary.flashcards, 'word')
-        ];
-
-        await vocabularyService.update(
-        {user: ctx.session['user'], language},
-            {flashcards: newFlashcards}
-        );
-
-        vocabulary.flashcards = newFlashcards;
-
-        photoManagerService.generatePhotoDescriptorsForUser(ctx.session['user'], vocabulary);
+        await ApplyServiceLearningPartAction(ctx, ctx.session['user'], language, vocabularyService, 'add', flashcards);
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage);
     }

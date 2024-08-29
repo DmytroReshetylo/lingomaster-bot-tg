@@ -12,6 +12,7 @@ import { IsNotLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetVocabularyManaging } from '../../../shared/modify-params';
 import { TransformLanguage } from '../../../shared/modify-params';
 import { Apply, CreateScene } from '../../../../core';
+import { ApplyServicePartAction } from '../../../shared/part-actions/apply-service.part-action';
 
 @CreateScene('vocabulary-study-new-language-scene')
 export class VocabularyStudyNewLanguageScene implements Scene {
@@ -26,13 +27,7 @@ export class VocabularyStudyNewLanguageScene implements Scene {
     @Apply({middlewares: [IsNotLearningLanguageMiddleware], possibleErrors: []})
     @ModifyParams()
     async afterSelectStudyLanguage(ctx: TelegramContext, @TransformLanguage('language') language: InterfaceLanguages) {
-        await vocabularyService.insert({
-            user: ctx.session['user'],
-            language,
-            flashcards: []
-        });
-
-        ctx.session['vocabularies'] = await vocabularyService.getEntities({user: ctx.session['user']});
+        await ApplyServicePartAction(ctx,vocabularyService, 'add', {}, {user: ctx.session['user'], language, flashcards: []});
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.STUDY_NEW_LANGUAGE.FINISHED', ctx.session['user'].interfaceLanguage);
     }

@@ -1,5 +1,6 @@
 import { photoGeneratorService } from '../ai';
 import { ServiceLearning } from '../database/service-learning.abstract-class';
+import { ServiceWithJson } from '../database/service-with-json.type';
 import { User } from '../database/user/user.entity';
 import { userService } from '../database/user/user.service';
 import { imgurService } from '../imgur';
@@ -9,7 +10,7 @@ class PhotoManagerService {
     #listActive: string[] = [];
     #generateAllUsersActive: boolean = false;
 
-    async generatePhotoDescriptorsForUser<T>(user: User, service: ServiceLearning<T, any, any, any>, entity: T) {
+    async generatePhotoDescriptorsForUser<T extends ServiceWithJson>(user: User, service: ServiceLearning<T, any, any>, entity: T) {
         if(this.#listActive.includes(user.idTelegram)) {
             return;
         }
@@ -28,7 +29,8 @@ class PhotoManagerService {
 
                 console.log(data.photoUrl);
 
-            }catch (err: any) {}
+            }
+            catch (err: any) {}
         }
 
         await service.updateFullRecords(user, entity.language, service.getJSON(entity))
