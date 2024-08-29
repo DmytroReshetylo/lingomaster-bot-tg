@@ -11,7 +11,6 @@ export class VocabularyManaging {
     }
 
     getSelectedLanguages() {
-        console.log(this.#ctx.session);
 
         return [
             ...this.#ctx.session['vocabularies'].map((vocabulary: Vocabulary) => vocabulary.language),

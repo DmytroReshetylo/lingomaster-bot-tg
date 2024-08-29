@@ -31,9 +31,17 @@ export async function ApplyServicePartAction<T extends ObjectLiteral, TT extends
         }
     }
 
-    conditions = {...conditions, ...options};
+    const findConditions: Record<string, any> = {};
 
-    const data = await service.getSessionData(conditions);
+    if(conditions.idTelegram) {
+        findConditions.idTelegram = conditions.idTelegram;
+    }
+
+    if(conditions.user) {
+        findConditions.user = conditions.user;
+    }
+
+    const data = await service.getSessionData(findConditions);
 
     if(data && SessionSubscribers.has(service)) {
         UpdateSessionSubscribers<T>(ctx, service, data);
