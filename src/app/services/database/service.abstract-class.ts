@@ -10,6 +10,8 @@ export abstract class Service<T extends ObjectLiteral> {
         this.repository = dbConnection.getRepository(repository);
     }
 
+    abstract getSessionData(conditions: FindOptionsWhere<T>): Promise<T | T[] | null>;
+
     async getAll() {
         return await this.repository.find();
     }

@@ -3,8 +3,9 @@ import { TelegramContext } from '../../../../core/ctx.class';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
 import { CreateReplyAction } from '../../../shared/actions';
+import { CreateChooseSceneAction } from '../../../shared/actions/create-choose-scene.action';
 
-const actions = [
+const actionButtons = [
     'VOCABULARY.SEE_FLASHCARDS.TITLE',
     'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE',
     'VOCABULARY.STUDY_FLASHCARDS.TITLE',
@@ -12,35 +13,25 @@ const actions = [
     'VOCABULARY.CHANGE_FLASHCARD.TITLE',
     'VOCABULARY.DEL_FLASHCARDS.TITLE',
     'BUTTONS.CANCEL'
+];
+
+const actions = [
+    {value: 'VOCABULARY.SEE_FLASHCARDS.TITLE', scene: 'vocabulary-see-flashcards-scene'},
+    {value: 'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE', scene: 'vocabulary-study-new-language-scene'},
+    {value: 'VOCABULARY.STUDY_FLASHCARDS.TITLE', scene: 'vocabulary-study-language-scene'},
+    {value: 'VOCABULARY.ADD_FLASHCARDS.TITLE', scene: 'vocabulary-add-flashcards-scene'},
+    {value: 'VOCABULARY.CHANGE_FLASHCARD.TITLE', scene: 'vocabulary-change-flashcard-scene'},
+    {value: 'VOCABULARY.DEL_FLASHCARDS.TITLE', scene: 'vocabulary-delete-flashcards-scene'},
 ]
 
 @CreateScene('vocabulary-choose-action-scene')
 export class VocabularyChooseActionScene implements Scene {
     start(ctx: TelegramContext) {
-        CreateReplyAction(ctx, 'INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage, 'button', actions);
+        CreateReplyAction(ctx, 'INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage, 'button', actionButtons);
     }
 
-    @CreateSelectButtonComposer('action', actions, true)
+    @CreateSelectButtonComposer('action', actionButtons, true)
     afterSelectAction(ctx: TelegramContext) {
-        switch (ctx.scene.states.action) {
-            case 'VOCABULARY.SEE_FLASHCARDS.TITLE': {
-                return ctx.scene.enterScene('vocabulary-see-flashcards-scene');
-            }
-            case 'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE': {
-                return ctx.scene.enterScene('vocabulary-study-new-language-scene');
-            }
-            case 'VOCABULARY.STUDY_FLASHCARDS.TITLE': {
-                return ctx.scene.enterScene('vocabulary-study-language-scene');
-            }
-            case 'VOCABULARY.ADD_FLASHCARDS.TITLE': {
-                return ctx.scene.enterScene('vocabulary-add-flashcards-scene');
-            }
-            case 'VOCABULARY.CHANGE_FLASHCARD.TITLE': {
-                return ctx.scene.enterScene('vocabulary-change-flashcard-scene');
-            }
-            case 'VOCABULARY.DEL_FLASHCARDS.TITLE': {
-                return ctx.scene.enterScene('vocabulary-delete-flashcards-scene');
-            }
-        }
+        CreateChooseSceneAction(ctx, actions, ctx.scene.states.action);
     }
 }

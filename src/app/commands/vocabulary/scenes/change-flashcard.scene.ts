@@ -5,17 +5,16 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { Flashcard } from '../../../services/database/vocabulary/types';
 import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging } from '../../../shared/modify-params';
+import { GetFromStates, GetVocabularyManaging } from '../../../shared/modify-params';
 import { TransformLanguage } from '../../../shared/modify-params';
+import { AddToDTOPartAction, ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { IsDifferenceBetweenOldNewVersionsFlashcardPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
-import { checkValid } from '../../../shared/utils';
 import { ChangeFlashcardDto } from './shared/dto';
 import { IsFoundWordInVocabularyMiddleware } from './shared/middlewares';
 
@@ -63,10 +62,9 @@ export class VocabularyChangeFlashcardScene implements Scene {
 
     @CreateTextComposer('newWord', false, true)
     @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError]})
-    async afterInputNewWord(ctx: TelegramContext) {
-        ctx.scene.states.newFlashcard.word = ctx.scene.states.newWord;
-
-        await checkValid(ctx.scene.states.newFlashcard);
+    @ModifyParams()
+    async afterInputNewWord(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto) {
+        await AddToDTOPartAction(dto, 'word', ctx.scene.states.newWord);
 
         CreateReplyAction(
             ctx,
@@ -79,21 +77,11 @@ export class VocabularyChangeFlashcardScene implements Scene {
 
     @CreateTextComposer('newTranslate', false, true)
     @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
-    async afterInputNewTranslate(ctx: TelegramContext) {
-        ctx.scene.states.newFlashcard.translate = ctx.scene.states.newTranslate;
+    @ModifyParams()
+    async afterInputNewTranslate(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto, @TransformLanguage('language') language: Languages) {
+        await AddToDTOPartAction(dto, 'translate', ctx.scene.states.newTranslate);
 
-        await checkValid(ctx.scene.states.newFlashcard);
-
-        const flashcards = [...ctx.scene.states.vocabulary.flashcards] as Flashcard[];
-
-        flashcards[ctx.scene.states.id] = ctx.scene.states.newFlashcard.toFlashcardFormat();
-
-        await vocabularyService.update(
-            {user: ctx.session['user'], language: ctx.scene.states.language},
-            {flashcards}
-        );
-
-        ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id] = flashcards[ctx.scene.states.id];
+        await ApplyServiceLearningPartAction(ctx, ctx.session['user'], language, vocabularyService, 'update', dto.toFlashcardFormat());
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session['user'].interfaceLanguage);
     }

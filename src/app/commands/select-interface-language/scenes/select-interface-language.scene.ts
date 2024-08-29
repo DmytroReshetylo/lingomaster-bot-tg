@@ -4,10 +4,13 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectBigButtonComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { InterfaceLanguages } from '../../../../core/language-interface/enums';
+import { Service } from '../../../services/database';
+import { User } from '../../../services/database/user/user.entity';
 import { userService } from '../../../services/database/user/user.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
 import { AvailableInterfaceLanguagesJsonFormat } from '../../../shared/constants';
 import { TransformLanguage } from '../../../shared/modify-params';
+import { ApplyServicePartAction } from '../../../shared/part-actions';
 import { IsNotAlreadySelectedInterfaceLanguageMiddleware } from './middlewares';
 
 @CreateScene('select-interface-language-scene')
@@ -27,9 +30,7 @@ export class SelectInterfaceLanguageScene implements Scene {
     @Apply({middlewares: [IsNotAlreadySelectedInterfaceLanguageMiddleware], possibleErrors: []})
     @ModifyParams()
     async afterSelectInterfaceLanguage(ctx: TelegramContext, @TransformLanguage('interfaceLanguage') interfaceLanguage: InterfaceLanguages) {
-        await userService.update({idTelegram: ctx.session['idTelegram']}, {interfaceLanguage});
-
-        ctx.session['user'].interfaceLanguage = interfaceLanguage;
+        await ApplyServicePartAction<User, Service<User>>(ctx, userService, 'update', {idTelegram: String(ctx.message.from.id)}, {interfaceLanguage});
 
         CreateFinishReplyAction(ctx, 'SELECT_INTERFACE_LANGUAGE.FINISHED', interfaceLanguage);
     }

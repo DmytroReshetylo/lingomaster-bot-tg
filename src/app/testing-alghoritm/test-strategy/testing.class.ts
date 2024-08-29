@@ -1,16 +1,16 @@
-import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
 import { Languages } from '../../../core/language-interface/enums';
-import { Constructor } from '../../../core/types';
-import { Service } from '../../services/database';
+import { ServiceLearning } from '../../services/database/service-learning.abstract-class';
 import { User } from '../../services/database/user/user.entity';
 import { ChangeProgress } from './change-progress.abstract-class';
 import { GetNextWord } from './get-word.abstract-class';
 import { FailedQueueInfo } from './types';
+import { ServiceWithJson } from '../../services/database/service-with-json.type';
 
-export class Testing<T, TT extends { user: User; language: Languages } & ObjectLiteral> {
+export class Testing<T, TT extends ServiceWithJson> {
     protected user: User;
     readonly dataTest: T[];
-    protected service: Service<TT>;
+    protected service: ServiceLearning<TT, any, any>;
     protected language: Languages;
     protected paramDataTest: string;
 
@@ -26,7 +26,7 @@ export class Testing<T, TT extends { user: User; language: Languages } & ObjectL
         user: User,
         language: Languages,
         dataTest: T[],
-        service: Service<TT>,
+        service: ServiceLearning<TT, any, any>,
         paramDataTest: string,
         changeProgressClass: ChangeProgress<T>,
         getWordClass: GetNextWord<T>

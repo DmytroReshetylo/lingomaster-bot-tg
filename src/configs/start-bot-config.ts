@@ -7,6 +7,7 @@ import { VocabularyAddFlashcardsScene, VocabularyChangeFlashcardScene, Vocabular
 import { VocabularyCommand } from '../app/commands/vocabulary/vocabulary.command';
 import { userService } from '../app/services/database/user/user.service';
 import { vocabularyService } from '../app/services/database/vocabulary/vocabulary.service';
+import { UpdateDataSessionSubscribers } from '../app/shared/session/update-data-session.util';
 import { getNavigationButtons } from '../app/shared/utils';
 import { TelegramContext } from '../core/ctx.class';
 import { Languages } from '../core/language-interface/enums';
@@ -38,8 +39,7 @@ export const startBotConfig = {
         if(!ctx.session['user']) {
             ctx.session['idTelegram'] = String(ctx.message.from.id);
 
-            ctx.session['user'] = await userService.getEntity({idTelegram: ctx.session['idTelegram']});
-            ctx.session['vocabularies'] = await vocabularyService.getEntities({user: ctx.session['user']}) || [];
+            await UpdateDataSessionSubscribers(ctx);
         }
     },
 
