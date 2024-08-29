@@ -10,6 +10,7 @@ import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/acti
 import { AvailableInterfaceLanguages, LanguageJsonFormat } from '../../../shared/constants';
 import { AvailableInterfaceLanguagesJsonFormat } from '../../../shared/constants';
 import { TransformLanguage } from '../../../shared/modify-params';
+import { ApplyServicePartAction } from '../../../shared/part-actions/apply-service.part-action';
 
 @CreateScene('sign-up-scene')
 export class SignUpScene implements Scene {
@@ -40,7 +41,7 @@ export class SignUpScene implements Scene {
         @TransformLanguage('nativeLanguage') nativeLanguage: Languages,
         @TransformLanguage('interfaceLanguage') interfaceLanguage: InterfaceLanguages
     ) {
-        await userService.insert({
+        await ApplyServicePartAction(ctx, userService, 'add', {}, {
             idTelegram: ctx.session['idTelegram'],
             name: ctx.scene.states.name,
             interfaceLanguage: interfaceLanguage,

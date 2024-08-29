@@ -10,7 +10,7 @@ import { ServiceWithJson } from '../../services/database/service-with-json.type'
 export class Testing<T, TT extends ServiceWithJson> {
     protected user: User;
     readonly dataTest: T[];
-    protected service: ServiceLearning<TT, T, any, any>;
+    protected service: ServiceLearning<TT, any, any>;
     protected language: Languages;
     protected paramDataTest: string;
 
@@ -26,7 +26,7 @@ export class Testing<T, TT extends ServiceWithJson> {
         user: User,
         language: Languages,
         dataTest: T[],
-        service: ServiceLearning<TT, T, any, any>,
+        service: ServiceLearning<TT, any, any>,
         paramDataTest: string,
         changeProgressClass: ChangeProgress<T>,
         getWordClass: GetNextWord<T>

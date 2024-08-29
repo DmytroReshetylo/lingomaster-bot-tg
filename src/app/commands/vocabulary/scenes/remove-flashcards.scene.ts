@@ -12,7 +12,7 @@ import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetVocabularyManaging } from '../../../shared/modify-params';
 import { TransformLanguage } from '../../../shared/modify-params';
-import { getVocabulary } from './shared/utils';
+import { ApplyServiceLearningPartAction } from '../../../shared/part-actions/apply-service-learning.part-action';
 
 @CreateScene('vocabulary-delete-flashcards-scene')
 export class VocabularyRemoveFlashcardsScene implements Scene {
@@ -40,16 +40,7 @@ export class VocabularyRemoveFlashcardsScene implements Scene {
     async afterInputWords(ctx: TelegramContext, @TransformLanguage('language') language: Languages) {
         const words: string[] = ctx.scene.states.text.split('\n');
 
-        const vocabulary = getVocabulary(ctx.session['vocabularies'], language);
-
-        const newFlashcards = vocabulary.flashcards.filter(flashcard => !words.includes(flashcard.word));
-
-        await vocabularyService.update(
-            {user: ctx.session['user'], language},
-            {flashcards: newFlashcards}
-        );
-
-        vocabulary.flashcards = newFlashcards;
+        await ApplyServiceLearningPartAction(ctx, ctx.session['user'], language, vocabularyService, 'remove', words);
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.DEL_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage);
     }

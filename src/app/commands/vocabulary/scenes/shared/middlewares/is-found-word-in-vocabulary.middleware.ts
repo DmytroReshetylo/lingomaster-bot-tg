@@ -6,7 +6,7 @@ import { getVocabulary } from '../utils';
 export function IsFoundWordInVocabularyMiddleware(ctx: TelegramContext) {
     ctx.scene.states.vocabulary = getVocabulary(ctx.session['vocabularies'], ctx.scene.states.language);
 
-    ctx.scene.states.id = (ctx.scene.states.vocabulary as Vocabulary)
+    ctx.scene.states.id = (ctx.scene.states['vocabularies'] as Vocabulary)
     .flashcards.findIndex(flashcard => similarityDetectorService.detect(flashcard.word, ctx.scene.states.word))
 
     if(ctx.scene.states.id === -1) {

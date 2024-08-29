@@ -1,13 +1,11 @@
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { TelegramContext } from '../../../core/ctx.class';
-import { Languages } from '../../../core/language-interface/enums';
 import { Service } from '../../services/database';
-import { photoManagerService } from '../../services/photo-manager/photo-manager.service';
-import { UpdateSessionSubscriber } from '../session/update-data-service-session.util';
+import { UpdateSessionSubscribers } from '../session/update-data-service-session.util';
 import { SessionSubscribers } from '../session/update-session-subscribers';
 
-export async function ApplyServiceLearningPartAction<T, TT extends Service<T>>(
+export async function ApplyServicePartAction<T extends ObjectLiteral, TT extends Service<T>>(
     ctx: TelegramContext,
     service: TT,
     action: 'update' | 'add' | 'remove',
@@ -35,10 +33,10 @@ export async function ApplyServiceLearningPartAction<T, TT extends Service<T>>(
 
     conditions = {...conditions, ...options};
 
-    const entity = await service.getEntity(conditions);
+    const data = await service.getSessionData(conditions);
 
-    if(entity && SessionSubscribers.has(service)) {
-        UpdateSessionSubscriber(ctx, service, entity);
+    if(data && SessionSubscribers.has(service)) {
+        UpdateSessionSubscribers(ctx, service, data);
     }
 
 }

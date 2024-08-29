@@ -2,11 +2,11 @@ import { FindOptionsWhere } from 'typeorm';
 import { Languages } from '../../../core/language-interface/enums';
 import { Constructor } from '../../../core/types';
 import { similarityDetectorService } from '../similarity-detector';
-import { JSONProperties, ServiceWithJson } from './service-with-json.type';
+import { ServiceWithJson } from './service-with-json.type';
 import { Service } from './service.abstract-class';
 import { User } from './user/user.entity';
 
-export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NAMEOBJECT][number] & JSONProperties, NAMEOBJECT extends keyof T, KEY extends keyof TT> extends Service<T> {
+export abstract class ServiceLearning<T extends ServiceWithJson, NAMEOBJECT extends keyof T, KEY extends keyof T[NAMEOBJECT][number]> extends Service<T> {
     private nameObject: NAMEOBJECT;
     private nameDifferenceProperty: KEY;
 
@@ -17,7 +17,7 @@ export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NA
         this.nameDifferenceProperty = nameDifferenceProperty;
     }
 
-    async updateRecord(user: User, language: Languages, record: TT) {
+    async updateRecord(user: User, language: Languages, record: T[NAMEOBJECT]) {
         const entity = await this.getEntity({user, language} as FindOptionsWhere<T>);
 
         if(!entity) {
@@ -31,7 +31,7 @@ export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NA
         return entity;
     }
 
-    async updateFullRecords(user: User, language: Languages, records: TT[]) {
+    async updateFullRecords(user: User, language: Languages, records: T[NAMEOBJECT][]) {
         const entity = await this.getEntity({user, language} as FindOptionsWhere<T>);
 
         if(!entity) {
@@ -43,7 +43,7 @@ export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NA
         return await this.update({user, language} as FindOptionsWhere<T>, entity);
     }
 
-    async addRecord(user: User, language: Languages, records: TT[]) {
+    async addRecord(user: User, language: Languages, records: T[NAMEOBJECT][]) {
         const entity = await this.getEntity({user, language} as FindOptionsWhere<T>);
 
         if(!entity) {
@@ -51,7 +51,7 @@ export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NA
         }
 
         records = records.filter(record =>
-            !(entity[this.nameObject] as TT[]).find(record2 => similarityDetectorService.detect(record2[this.nameDifferenceProperty], record[this.nameDifferenceProperty])
+            !(entity[this.nameObject] as T[NAMEOBJECT][]).find(record2 => similarityDetectorService.detect(record2[this.nameDifferenceProperty], record[this.nameDifferenceProperty])
         ));
 
         entity[this.nameObject] = [...entity[this.nameObject], ...records] as T[NAMEOBJECT];
@@ -68,7 +68,7 @@ export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NA
             return false;
         }
 
-        entity[this.nameObject] = (entity[this.nameObject] as TT[]).filter(record => !words.find(word => similarityDetectorService.detect(word, record[this.nameDifferenceProperty]))) as T[NAMEOBJECT];
+        entity[this.nameObject] = (entity[this.nameObject] as T[NAMEOBJECT][]).filter(record => !words.find(word => similarityDetectorService.detect(word, record[this.nameDifferenceProperty]))) as T[NAMEOBJECT];
 
         await this.update({user, language} as FindOptionsWhere<T>, entity);
 
@@ -76,10 +76,10 @@ export abstract class ServiceLearning<T extends ServiceWithJson, TT extends T[NA
     }
 
     getJSON(entity: T) {
-        return entity[this.nameObject] as TT[];
+        return entity[this.nameObject] as T[NAMEOBJECT][];
     }
 
-    getDataDifferenceValue(data: TT) {
+    getDataDifferenceValue(data: T[NAMEOBJECT]) {
         return data[this.nameDifferenceProperty] as string;
     }
 }
