@@ -1,13 +1,12 @@
-import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
 import { Languages } from '../../../core/language-interface/enums';
 import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
 import { User } from '../../services/database/entities/user/user.entity';
-import { EntityLearningType } from '../../services/database/types/entity-learning.type';
+import { EntityLearningType, JSONLearning } from '../../services/database/types/entity-learning.type';
 import { ChangeProgress } from './change-progress.abstract-class';
 import { GetNextWord } from './get-word.abstract-class';
 import { FailedQueueInfo } from './types';
 
-export class Testing<T extends ObjectLiteral & {photoUrl: string | null}> {
+export class Testing<T extends JSONLearning> {
     protected user: User;
     readonly dataTest: T[];
     protected service: ServiceLearning<T, EntityLearningType<T>, any>;

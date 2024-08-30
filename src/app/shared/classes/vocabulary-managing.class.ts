@@ -1,5 +1,6 @@
 import { TelegramContext } from '../../../core/ctx.class';
 import { Languages } from '../../../core/language-interface/enums';
+import { EntityNames } from '../../services/database/entities/entity-names';
 import { Vocabulary } from '../../services/database/entities/vocabulary/vocabulary.entity';
 import { LanguagesList } from '../constants';
 
@@ -13,13 +14,13 @@ export class VocabularyManaging {
     getSelectedLanguages() {
 
         return [
-            ...this.#ctx.session['vocabularies'].map((vocabulary: Vocabulary) => vocabulary.language),
-            this.#ctx.session['user'].nativeLanguage
+            ...this.#ctx.session[EntityNames.Vocabulary].map((vocabulary: Vocabulary) => vocabulary.language),
+            this.#ctx.session[EntityNames.User].nativeLanguage
         ] as Languages[];
     }
 
     getSelectedLanguagesWithoutNative() {
-        return this.getSelectedLanguages().filter(language => language !== this.#ctx.session['user'].nativeLanguage) as Languages[];
+        return this.getSelectedLanguages().filter(language => language !== this.#ctx.session[EntityNames.User].nativeLanguage) as Languages[];
     }
 
     getNotSelectedLanguages() {
@@ -29,7 +30,7 @@ export class VocabularyManaging {
     }
 
     getVocabulary(language: Languages) {
-        return this.#ctx.session['vocabularies'].find((voc: Vocabulary) => voc.language === language) as Vocabulary;
+        return this.#ctx.session[EntityNames.Vocabulary].find((voc: Vocabulary) => voc.language === language) as Vocabulary;
     }
 
 

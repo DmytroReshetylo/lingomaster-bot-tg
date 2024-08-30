@@ -3,6 +3,7 @@ import { translate } from '../../../core/language-interface/translate.alghoritm'
 import { createBigButtonKeyboard } from '../../../core/telegram-utils';
 import { MessageInfo } from '../../../core/types';
 import { AvailableTestModel } from '../../commands/vocabulary/scenes/study-flashcards-strategy/enums';
+import { EntityNames } from '../../services/database/entities/entity-names';
 import { ShowTestDataFormat } from '../word-formats/types';
 
 export class QuestionProvider {
@@ -51,7 +52,7 @@ export class QuestionProvider {
     }
 
     protected getQuestion(data: ShowTestDataFormat) {
-        return `${translate('STUDYING.ASK', this.ctx.session['user'].interfaceLanguage)} ${data.frontSide}`;
+        return `${translate('STUDYING.ASK', this.ctx.session[EntityNames.User].interfaceLanguage)} ${data.frontSide}`;
     }
 
     async sendQuestion(data: ShowTestDataFormat) {

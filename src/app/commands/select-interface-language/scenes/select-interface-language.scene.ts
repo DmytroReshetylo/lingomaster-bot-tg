@@ -5,6 +5,7 @@ import { CreateSelectBigButtonComposer } from '../../../../core/decorators/scene
 import { Scene } from '../../../../core/decorators/scene/types';
 import { InterfaceLanguages } from '../../../../core/language-interface/enums';
 import { Service } from '../../../services/database/abstract-services/service.abstract-class';
+import { EntityNames } from '../../../services/database/entities/entity-names';
 import { User } from '../../../services/database/entities/user/user.entity';
 import { userService } from '../../../services/database/entities/user/user.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
@@ -20,7 +21,7 @@ export class SelectInterfaceLanguageScene implements Scene {
         CreateReplyAction(
             ctx,
             'SELECT_INTERFACE_LANGUAGE.ASK',
-            ctx.session['user'].interfaceLanguage,
+            ctx.session[EntityNames.User].interfaceLanguage,
             'bigButton',
             [...AvailableInterfaceLanguagesJsonFormat, 'BUTTONS.CANCEL']
         );

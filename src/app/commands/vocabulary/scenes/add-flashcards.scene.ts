@@ -5,10 +5,10 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
+import { EntityNames } from '../../../services/database/entities/entity-names';
 import { Flashcard } from '../../../services/database/entities/vocabulary/types';
 import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
-import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
-import { SelectLanguageAction } from '../../../shared/actions';
+import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { VocabularyManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
@@ -32,7 +32,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
         CreateReplyAction(
             ctx,
             'VOCABULARY.ADD_FLASHCARDS.ASK_INPUT',
-            ctx.session['user'].interfaceLanguage,
+            ctx.session[EntityNames.User].interfaceLanguage,
             'button',
             ['BUTTONS.CANCEL']
         );
@@ -61,8 +61,8 @@ export class VocabularyAddFlashcardsScene implements Scene {
             return addFlashcardDto.toFlashcardFormat();
         }));
 
-        await ApplyServiceLearningPartAction(ctx, ctx.session['user'], language, vocabularyService, 'add', flashcards);
+        await ApplyServiceLearningPartAction(ctx, ctx.session[EntityNames.User], language, vocabularyService, 'add', flashcards);
 
-        CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage);
+        CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }
 }

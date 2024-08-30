@@ -1,8 +1,9 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { InterfaceLanguages, Languages } from '../../../../../core/language-interface/enums';
+import { EntityNames } from '../entity-names';
 import { Vocabulary } from '../vocabulary/vocabulary.entity';
 
-@Entity('users')
+@Entity(EntityNames.User)
 export class User {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -20,5 +21,5 @@ export class User {
     name!: string;
 
     @OneToMany(() => Vocabulary, vocabulary => vocabulary.user)
-    vocabulary!: Vocabulary[];
+    vocabularies!: Vocabulary[];
 }

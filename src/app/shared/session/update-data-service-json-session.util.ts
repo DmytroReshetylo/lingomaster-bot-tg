@@ -1,11 +1,11 @@
 import { TelegramContext } from '../../../core/ctx.class';
 import { Languages } from '../../../core/language-interface/enums';
 import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
-import { EntityLearningType } from '../../services/database/types/entity-learning.type';
+import { EntityLearningType, JSONLearning } from '../../services/database/types/entity-learning.type';
 import { SessionSubscribers } from './update-session-subscribers';
 
 export function UpdateSessionJSONSubscriber<
-    T extends {photoUrl: string | null},
+    T extends JSONLearning,
     TT extends EntityLearningType<T>
 >(
     ctx: TelegramContext, 

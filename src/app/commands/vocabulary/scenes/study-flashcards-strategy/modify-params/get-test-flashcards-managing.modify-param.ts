@@ -1,6 +1,6 @@
 import { createModifyParam } from '../../../../../../core/telegram-utils';
+import { EntityNames } from '../../../../../services/database/entities/entity-names';
 import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
-import { Vocabulary } from '../../../../../services/database/entities/vocabulary/vocabulary.entity';
 import { vocabularyService } from '../../../../../services/database/entities/vocabulary/vocabulary.service';
 import { QueueOnDelete } from '../../../../../shared/classes';
 import { QuestionProvider } from '../../../../../testing-alghoritm/test-handling/question-provider.abstract-class';
@@ -16,7 +16,7 @@ export const GetTestFlashcardsManaging = createModifyParam(ctx => {
             queueOnDelete: new QueueOnDelete(ctx),
 
             strategy: new Testing<Flashcard>(
-                ctx.session['user'],
+                ctx.session[EntityNames.User],
                 ctx.scene.states.language,
                 ctx.scene.states.vocabularyManaging.getVocabulary(ctx.scene.states.language).json,
                 vocabularyService,

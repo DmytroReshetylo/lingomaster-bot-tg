@@ -1,17 +1,16 @@
-import { EntityLearningType } from '../../services/database/types/entity-learning.type';
-import { DifferentKeys, RandomSide } from '../../testing-alghoritm/word-formats/utils';
 import { TelegramContext } from '../../../core/ctx.class';
-import { TestManaging } from '../../testing-alghoritm/types';
 import { AvailableTestModel } from '../../commands/vocabulary/scenes/study-flashcards-strategy/enums';
+import { JSONLearning } from '../../services/database/types/entity-learning.type';
+import { TestManaging } from '../../testing-alghoritm/types';
+import { DifferentKeys, RandomSide } from '../../testing-alghoritm/word-formats/utils';
 
 export async function TestSendQuestionPartAction<
-    T extends {photoUrl: string | null},
-    TT extends EntityLearningType<T>,
+    T extends JSONLearning,
     K1 extends keyof T & string,
     K2 extends DifferentKeys<T, K1> & string
 >(
     ctx: TelegramContext,
-    testManaging: TestManaging<T, TT>,
+    testManaging: TestManaging<T>,
     model: AvailableTestModel,
     paramSides: [K1, K2]
 ) {

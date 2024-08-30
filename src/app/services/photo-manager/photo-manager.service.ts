@@ -1,9 +1,8 @@
-import { ObjectLiteral } from 'typeorm';
 import { photoGeneratorService } from '../ai';
 import { ServiceLearning } from '../database/abstract-services/service-learning.abstract-class';
 import { User } from '../database/entities/user/user.entity';
 import { userService } from '../database/entities/user/user.service';
-import { EntityLearningType } from '../database/types/entity-learning.type';
+import { EntityLearningType, JSONLearning } from '../database/types/entity-learning.type';
 import { imgurService } from '../imgur';
 import { PhotoManagerSubscribers } from './photo-manager.subscribers';
 
@@ -12,7 +11,7 @@ class PhotoManagerService {
     #generateAllUsersActive: boolean = false;
 
     async generatePhotoDescriptorsForUser<
-        T extends ObjectLiteral & { photoUrl: string | null },
+        T extends JSONLearning,
         TT extends EntityLearningType<T>
     >(
         user: User,

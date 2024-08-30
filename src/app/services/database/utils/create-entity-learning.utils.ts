@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Languages } from '../../../../core/language-interface/enums';
 import { Constructor } from '../../../../core/types';
 import { User } from '../entities/user/user.entity';
-import { EntityLearningType } from '../types/entity-learning.type';
+import { EntityLearningType, JSONLearning } from '../types/entity-learning.type';
 
-export function CreateEntityLearning<T extends {photoUrl: string | null}>(entityName: keyof User) {
+export function CreateEntityLearning<T extends JSONLearning>(entityName: keyof User) {
     class entity {
         @PrimaryGeneratedColumn()
         id!: number;

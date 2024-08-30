@@ -1,13 +1,12 @@
-import { FindOptionsWhere, ObjectLiteral } from 'typeorm';
 import { Languages } from '../../../../core/language-interface/enums';
-import { similarityDetectorService } from '../../similarity-detector';
 import { Constructor } from '../../../../core/types';
+import { similarityDetectorService } from '../../similarity-detector';
 import { User } from '../entities/user/user.entity';
-import { EntityLearningType } from '../types/entity-learning.type';
+import { EntityLearningType, JSONLearning } from '../types/entity-learning.type';
 import { Service } from './service.abstract-class';
 
 export abstract class ServiceLearning<
-    T extends ObjectLiteral & { photoUrl: string | null },
+    T extends JSONLearning,
     TT extends EntityLearningType<T>,
     KEY extends keyof T
 > extends Service<TT> {

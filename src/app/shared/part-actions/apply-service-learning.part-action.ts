@@ -2,7 +2,7 @@ import { TelegramContext } from '../../../core/ctx.class';
 import { Languages } from '../../../core/language-interface/enums';
 import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
 import { User } from '../../services/database/entities/user/user.entity';
-import { EntityLearningType } from '../../services/database/types/entity-learning.type';
+import { EntityLearningType, JSONLearning } from '../../services/database/types/entity-learning.type';
 import { photoManagerService } from '../../services/photo-manager/photo-manager.service';
 import { PhotoManagerSubscribers } from '../../services/photo-manager/photo-manager.subscribers';
 import { UpdateSessionJSONSubscriber } from '../session/update-data-service-json-session.util';
@@ -15,12 +15,11 @@ export type Actions<T> = {
 }
 
 export async function ApplyServiceLearningPartAction<
-    T extends {photoUrl: string | null},
-    TT extends EntityLearningType<T>,
+    T extends JSONLearning,
     K extends keyof Actions<T>,
     ENTITY extends Actions<T>[K]
->(ctx: TelegramContext, user: User, language: Languages, service: ServiceLearning<T, TT, any>, action: K, data: ENTITY) {
-    let entity: TT | false = false;
+>(ctx: TelegramContext, user: User, language: Languages, service: ServiceLearning<T, EntityLearningType<T>, any>, action: K, data: ENTITY) {
+    let entity: EntityLearningType<T> | false = false;
 
     switch (action) {
         case 'update': {

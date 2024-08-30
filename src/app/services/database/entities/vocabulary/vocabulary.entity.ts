@@ -1,9 +1,10 @@
 import { BeforeInsert, BeforeUpdate, Entity } from 'typeorm';
 import { CreateEntityLearning } from '../../utils/create-entity-learning.utils';
+import { EntityNames } from '../entity-names';
 import { Flashcard } from './types';
 
-@Entity('vocabulary')
-export class Vocabulary extends CreateEntityLearning<Flashcard>('vocabulary') {
+@Entity(EntityNames.Vocabulary)
+export class Vocabulary extends CreateEntityLearning<Flashcard>(EntityNames.Vocabulary) {
     @BeforeInsert()
     @BeforeUpdate()
     regulateProgress() {

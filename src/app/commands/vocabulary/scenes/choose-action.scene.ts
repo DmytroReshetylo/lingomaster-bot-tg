@@ -1,7 +1,8 @@
 import { CreateScene } from '../../../../core';
 import { TelegramContext } from '../../../../core/ctx.class';
-import { Scene } from '../../../../core/decorators/scene/types';
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
+import { Scene } from '../../../../core/decorators/scene/types';
+import { EntityNames } from '../../../services/database/entities/entity-names';
 import { CreateReplyAction } from '../../../shared/actions';
 import { CreateChooseSceneAction } from '../../../shared/actions/create-choose-scene.action';
 
@@ -27,7 +28,7 @@ const actions = [
 @CreateScene('vocabulary-choose-action-scene')
 export class VocabularyChooseActionScene implements Scene {
     start(ctx: TelegramContext) {
-        CreateReplyAction(ctx, 'INFO.SELECT_ACTION', ctx.session['user'].interfaceLanguage, 'button', actionButtons);
+        CreateReplyAction(ctx, 'INFO.SELECT_ACTION', ctx.session[EntityNames.User].interfaceLanguage, 'button', actionButtons);
     }
 
     @CreateSelectButtonComposer('action', actionButtons, true)
