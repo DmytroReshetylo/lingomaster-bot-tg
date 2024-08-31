@@ -3,14 +3,12 @@ import { TelegramContext } from '../../../../core/ctx.class';
 import { ModifyParams } from '../../../../core/decorators/modify-params/modify-params.decorator';
 import { CreateSelectBigButtonComposer, CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
-import { createBigButtonKeyboard } from '../../../../core/telegram-utils';
 import { InterfaceLanguages, Languages } from '../../../../core/language-interface/enums';
+import { createBigButtonKeyboard } from '../../../../core/telegram-utils';
 import { userService } from '../../../services/database/entities/user/user.service';
 import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
-import { AvailableInterfaceLanguages, LanguageJsonFormat } from '../../../shared/constants';
-import { AvailableInterfaceLanguagesJsonFormat } from '../../../shared/constants';
+import { AvailableInterfaceLanguages, AvailableInterfaceLanguagesJsonFormat, LanguageJsonFormat } from '../../../shared/constants';
 import { TransformLanguage } from '../../../shared/modify-params';
-import { ApplyServicePartAction } from '../../../shared/part-actions/apply-service.part-action';
 
 @CreateScene('sign-up-scene')
 export class SignUpScene implements Scene {

@@ -1,5 +1,5 @@
 import { edenPhotoGeneratorService, hercaiPhotoGeneratorService, stabilityPhotoGeneratorService } from './photo-generator-list';
-import { PhotoGenerator } from './photo-generator-list/types';
+import { PhotoGenerator } from './types';
 
 class PhotoGeneratorService implements PhotoGenerator {
     #listPhotoGenerators: PhotoGenerator[] = [

@@ -1,4 +1,5 @@
+import { TelegramContext } from '../../../ctx.class';
 
 export type Command = {
-    command: (ctx: any) => void
+    command: (ctx: TelegramContext) => void
 }

@@ -1,6 +1,6 @@
 import { Hercai } from 'hercai';
 import { PhotoGeneratorConfig } from '../configs';
-import { PhotoGenerator } from './types';
+import { PhotoGenerator } from '../types';
 
 class HercaiPhotoGeneratorService implements PhotoGenerator {
     #herc = new Hercai();
