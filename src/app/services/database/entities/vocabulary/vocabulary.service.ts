@@ -1,5 +1,5 @@
 import { FindOptionsWhere } from 'typeorm';
-import { SessionSubscribers } from '../../../../shared/session/update-session-subscribers';
+import { StudyLanguageServicesSubscribers } from '../../../../shared/session/study-language-services-subscribers';
 import { PhotoManagerSubscribers } from '../../../photo-manager/photo-manager.subscribers';
 import { ServiceLearning } from '../../abstract-services/service-learning.abstract-class';
 import { EntityNames } from '../entity-names';
@@ -10,12 +10,12 @@ export class VocabularyService extends ServiceLearning<Flashcard, Vocabulary, 'w
     constructor() {
         super(Vocabulary,  'word');
 
-        SessionSubscribers.set(this, EntityNames.Vocabulary);
+        StudyLanguageServicesSubscribers.set(this, EntityNames.Vocabulary);
         PhotoManagerSubscribers.push(this);
     }
 
     async getSessionData(conditions: FindOptionsWhere<Vocabulary>) {
-        return this.getEntities(conditions);
+        return this.getEntity(conditions);
     }
 }
 

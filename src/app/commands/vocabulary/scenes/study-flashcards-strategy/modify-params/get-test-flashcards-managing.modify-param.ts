@@ -18,7 +18,7 @@ export const GetTestFlashcardsManaging = createModifyParam(ctx => {
             strategy: new Testing<Flashcard>(
                 ctx.session[EntityNames.User],
                 ctx.scene.states.language,
-                ctx.scene.states.vocabularyManaging.getVocabulary(ctx.scene.states.language).json,
+                ctx.scene.states.StudyLanguageManaging.getVocabulary(ctx.scene.states.language).json,
                 vocabularyService,
                 'flashcards',
                 new TestFlashcardChangeProgress(),

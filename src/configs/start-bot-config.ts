@@ -1,9 +1,11 @@
+import { AddNewLearningLanguageCommand } from '../app/commands/add-new-learning-language/add-new-learning-language.command';
+import { AddNewLearningLanguageScene } from '../app/commands/add-new-learning-language/scenes/add-new-learning-language.scene';
 import { HelpCommand } from '../app/commands/help/help.command';
 import { SelectInterfaceLanguageScene } from '../app/commands/select-interface-language/scenes/select-interface-language.scene';
 import { SelectInterfaceLanguageCommand } from '../app/commands/select-interface-language/select-interface-language.command';
 import { SignUpScene } from '../app/commands/start/scenes/sign-up.scene';
 import { StartCommand } from '../app/commands/start/start.command';
-import { VocabularyAddFlashcardsScene, VocabularyChangeFlashcardScene, VocabularyChooseActionScene, VocabularyRemoveFlashcardsScene, VocabularySeeFlashcardsScene, VocabularyStudyFlashcardsScene, VocabularyStudyNewLanguageScene } from '../app/commands/vocabulary/scenes';
+import { VocabularyAddFlashcardsScene, VocabularyChangeFlashcardScene, VocabularyChooseActionScene, VocabularyRemoveFlashcardsScene, VocabularySeeFlashcardsScene, VocabularyStudyFlashcardsScene } from '../app/commands/vocabulary/scenes';
 import { VocabularyCommand } from '../app/commands/vocabulary/vocabulary.command';
 import { EntityNames } from '../app/services/database/entities/entity-names';
 import { UpdateDataSessionSubscribers } from '../app/shared/session/update-data-session.util';
@@ -18,6 +20,7 @@ export const startBotConfig = {
     commands: [
         StartCommand,
         HelpCommand,
+        AddNewLearningLanguageCommand,
         VocabularyCommand,
         SelectInterfaceLanguageCommand
     ],
@@ -25,8 +28,8 @@ export const startBotConfig = {
     scenes: [
         SignUpScene,
         SelectInterfaceLanguageScene,
+        AddNewLearningLanguageScene,
         VocabularyChooseActionScene,
-        VocabularyStudyNewLanguageScene,
         VocabularyAddFlashcardsScene,
         VocabularyRemoveFlashcardsScene,
         VocabularyChangeFlashcardScene,

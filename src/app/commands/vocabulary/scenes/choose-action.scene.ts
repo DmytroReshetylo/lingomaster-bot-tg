@@ -8,7 +8,6 @@ import { CreateChooseSceneAction } from '../../../shared/actions/create-choose-s
 
 const actionButtons = [
     'VOCABULARY.SEE_FLASHCARDS.TITLE',
-    'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE',
     'VOCABULARY.STUDY_FLASHCARDS.TITLE',
     'VOCABULARY.ADD_FLASHCARDS.TITLE',
     'VOCABULARY.CHANGE_FLASHCARD.TITLE',
@@ -18,7 +17,6 @@ const actionButtons = [
 
 const actions = [
     {value: 'VOCABULARY.SEE_FLASHCARDS.TITLE', scene: 'vocabulary-see-flashcards-scene'},
-    {value: 'VOCABULARY.STUDY_NEW_LANGUAGE.TITLE', scene: 'vocabulary-study-new-language-scene'},
     {value: 'VOCABULARY.STUDY_FLASHCARDS.TITLE', scene: 'vocabulary-study-language-scene'},
     {value: 'VOCABULARY.ADD_FLASHCARDS.TITLE', scene: 'vocabulary-add-flashcards-scene'},
     {value: 'VOCABULARY.CHANGE_FLASHCARD.TITLE', scene: 'vocabulary-change-flashcard-scene'},

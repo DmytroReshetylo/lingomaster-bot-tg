@@ -8,10 +8,10 @@ import { Languages } from '../../../../core/language-interface/enums';
 import { EntityNames } from '../../../services/database/entities/entity-names';
 import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetFromStates, GetVocabularyManaging, TransformLanguage } from '../../../shared/modify-params';
+import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { AddToDTOPartAction, ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { IsDifferenceBetweenOldNewVersionsFlashcardPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
 import { ChangeFlashcardDto } from './shared/dto';
@@ -20,8 +20,8 @@ import { IsFoundWordInVocabularyMiddleware } from './shared/middlewares';
 @CreateScene('vocabulary-change-flashcard-scene')
 export class VocabularyChangeFlashcardScene implements Scene {
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
@@ -77,10 +77,15 @@ export class VocabularyChangeFlashcardScene implements Scene {
     @CreateTextComposer('newTranslate', false, true)
     @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
     @ModifyParams()
-    async afterInputNewTranslate(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto, @TransformLanguage('language') language: Languages) {
+    async afterInputNewTranslate(
+        ctx: TelegramContext,
+        @GetFromStates('newFlashcard') dto: ChangeFlashcardDto,
+        @TransformLanguage('language') language: Languages,
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
+    ) {
         await AddToDTOPartAction(dto, 'translate', ctx.scene.states.newTranslate);
 
-        await ApplyServiceLearningPartAction(ctx, ctx.session[EntityNames.User], language, vocabularyService, 'update', dto.toFlashcardFormat());
+        await ApplyServiceLearningPartAction(ctx, studyLanguageManaging, language, vocabularyService, 'update', dto.toFlashcardFormat());
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

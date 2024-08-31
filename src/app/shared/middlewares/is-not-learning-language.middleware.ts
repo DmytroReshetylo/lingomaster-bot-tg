@@ -1,11 +1,11 @@
 import { TelegramContext } from '../../../core/ctx.class';
 import { EntityNames } from '../../services/database/entities/entity-names';
-import { Vocabulary } from '../../services/database/entities/vocabulary/vocabulary.entity';
+import { StudyLanguages } from '../../services/database/entities/study-languages/study-language.entity';
 import { transformLanguageToJsonFormat } from '../utils';
 
 export function IsNotLearningLanguageMiddleware(ctx: TelegramContext) {
 
-    const findedLanguage = (ctx.session[EntityNames.Vocabulary] as Vocabulary[])
+    const findedLanguage = (ctx.session[EntityNames.StudyLanguages] as StudyLanguages[])
     .find(voc => transformLanguageToJsonFormat([voc.language])[0] === ctx.scene.states.language);
 
     if(findedLanguage) {

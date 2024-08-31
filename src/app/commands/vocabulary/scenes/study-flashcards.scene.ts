@@ -6,10 +6,10 @@ import { Scene } from '../../../../core/decorators/scene/types';
 import { EntityNames } from '../../../services/database/entities/entity-names';
 import { Flashcard } from '../../../services/database/entities/vocabulary/types';
 import { CreateReplyAction, CreateStartTestAction, SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging } from '../../../shared/modify-params';
+import { GetStudyLanguageManaging } from '../../../shared/modify-params';
 import { TestAnswerHandlingPartAction, TestSendQuestionPartAction } from '../../../shared/part-actions';
 import { TestManaging } from '../../../testing-alghoritm/types';
 import { MinTenFlashcardsMiddleware } from './shared/middlewares';
@@ -20,8 +20,8 @@ import { GetTestFlashcardsManaging } from './study-flashcards-strategy/modify-pa
 export class VocabularyStudyFlashcardsScene implements Scene {
 
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)

@@ -1,10 +1,10 @@
 import { TelegramContext } from '../../../core/ctx.class';
 import { Languages } from '../../../core/language-interface/enums';
 import { EntityNames } from '../../services/database/entities/entity-names';
-import { Vocabulary } from '../../services/database/entities/vocabulary/vocabulary.entity';
+import { StudyLanguages } from '../../services/database/entities/study-languages/study-language.entity';
 import { LanguagesList } from '../constants';
 
-export class VocabularyManaging {
+export class StudyLanguageManaging {
     #ctx: TelegramContext;
 
     constructor(ctx: TelegramContext) {
@@ -12,9 +12,8 @@ export class VocabularyManaging {
     }
 
     getSelectedLanguages() {
-
         return [
-            ...this.#ctx.session[EntityNames.Vocabulary].map((vocabulary: Vocabulary) => vocabulary.language),
+            ...this.#ctx.session[EntityNames.StudyLanguages].map((st: StudyLanguages) => st.language),
             this.#ctx.session[EntityNames.User].nativeLanguage
         ] as Languages[];
     }
@@ -29,8 +28,12 @@ export class VocabularyManaging {
         return LanguagesList.filter(language => !selectedLanguages.includes(language as Languages)) as Languages[]
     }
 
+    findSelectedLanguage(language: Languages) {
+        return (this.#ctx.session[EntityNames.StudyLanguages] as StudyLanguages[]).find((st: StudyLanguages) => st.language === language);
+    }
+
     getVocabulary(language: Languages) {
-        return this.#ctx.session[EntityNames.Vocabulary].find((voc: Vocabulary) => voc.language === language) as Vocabulary;
+        return (this.#ctx.session[EntityNames.StudyLanguages].find((st: StudyLanguages) => st.language === language) as StudyLanguages).vocabularies;
     }
 
 

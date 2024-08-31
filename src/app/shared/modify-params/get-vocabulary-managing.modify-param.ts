@@ -1,10 +1,10 @@
 import { createModifyParam } from '../../../core/telegram-utils';
-import { VocabularyManaging } from '../classes';
+import { StudyLanguageManaging } from '../classes';
 
-export const GetVocabularyManaging = createModifyParam(ctx => {
-    if(!ctx.scene.states.vocabularyManaging) {
-        ctx.scene.states.vocabularyManaging = new VocabularyManaging(ctx);
+export const GetStudyLanguageManaging = createModifyParam(ctx => {
+    if(!ctx.scene.states.StudyLanguageManaging) {
+        ctx.scene.states.StudyLanguageManaging = new StudyLanguageManaging(ctx);
     }
 
-    return ctx.scene.states.vocabularyManaging;
+    return ctx.scene.states.StudyLanguageManaging;
 });

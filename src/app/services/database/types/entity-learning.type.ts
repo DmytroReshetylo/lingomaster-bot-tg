@@ -1,12 +1,10 @@
 import { ObjectLiteral } from 'typeorm';
-import { Languages } from '../../../../core/language-interface/enums';
-import { User } from '../entities/user/user.entity';
+import { StudyLanguages } from '../entities/study-languages/study-language.entity';
 
 export type JSONLearning = ObjectLiteral & {photoUrl: string | null};
 
 export type EntityLearningType<T extends JSONLearning> = {
     id: number;
-    user: User;
-    language: Languages;
+    studyLanguages: StudyLanguages;
     json: T[];
 }

@@ -1,6 +1,6 @@
 import { Languages } from '../../../../../../core/language-interface/enums';
-import { Vocabulary } from '../../../../../services/database/entities/vocabulary/vocabulary.entity';
+import { StudyLanguages } from '../../../../../services/database/entities/study-languages/study-language.entity';
 
-export function getVocabulary(vocabularies: Vocabulary[], language: Languages) {
-    return vocabularies.find((voc) => voc.language === language) as Vocabulary;
+export function getVocabulary(studyLanguages: StudyLanguages[], language: Languages) {
+    return studyLanguages.find((lan) => lan.language === language)!.vocabularies;
 }

@@ -32,7 +32,6 @@ export abstract class Service<T extends ObjectLiteral> {
 
     async insert(entity: QueryDeepPartialEntity<T>) {
         const result = await this.repository.insert(entity);
-        console.log(1);
 
         return !!result;
     }

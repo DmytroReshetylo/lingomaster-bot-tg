@@ -4,10 +4,10 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { CreateFinishReplyAction, SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging } from '../../../shared/modify-params';
+import { GetStudyLanguageManaging } from '../../../shared/modify-params';
 import { toStringFlashcards } from '../../../shared/utils';
 import { IsNotEmptyVocabularyMiddleware } from './shared/middlewares';
 
@@ -15,8 +15,8 @@ import { IsNotEmptyVocabularyMiddleware } from './shared/middlewares';
 export class VocabularySeeFlashcardsScene implements Scene {
 
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)

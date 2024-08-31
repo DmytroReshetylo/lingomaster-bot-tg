@@ -1,8 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { InterfaceLanguages, Languages } from '../../../../../core/language-interface/enums';
 import { EntityNames } from '../entity-names';
-import { Story } from '../story/story.entity';
-import { Vocabulary } from '../vocabulary/vocabulary.entity';
+import { StudyLanguages } from '../study-languages/study-language.entity';
 
 @Entity(EntityNames.User)
 export class User {
@@ -21,9 +20,6 @@ export class User {
     @Column('varchar', {length: 50})
     name!: string;
 
-    @OneToMany(() => Vocabulary, vocabulary => vocabulary.user)
-    vocabularies!: Vocabulary[];
-
-    @OneToMany(() => Story, story => story.user)
-    stories!: Story[];
+    @OneToMany(() => StudyLanguages, studyLanguages => studyLanguages.user)
+    studyLanguages!: StudyLanguages[];
 }

@@ -5,6 +5,5 @@ const version = process.argv[2].slice(1);
 
 dotenv.config({ path: `.env.${version}` });
 
-
 launchProject();
 

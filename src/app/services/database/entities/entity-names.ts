@@ -1,5 +1,6 @@
 export enum EntityNames {
     User = 'users',
+    StudyLanguages = 'study-languages',
     Vocabulary = 'vocabularies',
-    Story = 'stories'
+    Text = 'texts'
 }

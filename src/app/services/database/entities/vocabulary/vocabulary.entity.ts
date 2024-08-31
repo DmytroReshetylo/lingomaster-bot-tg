@@ -1,10 +1,15 @@
-import { BeforeInsert, BeforeUpdate, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { CreateEntityLearning } from '../../utils/create-entity-learning.utils';
 import { EntityNames } from '../entity-names';
+import { StudyLanguages } from '../study-languages/study-language.entity';
 import { Flashcard } from './types';
 
 @Entity(EntityNames.Vocabulary)
-export class Vocabulary extends CreateEntityLearning<Flashcard>(EntityNames.Vocabulary) {
+export class Vocabulary extends CreateEntityLearning<Flashcard> {
+    @OneToOne(() => StudyLanguages, studyLanguages => studyLanguages[EntityNames.Vocabulary])
+    @JoinColumn()
+    studyLanguages!: StudyLanguages;
+
     @BeforeInsert()
     @BeforeUpdate()
     regulateProgress() {

@@ -9,10 +9,10 @@ import { EntityNames } from '../../../services/database/entities/entity-names';
 import { Flashcard } from '../../../services/database/entities/vocabulary/types';
 import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging, TransformLanguage } from '../../../shared/modify-params';
+import { GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { InputIncorrectPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
 import { checkValid } from '../../../shared/utils';
@@ -22,8 +22,8 @@ import { AddFlashcardDto } from './shared/dto';
 export class VocabularyAddFlashcardsScene implements Scene {
 
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
@@ -41,7 +41,11 @@ export class VocabularyAddFlashcardsScene implements Scene {
     @CreateTextComposer('text', true)
     @Apply({middlewares: [], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
     @ModifyParams()
-    async afterInputFlashcards(ctx: TelegramContext, @TransformLanguage('language') language: Languages) {
+    async afterInputFlashcards(
+        ctx: TelegramContext,
+        @TransformLanguage('language') language: Languages,
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
+    ) {
         const input: string[] = ctx.scene.states.text.split('\n');
 
         const flashcards: Flashcard[] = await Promise.all(input.map(async (row: string) => {
@@ -61,7 +65,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
             return addFlashcardDto.toFlashcardFormat();
         }));
 
-        await ApplyServiceLearningPartAction(ctx, ctx.session[EntityNames.User], language, vocabularyService, 'add', flashcards);
+        await ApplyServiceLearningPartAction(ctx, studyLanguageManaging, language, vocabularyService, 'add', flashcards);
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

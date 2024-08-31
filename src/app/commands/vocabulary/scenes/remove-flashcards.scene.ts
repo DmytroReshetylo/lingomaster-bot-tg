@@ -7,18 +7,18 @@ import { Languages } from '../../../../core/language-interface/enums';
 import { EntityNames } from '../../../services/database/entities/entity-names';
 import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging, TransformLanguage } from '../../../shared/modify-params';
-import { ApplyServiceLearningPartAction } from '../../../shared/part-actions/apply-service-learning.part-action';
+import { GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
+import { ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 
 @CreateScene('vocabulary-delete-flashcards-scene')
 export class VocabularyRemoveFlashcardsScene implements Scene {
 
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
@@ -36,10 +36,14 @@ export class VocabularyRemoveFlashcardsScene implements Scene {
     @CreateTextComposer('text', true)
     @Apply({middlewares: [], possibleErrors: []})
     @ModifyParams()
-    async afterInputWords(ctx: TelegramContext, @TransformLanguage('language') language: Languages) {
+    async afterInputWords(
+        ctx: TelegramContext,
+        @TransformLanguage('language') language: Languages,
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
+    ) {
         const words: string[] = ctx.scene.states.text.split('\n');
 
-        await ApplyServiceLearningPartAction(ctx, ctx.session[EntityNames.User], language, vocabularyService, 'remove', words);
+        await ApplyServiceLearningPartAction(ctx, studyLanguageManaging, language, vocabularyService, 'remove', words);
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.DEL_FLASHCARDS.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

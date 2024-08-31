@@ -5,9 +5,9 @@ import { similarityDetectorService } from '../../../../../services/similarity-de
 import { getVocabulary } from '../utils';
 
 export function IsFoundWordInVocabularyMiddleware(ctx: TelegramContext) {
-    ctx.scene.states.vocabulary = getVocabulary(ctx.session[EntityNames.Vocabulary], ctx.scene.states.language);
+    ctx.scene.states.vocabulary = getVocabulary(ctx.session[EntityNames.StudyLanguages], ctx.scene.states.language);
 
-    ctx.scene.states.id = (ctx.scene.states[EntityNames.Vocabulary] as Vocabulary)
+    ctx.scene.states.id = (ctx.scene.states.vocabulary as Vocabulary)
     .json.findIndex(flashcard => similarityDetectorService.detect(flashcard.word, ctx.scene.states.word))
 
     if(ctx.scene.states.id === -1) {

@@ -1,29 +1,19 @@
 import { TelegramContext } from '../../../core/ctx.class';
-import { Languages } from '../../../core/language-interface/enums';
 import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
+import { StudyLanguages } from '../../services/database/entities/study-languages/study-language.entity';
 import { EntityLearningType, JSONLearning } from '../../services/database/types/entity-learning.type';
-import { SessionSubscribers } from './update-session-subscribers';
+import { StudyLanguageServicesSubscribers } from './study-language-services-subscribers';
 
-export function UpdateSessionJSONSubscriber<
-    T extends JSONLearning,
-    TT extends EntityLearningType<T>
->(
+export async function UpdateSessionJSONSubscriber<T extends JSONLearning>(
     ctx: TelegramContext, 
-    service: ServiceLearning<T, any, any>, 
-    json: T, 
-    language: Languages
+    service: ServiceLearning<T, EntityLearningType<T>, any>,
+    studyLanguageEntity: StudyLanguages
 ) {
-    const sessionName= SessionSubscribers.get(service);
+    const sessionName= StudyLanguageServicesSubscribers.get(service);
 
     if(!sessionName) {
         return;
     }
 
-    const index: number = (ctx.session[sessionName] as TT[]).findIndex(obj => obj.language === language);
-
-    if(index === -1) {
-        return;
-    }
-
-    ctx.session[sessionName][index] = json;
+    (studyLanguageEntity as any)[sessionName as any] = await service.getSessionData({studyLanguages: studyLanguageEntity}) as any;
 }

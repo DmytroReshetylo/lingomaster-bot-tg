@@ -1,7 +1,6 @@
-import { Languages } from '../../../../core/language-interface/enums';
 import { Constructor } from '../../../../core/types';
 import { similarityDetectorService } from '../../similarity-detector';
-import { User } from '../entities/user/user.entity';
+import { StudyLanguages } from '../entities/study-languages/study-language.entity';
 import { EntityLearningType, JSONLearning } from '../types/entity-learning.type';
 import { Service } from './service.abstract-class';
 
@@ -17,8 +16,8 @@ export abstract class ServiceLearning<
         this.diffProperty = diffProperty;
     }
 
-    async updateRecord(user: User, language: Languages, record: T) {
-        const entity = await this.getEntity({ user, language } as any);
+    async updateRecord(studyLanguage: StudyLanguages, record: T) {
+        const entity = await this.getEntity({ studyLanguage } as any);
 
         if (!entity) return false;
 
@@ -26,23 +25,23 @@ export abstract class ServiceLearning<
             similarityDetectorService.detect(item[this.diffProperty], record[this.diffProperty]) ? record : item
         );
 
-        await this.update({ user, language } as any, entity as any);
+        await this.update({ studyLanguage } as any, entity as any);
 
         return entity;
     }
 
-    async updateFullRecords(user: User, language: Languages, records: T[]) {
-        const entity = await this.getEntity({ user, language } as any);
+    async updateFullRecords(studyLanguage: StudyLanguages, records: T[]) {
+        const entity = await this.getEntity({ studyLanguage } as any);
 
         if (!entity) return false;
 
         entity.json = records;
 
-        return await this.update({ user, language } as any, entity as any);
+        return await this.update({ studyLanguage } as any, entity as any);
     }
 
-    async addRecord(user: User, language: Languages, records: T[]) {
-        const entity = await this.getEntity({ user, language } as any);
+    async addRecord(studyLanguage: StudyLanguages, records: T[]) {
+        const entity = await this.getEntity({ studyLanguage } as any);
 
         if (!entity) return false;
 
@@ -55,13 +54,13 @@ export abstract class ServiceLearning<
 
         entity.json = [...entity.json, ...records];
 
-        await this.update({ user, language } as any, entity as any);
+        await this.update({ studyLanguage } as any, entity as any);
 
         return entity;
     }
 
-    async removeRecord(user: User, language: Languages, words: string[]) {
-        const entity = await this.getEntity({ user, language } as any);
+    async removeRecord(studyLanguage: StudyLanguages, words: string[]) {
+        const entity = await this.getEntity({ studyLanguage } as any);
         if (!entity) return false;
 
         entity.json = entity.json.filter(
@@ -71,7 +70,7 @@ export abstract class ServiceLearning<
                 )
         ) as T[];
 
-        await this.update({ user, language } as any, entity as any);
+        await this.update({ studyLanguage } as any, entity as any);
 
         return entity;
     }
