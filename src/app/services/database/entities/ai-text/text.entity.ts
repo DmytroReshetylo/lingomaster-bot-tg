@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { CreateEntityLearning } from '../../utils/create-entity-learning.utils';
+import { CreateEntityLearning } from '../entity-learning.abstract-class';
 import { EntityNames } from '../entity-names';
 import { StudyLanguages } from '../study-languages/study-language.entity';
-import { Flashcard } from '../vocabulary/types';
+import { TextInfo } from './types';
 
 @Entity(EntityNames.Text)
-export class AIText extends CreateEntityLearning<Flashcard> {
+export class AIText extends CreateEntityLearning<TextInfo> {
 
     @Column('varchar', {length: 50})
     associativeName!: string;

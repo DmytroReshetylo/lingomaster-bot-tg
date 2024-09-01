@@ -65,7 +65,9 @@ export class VocabularyAddFlashcardsScene implements Scene {
             return addFlashcardDto.toFlashcardFormat();
         }));
 
-        await ApplyServiceLearningPartAction(ctx, studyLanguageManaging, language, vocabularyService, 'add', flashcards);
+        const studyLanguageEntity = studyLanguageManaging.getEntity(language);
+
+        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'add', flashcards);
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

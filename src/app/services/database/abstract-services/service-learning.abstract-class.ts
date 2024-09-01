@@ -1,6 +1,6 @@
+import { FindOptionsWhere } from 'typeorm';
 import { Constructor } from '../../../../core/types';
 import { similarityDetectorService } from '../../similarity-detector';
-import { StudyLanguages } from '../entities/study-languages/study-language.entity';
 import { EntityLearningType, JSONLearning } from '../types/entity-learning.type';
 import { Service } from './service.abstract-class';
 
@@ -16,32 +16,35 @@ export abstract class ServiceLearning<
         this.diffProperty = diffProperty;
     }
 
-    async updateRecord(studyLanguage: StudyLanguages, record: T) {
-        const entity = await this.getEntity({ studyLanguage } as any);
+    async updateRecord(conditions: FindOptionsWhere<TT>, record: T) {
+        const entity = await this.getEntity(conditions as any);
 
         if (!entity) return false;
 
-        entity.json = entity.json.map((item) =>
-            similarityDetectorService.detect(item[this.diffProperty], record[this.diffProperty]) ? record : item
-        );
+        const index = entity.json.findIndex((item) => similarityDetectorService.detect(item[this.diffProperty], record[this.diffProperty]))!;
 
-        await this.update({ studyLanguage } as any, entity as any);
+        if(index === -1) return false;
+
+        entity.json[index] = record;
+
+        await this.update(conditions as any, entity as any);
 
         return entity;
     }
 
-    async updateFullRecords(studyLanguage: StudyLanguages, records: T[]) {
-        const entity = await this.getEntity({ studyLanguage } as any);
+    async updateFullRecords(conditions: FindOptionsWhere<TT>, records: T[]) {
+        const entity = await this.getEntity(conditions as any);
 
         if (!entity) return false;
 
         entity.json = records;
 
-        return await this.update({ studyLanguage } as any, entity as any);
+        return await this.update(conditions as any, entity as any);
     }
 
-    async addRecord(studyLanguage: StudyLanguages, records: T[]) {
-        const entity = await this.getEntity({ studyLanguage } as any);
+    async addRecord(conditions: FindOptionsWhere<TT>, records: T[]) {
+
+        const entity = await this.getEntity(conditions as any);
 
         if (!entity) return false;
 
@@ -54,13 +57,13 @@ export abstract class ServiceLearning<
 
         entity.json = [...entity.json, ...records];
 
-        await this.update({ studyLanguage } as any, entity as any);
+        await this.update(conditions as any, entity as any);
 
         return entity;
     }
 
-    async removeRecord(studyLanguage: StudyLanguages, words: string[]) {
-        const entity = await this.getEntity({ studyLanguage } as any);
+    async removeRecord(conditions: FindOptionsWhere<TT>, words: string[]) {
+        const entity = await this.getEntity(conditions as any);
         if (!entity) return false;
 
         entity.json = entity.json.filter(
@@ -70,7 +73,7 @@ export abstract class ServiceLearning<
                 )
         ) as T[];
 
-        await this.update({ studyLanguage } as any, entity as any);
+        await this.update(conditions as any, entity as any);
 
         return entity;
     }

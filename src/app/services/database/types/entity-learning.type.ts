@@ -5,6 +5,6 @@ export type JSONLearning = ObjectLiteral & {photoUrl: string | null};
 
 export type EntityLearningType<T extends JSONLearning> = {
     id: number;
-    studyLanguages: StudyLanguages;
+    studyLanguages?: StudyLanguages;
     json: T[];
 }

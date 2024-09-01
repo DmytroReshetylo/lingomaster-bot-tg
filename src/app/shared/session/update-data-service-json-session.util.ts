@@ -15,5 +15,5 @@ export async function UpdateSessionJSONSubscriber<T extends JSONLearning>(
         return;
     }
 
-    (studyLanguageEntity as any)[sessionName as any] = await service.getSessionData({studyLanguages: studyLanguageEntity}) as any;
+    (studyLanguageEntity as any)[sessionName as any] = await service.getSessionData({studyLanguages: {id: studyLanguageEntity.id}});
 }

@@ -33,7 +33,11 @@ export class StudyLanguageManaging {
     }
 
     getVocabulary(language: Languages) {
-        return (this.#ctx.session[EntityNames.StudyLanguages].find((st: StudyLanguages) => st.language === language) as StudyLanguages).vocabularies;
+        return this.getEntity(language).vocabularies;
+    }
+
+    getEntity(language: Languages) {
+        return (this.#ctx.session[EntityNames.StudyLanguages].find((st: StudyLanguages) => st.language === language) as StudyLanguages)
     }
 
 

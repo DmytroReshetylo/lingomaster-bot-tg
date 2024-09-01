@@ -32,8 +32,6 @@ export class HelpCommand implements Command {
         }, '');
 
 
-        console.log(ctx.session);
-
         ctx.reply(s, getNavigationButtons());
     }
 }

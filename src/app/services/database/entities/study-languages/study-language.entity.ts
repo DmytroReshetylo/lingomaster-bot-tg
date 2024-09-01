@@ -16,9 +16,10 @@ export class StudyLanguages {
     @Column('enum', {enum: Languages})
     language!: Languages;
 
-    @OneToOne(() => Vocabulary, vocabulary => vocabulary.studyLanguages, { eager: true, cascade: true, nullable: true })
-    vocabularies?: Vocabulary;
+    @OneToOne(() => Vocabulary, vocabulary => vocabulary.studyLanguages, { eager: true, cascade: true })
+    vocabularies!: Vocabulary;
 
-    @OneToMany(() => AIText, text => text.studyLanguages, { eager: true, cascade: true, nullable: true })
-    texts?: AIText[];
+    @OneToMany(() => AIText, text => text.studyLanguages, { eager: true, cascade: true })
+    texts!: AIText[];
+
 }

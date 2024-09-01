@@ -43,7 +43,9 @@ export class VocabularyRemoveFlashcardsScene implements Scene {
     ) {
         const words: string[] = ctx.scene.states.text.split('\n');
 
-        await ApplyServiceLearningPartAction(ctx, studyLanguageManaging, language, vocabularyService, 'remove', words);
+        const studyLanguageEntity = studyLanguageManaging.getEntity(language);
+
+        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'remove', words);
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.DEL_FLASHCARDS.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

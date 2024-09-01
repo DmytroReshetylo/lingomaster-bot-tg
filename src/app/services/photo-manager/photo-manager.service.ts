@@ -1,27 +1,23 @@
 import { photoGeneratorService } from '../ai';
 import { ServiceLearning } from '../database/abstract-services/service-learning.abstract-class';
-import { StudyLanguages } from '../database/entities/study-languages/study-language.entity';
 import { studyLanguageService } from '../database/entities/study-languages/study-language.service';
-import { User } from '../database/entities/user/user.entity';
 import { EntityLearningType, JSONLearning } from '../database/types/entity-learning.type';
 import { imgurService } from '../imgur';
 import { PhotoManagerSubscribers } from './photo-manager.subscribers';
 
 class PhotoManagerService {
-    #listActive: string[] = [];
+    #listActive: number[] = [];
     #generateAllUsersActive: boolean = false;
 
     async generatePhotoDescriptorsForUser<T extends JSONLearning>(
-        user: User,
-        studyLanguageEntity: StudyLanguages,
         service: ServiceLearning<T, EntityLearningType<T>, keyof T>,
-        entity: EntityLearningType<T>
+        entity: EntityLearningType<T>,
     ) {
-        if(this.#listActive.includes(user.idTelegram)) {
+        if(this.#listActive.includes(entity.id)) {
             return;
         }
 
-        this.#listActive.push(user.idTelegram);
+        this.#listActive.push(entity.id);
 
         const dataWithoutPhoto = service.getJSON(entity).filter(data => !data.photoUrl);
 
@@ -39,9 +35,9 @@ class PhotoManagerService {
             catch (err: any) {}
         }
 
-        await service.updateFullRecords(studyLanguageEntity, service.getJSON(entity))
+        await service.updateFullRecords({id: entity.id}, service.getJSON(entity))
 
-        this.#listActive = this.#listActive.filter(idTelegram => idTelegram !== user.idTelegram);
+        this.#listActive = this.#listActive.filter(id => id !== entity.id);
     }
 
     async generatePhotoDescriptorsForAll() {
@@ -56,12 +52,12 @@ class PhotoManagerService {
         for(const studyLanguageEntity of studyLanguageEntities) {
             for(const service of PhotoManagerSubscribers) {
 
-                const entities = await service.getEntities({studyLanguageEntity});
+                const entities = await service.getEntities({studyLanguages: studyLanguageEntity});
 
                 if(!entities.length) continue;
 
                 for(const entity of entities) {
-                    await this.generatePhotoDescriptorsForUser(studyLanguageEntity.user, studyLanguageEntity, service, entity);
+                    await this.generatePhotoDescriptorsForUser(service, entity);
                 }
             }
         }

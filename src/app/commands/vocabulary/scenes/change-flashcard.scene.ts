@@ -85,7 +85,9 @@ export class VocabularyChangeFlashcardScene implements Scene {
     ) {
         await AddToDTOPartAction(dto, 'translate', ctx.scene.states.newTranslate);
 
-        await ApplyServiceLearningPartAction(ctx, studyLanguageManaging, language, vocabularyService, 'update', dto.toFlashcardFormat());
+        const studyLanguageEntity = studyLanguageManaging.getEntity(language);
+
+        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'update', dto.toFlashcardFormat());
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

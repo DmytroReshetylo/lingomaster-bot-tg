@@ -6,10 +6,10 @@ import { EntityNames } from '../entity-names';
 import { AIText } from './text.entity';
 import { TextInfo } from './types';
 
-class TextService extends ServiceLearning<TextInfo, AIText,  'text'>  {
+class TextService extends ServiceLearning<TextInfo, AIText,  'word'>  {
 
     constructor() {
-        super(AIText,  'text');
+        super(AIText,  'word');
 
         StudyLanguageServicesSubscribers.set(this, EntityNames.Text);
         PhotoManagerSubscribers.push(this);

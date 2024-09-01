@@ -2,12 +2,20 @@ import { FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { Constructor } from '../../../../core/types';
 import { dbConnection } from '../db.connection';
+import { services } from '../initialize-services';
 
 export abstract class Service<T extends ObjectLiteral> {
-    private repository: Repository<T>;
+    private repository!: Repository<T>;
+    private entity: Constructor<T>;
 
-    constructor(repository: Constructor<T>) {
-        this.repository = dbConnection.getRepository(repository);
+    constructor(entity: Constructor<T>) {
+        this.entity = entity;
+
+        services.push(this);
+    }
+
+    connectRepository() {
+        this.repository = dbConnection.getRepository(this.entity);
     }
 
     abstract getSessionData(conditions: FindOptionsWhere<T>): Promise<T | T[] | null>;
