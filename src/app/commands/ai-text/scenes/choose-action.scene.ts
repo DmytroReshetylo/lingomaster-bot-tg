@@ -3,22 +3,21 @@ import { TelegramContext } from '../../../../core/ctx.class';
 import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { EntityNames } from '../../../services/database/entities/entity-names';
-import { CreateReplyAction } from '../../../shared/actions';
-import { CreateChooseSceneAction } from '../../../shared/actions/create-choose-scene.action';
+import { CreateChooseSceneAction, CreateReplyAction } from '../../../shared/actions';
 
 const actionButtons = [
-    'text.SEE_text.TITLE',
-    'text.STUDY.TITLE',
-    'text.ADD_text.TITLE',
-    'text.DEL_text.TITLE',
+    'TEXT.SEE_TEXT.TITLE',
+    'TEXT.STUDY.TITLE',
+    'TEXT.ADD_TEXT.TITLE',
+    'TEXT.DEL_TEXT.TITLE',
     'BUTTONS.CANCEL'
 ];
 
 const actions = [
-    {value: 'text.SEE_text.TITLE', scene: 'text-see-scene'},
-    {value: 'text.STUDY.TITLE', scene: 'text-study-scene'},
-    {value: 'text.ADD_text.TITLE', scene: 'text-add-scene'},
-    {value: 'text.DEL_text.TITLE', scene: 'text-delete-scene'},
+    {value: 'TEXT.SEE_TEXT.TITLE', scene: 'text-see-scene'},
+    {value: 'TEXT.STUDY.TITLE', scene: 'text-study-scene'},
+    {value: 'TEXT.ADD_TEXT.TITLE', scene: 'text-add-scene'},
+    {value: 'TEXT.DEL_TEXT.TITLE', scene: 'text-delete-scene'},
 ]
 
 @CreateScene('text-choose-action-scene')

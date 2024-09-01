@@ -4,7 +4,7 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectBigButtonComposer, CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { textGeneratorService } from '../../../services/ai';
+import { textGeneratorService, wordInfoService } from '../../../services/ai';
 import { textService } from '../../../services/database/entities/ai-text/text.service';
 import { EntityNames } from '../../../services/database/entities/entity-names';
 import { CreateErrorReplyAction, CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
@@ -55,13 +55,12 @@ export class AddTextScene implements Scene {
         @GetFromStates('topic') topic: string,
         @GetFromStates('words') input: string
     ) {
-        const words = input.split('\n');
+        ctx.scene.states.words = input.split('\n');
 
-        ctx.scene.states.text = await textGeneratorService.generateText(topic, format, words, language);
+        ctx.scene.states.text = await textGeneratorService.generateText(topic, format, ctx.scene.states.words, language);
 
         if(!ctx.scene.states.text) {
             CreateErrorReplyAction(ctx, 'MIDDLEWARES.AI_ERROR');
-
             return;
         }
 
@@ -76,9 +75,17 @@ export class AddTextScene implements Scene {
         @TransformLanguage('language') language: Languages,
         @GetFromStates('name') associativeName: string,
         @GetFromStates('text') text: string,
+        @GetFromStates('words') words: string[],
         @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
     ) {
-        await ApplyServicePartAction(ctx, textService, 'add', {}, {associativeName, text, json: []});
+        const flashcards = await wordInfoService.getTranslations(words, ctx.session[EntityNames.User].nativeLanguage);
+
+        if(!flashcards) {
+            CreateErrorReplyAction(ctx, 'MIDDLEWARES.AI_ERROR');
+            return;
+        }
+
+        await ApplyServicePartAction(ctx, textService, 'add', {}, {associativeName, text, json: flashcards});
 
         CreateFinishReplyAction(ctx, 'TEXT.ADD_TEXT.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

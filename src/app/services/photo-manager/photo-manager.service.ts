@@ -52,7 +52,7 @@ class PhotoManagerService {
         for(const studyLanguageEntity of studyLanguageEntities) {
             for(const service of PhotoManagerSubscribers) {
 
-                const entities = await service.getEntities({studyLanguages: studyLanguageEntity});
+                const entities = await service.getEntities({studyLanguages: {id: studyLanguageEntity.id}});
 
                 if(!entities.length) continue;
 

@@ -39,7 +39,7 @@ export async function ApplyServiceLearningPartAction<
         photoManagerService.generatePhotoDescriptorsForUser(service, entity);
     }
 
-    if (entity && StudyLanguageServicesSubscribers.has(service)) {
-        UpdateSessionJSONSubscriber(ctx, service, studyLanguageEntity);
+    if (StudyLanguageServicesSubscribers.has(service)) {
+        await UpdateSessionJSONSubscriber(ctx, service, studyLanguageEntity);
     }
 }

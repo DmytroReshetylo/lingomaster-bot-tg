@@ -16,7 +16,7 @@ class WordInfoService {
                 return null;
             }
 
-            return JSON.parse(chatCompletion.choices[0].message.content) as WordInfo[];
+            return JSON.parse(chatCompletion.choices[0].message.content as string) as WordInfo[];
         }
         catch (err: any) {
             return null;
@@ -44,15 +44,15 @@ class WordInfoService {
     async getTranslations(words: string[], language: Languages) {
         try {
             const chatCompletion = await this.#client.chat.completions.create({
-                messages: [{ role: 'user', content: `Please write meaning words or phrases like ${words.join(', ')} in ${language} in JSON format as {word: string, translate: string}. Your reply must be only the JSON`}],
-                model: 'llama-3.1-70b-versatile',
+                messages: [{ role: 'user', content: `Please write deep meaning words or phrases like ${words.join(', ')} in ${language} in JSON format as {word: string, translate: string, photoUrl: null}. Your reply must be only the JSON`}],
+                model: 'llama-3.1-70b-versatile'
             });
 
             if(typeof chatCompletion.choices[0].message.content !== 'string') {
                 return null;
             }
 
-            return JSON.parse(chatCompletion.choices[0].message.content) as {word: string, translate: string}[];
+            return JSON.parse(chatCompletion.choices[0].message.content as string) as {word: string, translate: string, photoUrl: string | null}[];
         }
         catch (arr: any) {
             return null;
