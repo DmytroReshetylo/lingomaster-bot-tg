@@ -96,7 +96,7 @@ export class TextAddTextScene implements Scene {
         }
 
         const flashcards = await wordInfoService.getTranslations(
-            fragmentedText.map(value => value.word),
+            fragmentedText.filter(value => !!value.sentence).map(value => value.word),
             ctx.session[EntityNames.User].nativeLanguage
         );
 
