@@ -36,6 +36,10 @@ export class StudyLanguageManaging {
         return this.getEntity(language).vocabularies;
     }
 
+    getTexts(language: Languages) {
+        return this.getEntity(language).texts;
+    }
+
     getEntity(language: Languages) {
         return (this.#ctx.session[EntityNames.StudyLanguages].find((st: StudyLanguages) => st.language === language) as StudyLanguages)
     }

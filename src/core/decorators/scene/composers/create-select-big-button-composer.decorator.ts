@@ -11,7 +11,9 @@ export function CreateSelectBigButtonComposer(param: string, actions: string[] |
             composer!.on('text', (ctx: any) => {
                 const tgCtx = new TelegramContext(ctx);
 
-                ctx.wizard.state[param] = buttonConfig.transformSelectBigButton(ctx.text, tgCtx);
+                ctx.text = buttonConfig.transformSelectBigButton(ctx.text, tgCtx);
+
+                ctx.wizard.state[param] = ctx.text;
 
                 if(isCancel && buttonConfig.signalCancel(ctx.wizard.state[param], ctx)) {
                     buttonConfig.messageCancel(tgCtx);
@@ -19,7 +21,7 @@ export function CreateSelectBigButtonComposer(param: string, actions: string[] |
                     return ctx.scene.leave();
                 }
 
-                if(actions !== 'any' && actions.includes(ctx.wizard.state[param])) {
+                if(actions === 'any' || actions.includes(ctx.wizard.state[param])) {
                     method(tgCtx);
                 }
             });

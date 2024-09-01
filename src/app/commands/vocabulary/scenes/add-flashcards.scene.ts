@@ -11,7 +11,7 @@ import { vocabularyService } from '../../../services/database/entities/vocabular
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
+import { IsLearningLanguageMiddleware, IsNotBracketsMiddleware } from '../../../shared/middlewares';
 import { GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { InputIncorrectPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
@@ -39,7 +39,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
     }
 
     @CreateTextComposer('text', true)
-    @Apply({middlewares: [], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
+    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
     @ModifyParams()
     async afterInputFlashcards(
         ctx: TelegramContext,

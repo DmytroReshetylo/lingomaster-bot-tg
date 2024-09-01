@@ -1,4 +1,3 @@
-import { Markup } from 'telegraf';
 import { MessageInfo, SceneManaging } from './types';
 
 export class TelegramContext {

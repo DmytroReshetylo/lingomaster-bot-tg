@@ -10,11 +10,12 @@ import { EntityNames } from '../../../services/database/entities/entity-names';
 import { CreateErrorReplyAction, CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
+import { IsLearningLanguageMiddleware, IsNotBracketsMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServicePartAction } from '../../../shared/part-actions';
 import { TextFormatJson } from './shared/constants';
 import { TextFormat } from './shared/enums';
+import { IsNameAlreadySetMiddleware } from './shared/middlewares';
 
 @CreateScene('text-add-scene')
 export class AddTextScene implements Scene {
@@ -36,6 +37,7 @@ export class AddTextScene implements Scene {
     }
 
     @CreateSelectBigButtonComposer('format', [], true)
+    @Apply({middlewares: [IsNameAlreadySetMiddleware], possibleErrors: []})
     afterInputFormat(ctx: TelegramContext) {
         CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_TOPIC', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', ['BUTTONS.CANCEL']);
     }
@@ -46,7 +48,7 @@ export class AddTextScene implements Scene {
     }
 
     @CreateTextComposer('words', true, false)
-    @Apply({middlewares: [], possibleErrors: []})
+    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: []})
     @ModifyParams()
     async afterInputText(
         ctx: TelegramContext,
@@ -64,7 +66,7 @@ export class AddTextScene implements Scene {
             return;
         }
 
-        CreateReplyAction(ctx, 'TEXT.ADD_TEXT.PROMPT_SAVE', ctx.session[EntityNames.User].interfaceLanguage, 'button', ['REPLIES.YES', 'BUTTONS.CANCEL']);
+        CreateReplyAction(ctx, 'QUESTIONS.ASK_ADD', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', ['REPLIES.YES', 'BUTTONS.CANCEL']);
     }
 
     @CreateSelectBigButtonComposer('confirmSave', ['REPLIES.YES'])

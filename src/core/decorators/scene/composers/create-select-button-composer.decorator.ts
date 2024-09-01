@@ -1,6 +1,7 @@
 import { Composer } from 'telegraf';
 import { TelegramContext } from '../../../ctx.class';
 import { buttonConfig } from './configs';
+
 export function CreateSelectButtonComposer(param: string, actions: string[] | 'any',  isCancel?: boolean) {
     return function (target: any, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) {
         const method = descriptor.value;
@@ -18,7 +19,7 @@ export function CreateSelectButtonComposer(param: string, actions: string[] | 'a
                     return ctx.scene.leave();
                 }
 
-                if(actions !== 'any' && actions.includes(ctx.wizard.state[param])) {
+                if(actions === 'any' || actions.includes(ctx.wizard.state[param])) {
                     method(tgCtx);
                 }
             });

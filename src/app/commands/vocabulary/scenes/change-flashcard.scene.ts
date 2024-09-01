@@ -10,7 +10,7 @@ import { vocabularyService } from '../../../services/database/entities/vocabular
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
+import { IsLearningLanguageMiddleware, IsNotBracketsMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { AddToDTOPartAction, ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { IsDifferenceBetweenOldNewVersionsFlashcardPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
@@ -60,7 +60,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
     }
 
     @CreateTextComposer('newWord', false, true)
-    @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError]})
+    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: [WordLanguageIncorrectPossibleError]})
     @ModifyParams()
     async afterInputNewWord(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto) {
         await AddToDTOPartAction(dto, 'word', ctx.scene.states.newWord);
@@ -75,7 +75,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
     }
 
     @CreateTextComposer('newTranslate', false, true)
-    @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
+    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
     @ModifyParams()
     async afterInputNewTranslate(
         ctx: TelegramContext,

@@ -53,22 +53,22 @@
     }
   },
   "TEXT": {
+    "ASK": {
+      "SELECT_TEXT": "Виберіть текст"
+    },
     "ADD_TEXT": {
       "TITLE": "Згенерувати текст",
       "ASK_NAME": "Введіть асоціативну назву для тексту",
       "SELECT_FORMAT": "Виберіть формат тексту",
       "ASK_TOPIC": "Введіть тему тексту",
       "ASK_WORDS": "Введіть слова з яких буде складатися текст. Напишіть кожне слово з нового рядка для додавання",
-      "PROMPT_SAVE": "Бажаєте зберегти текст?",
       "FINISHED": "Текст додано"
     },
     "SEE_TEXT": {
       "TITLE": "Переглянути текст",
-      "SELECT_TEXT": "Виберіть текст"
     },
     "DEL_TEXT": {
       "TITLE": "Видалити текст",
-      "SELECT_TEXT": "Виберіть текст",
       "FINISHED": "Текст видалено"
     },
     "STUDY": {
@@ -91,13 +91,19 @@
     }
   },
   "BUTTONS": {
-    "CANCEL": "Відмінити"
+    "CANCEL": "Відмінити",
+    "NEXT": "Далі",
+    "BACK": "Назад"
   },
   "INFO": {
     "CANCELLED": "Відмінено",
     "SELECT_ACTION": "Оберіть дію",
     "CHOOSE_LANGUAGE": "Оберіть мову",
     "COMMAND_DONT_EXIST": "Даної команди не існує"
+  },
+  "QUESTIONS": {
+    "ASK_ADD": "Ви б хотіли це зберегти?",
+    "ASK_DEL": "Ви впевнені що хочете це видалити?"
   },
   "REPLIES": {
     "YES": "Так"
@@ -115,7 +121,10 @@
     "ALREADY_SELECTED_INTERFACE_LANGUAGE": "Дана мова вже використовується як мова інтерфейсу",
     "EMPTY_VOCABULARY": "Даний словар пустий",
     "CANT_STUDY_NATIVE_LANGUAGE": "Ви не можете вивчати рідну мову",
-    "IS_NOT_LEARN_ANY_LANGUAGE": "Ви не вивчаєте жодної мови"
+    "IS_NOT_LEARN_ANY_LANGUAGE": "Ви не вивчаєте жодної мови",
+    "EMPTY_TEXTS": "Ви не маєте текстів",
+    "NAME_IS_ALREADY_SET": "Ім'я вже зайнято",
+    "PROHIBITED_BRACKETS": "Скобки як [] заборонені"
   },
   "VALIDATORS": {
     "THE_VALUE_MUST_BE_LESS_LENGTH": "Ввод має бути меншої довжини",

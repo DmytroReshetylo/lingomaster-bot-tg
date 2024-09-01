@@ -53,6 +53,9 @@
     }
   },
   "TEXT": {
+    "ASK": {
+      "SELECT_TEXT": "Select a text"
+    },
     "ADD_TEXT": {
       "TITLE": "Add a text",
       "ASK_NAME": "Input an associative name",
@@ -64,11 +67,9 @@
     },
     "SEE_TEXT": {
       "TITLE": "See a text",
-      "SELECT_TEXT": "Select a text"
     },
     "DEL_TEXT": {
       "TITLE": "Remove a text",
-      "SELECT_TEXT": "Select a text",
       "FINISHED": "The TEXT has been removed"
     },
     "STUDY": {
@@ -91,13 +92,19 @@
     }
   },
   "BUTTONS": {
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "NEXT": "Next",
+    "BACK": "Back"
   },
   "INFO": {
     "CANCELLED": "Cancelled",
     "SELECT_ACTION": "Select action",
     "CHOOSE_LANGUAGE": "Choose language",
     "COMMAND_DONT_EXIST": "The command doesn't exist"
+  },
+  "QUESTIONS": {
+    "ASK_ADD": "Would toy like to save this?",
+    "ASK_DEL": "Are you sure you want to delete this?"
   },
   "REPLIES": {
     "YES": "YES"
@@ -115,7 +122,10 @@
     "ALREADY_SELECTED_INTERFACE_LANGUAGE": "The language is already set as your interface language",
     "EMPTY_VOCABULARY": "The vocabulary is empty",
     "CANT_STUDY_NATIVE_LANGUAGE": "You can't study your native language",
-    "IS_NOT_LEARN_ANY_LANGUAGE": "You have not been learning any language"
+    "IS_NOT_LEARN_ANY_LANGUAGE": "You have not been learning any language",
+    "EMPTY_TEXTS": "You have no texts",
+    "NAME_IS_ALREADY_SET": "The name is already set",
+    "PROHIBITED_BRACKETS": "Brackets as [] is prohibited"
   },
   "VALIDATORS": {
     "THE_VALUE_MUST_BE_LESS_LENGTH": "The input must be shorter",
