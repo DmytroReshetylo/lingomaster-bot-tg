@@ -1,6 +1,6 @@
 import Groq from 'groq-sdk';
 import { Languages } from '../../../core/language-interface/enums';
-import { WordInfo } from './types';
+import { TextInfo } from '../database/entities/ai-text/types';
 
 class WordInfoService {
     #client = new Groq({apiKey: process.env['groq_api_key']});
@@ -16,7 +16,7 @@ class WordInfoService {
                 return null;
             }
 
-            return JSON.parse(chatCompletion.choices[0].message.content as string) as WordInfo[];
+            return JSON.parse(chatCompletion.choices[0].message.content as string) as TextInfo[];
         }
         catch (err: any) {
             return null;
@@ -52,7 +52,7 @@ class WordInfoService {
                 return null;
             }
 
-            return JSON.parse(chatCompletion.choices[0].message.content as string) as {word: string, translate: string, photoUrl: string | null}[];
+            return JSON.parse(chatCompletion.choices[0].message.content as string) as TextInfo[];
         }
         catch (arr: any) {
             return null;

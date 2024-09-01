@@ -31,6 +31,7 @@ export class HelpCommand implements Command {
             return `${acc}${command.name} - ${translate(command.description, ctx.session[EntityNames.User] ? ctx.session[EntityNames.User].interfaceLanguage : Languages.en)}\n`;
         }, '');
 
+        console.log(ctx.session);
 
         ctx.reply(s, getNavigationButtons());
     }

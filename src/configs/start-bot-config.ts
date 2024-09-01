@@ -1,5 +1,7 @@
 import { AddNewLearningLanguageCommand } from '../app/commands/add-new-learning-language/add-new-learning-language.command';
 import { AddNewLearningLanguageScene } from '../app/commands/add-new-learning-language/scenes/add-new-learning-language.scene';
+import { AiTextCommand } from '../app/commands/ai-text/ai-text.command';
+import { TextAddTextScene, TextChooseActionScene, TextDeleteTextScene, TextSeeTextScene, TextStudyTextScene } from '../app/commands/ai-text/scenes';
 import { HelpCommand } from '../app/commands/help/help.command';
 import { SelectInterfaceLanguageScene } from '../app/commands/select-interface-language/scenes/select-interface-language.scene';
 import { SelectInterfaceLanguageCommand } from '../app/commands/select-interface-language/select-interface-language.command';
@@ -22,7 +24,8 @@ export const startBotConfig = {
         HelpCommand,
         AddNewLearningLanguageCommand,
         VocabularyCommand,
-        SelectInterfaceLanguageCommand
+        SelectInterfaceLanguageCommand,
+        AiTextCommand
     ],
 
     scenes: [
@@ -34,7 +37,12 @@ export const startBotConfig = {
         VocabularyRemoveFlashcardsScene,
         VocabularyChangeFlashcardScene,
         VocabularySeeFlashcardsScene,
-        VocabularyStudyFlashcardsScene
+        VocabularyStudyFlashcardsScene,
+        TextDeleteTextScene,
+        TextStudyTextScene,
+        TextSeeTextScene,
+        TextAddTextScene,
+        TextChooseActionScene
     ],
 
     commandConfiguration: async(ctx: TelegramContext) => {

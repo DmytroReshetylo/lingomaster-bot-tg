@@ -39,7 +39,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
     }
 
     @CreateTextComposer('text', true)
-    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
+    @Apply({middlewares: [IsNotBracketsMiddleware('text')], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
     @ModifyParams()
     async afterInputFlashcards(
         ctx: TelegramContext,

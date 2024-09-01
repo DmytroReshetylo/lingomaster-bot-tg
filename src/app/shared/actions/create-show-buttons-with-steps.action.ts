@@ -4,7 +4,6 @@ import { translate } from '../../../core/language-interface/translate.alghoritm'
 import { createButtonKeyboard } from '../../../core/telegram-utils';
 import { QueueOnDelete } from '../classes';
 import { transformOBJToButton } from '../utils';
-import { CreateFinishReplyAction } from './create-finish-reply-action';
 
 const displayButtonsLength = 5;
 
@@ -18,13 +17,12 @@ export async function CreateButtonsWithStepsAction<
     buttons: T[],
     displayKey: DISPLAYKEY,
     queueOnDelete: QueueOnDelete,
-    messageIfEmpty: string,
     lastChoose?: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
     callback?: Function
 ) {
 
     if(!buttons.length) {
-        return CreateFinishReplyAction(ctx, messageIfEmpty, language);
+        throw Error('Buttons is not found');
     }
 
     if(!ctx.scene.states.step) {
@@ -48,7 +46,7 @@ export async function CreateButtonsWithStepsAction<
             break;
         }
         default: {
-            if(callback && buttons.find(button => button.id === lastChoose)) {
+            if(callback && buttons.find(button => button.id === Number(lastChoose))) {
                 await callback();
             }
 
@@ -77,5 +75,9 @@ export async function CreateButtonsWithStepsAction<
     const messageInfo = await ctx.reply(message, createButtonKeyboard(displayButtons));
 
     queueOnDelete.push(messageInfo.message_id);
+
+    if(!lastChoose) {
+        ctx.scene.nextAction();
+    }
 
 }

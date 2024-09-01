@@ -16,4 +16,7 @@ export class AIText extends CreateEntityLearning<TextInfo> {
     @ManyToOne(() => StudyLanguages, studyLanguages => studyLanguages[EntityNames.Text])
     @JoinColumn()
     studyLanguages!: StudyLanguages;
+
+    @Column('json')
+    fragmentedText!: string[];
 }

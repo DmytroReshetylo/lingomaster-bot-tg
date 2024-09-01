@@ -14,8 +14,6 @@ export class Vocabulary extends CreateEntityLearning<Flashcard> {
     @BeforeInsert()
     @BeforeUpdate()
     regulateProgress() {
-        console.log(this);
-
         this.json = this.json.map((flashcard) => {
             if(flashcard.progress > 10) {
                 flashcard.progress = 10;

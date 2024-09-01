@@ -9,14 +9,14 @@ export class TelegramContext {
 
     async reply(s: string, buttons?: any): Promise<MessageInfo> {
         if(buttons) {
-            return await this.#ctx.reply(s, buttons);
+            return await this.#ctx.reply(s, {parse_mode: 'HTML', ...buttons});
         }
 
-        return await this.#ctx.reply(s);
+        return await this.#ctx.reply(s, {parse_mode: 'HTML'});
     }
 
     async sendPhoto(url: string, caption = '', buttons?: any): Promise<MessageInfo> {
-        return await this.#ctx.sendPhoto(url, {caption: caption, ...buttons || []});
+        return await this.#ctx.sendPhoto(url, {caption: caption, parse_mode: 'HTML', ...buttons || []});
     }
 
     deleteMessage(idMessage: number) {
@@ -47,9 +47,10 @@ export class TelegramContext {
 
     get data(): string {
         if(this.#ctx.update.message) {
-            return this.#ctx.update.message.data;
+            return this.#ctx.update.message.text;
         }
 
         return this.#ctx.update.callback_query.data;
     }
+
 }

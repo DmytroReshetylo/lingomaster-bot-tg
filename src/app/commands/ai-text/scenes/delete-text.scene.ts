@@ -4,6 +4,7 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectBigButtonComposer, CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
+import { AIText } from '../../../services/database/entities/ai-text/text.entity';
 import { textService } from '../../../services/database/entities/ai-text/text.service';
 import { EntityNames } from '../../../services/database/entities/entity-names';
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
@@ -12,26 +13,28 @@ import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging } from '../../../shared/modify-params';
 import { ApplyServicePartAction, SendTextPartAction } from '../../../shared/part-actions';
+import { IsNotTextsEmptyMiddleware } from './shared/middlewares';
 import { ListTextsWithStepsPartAction } from './shared/part-actions';
+import { TextManaging } from './test-strategy/classes';
+import { GetTextManaging } from './test-strategy/modify-params';
 
 @CreateScene('text-delete-scene')
-export class DeleteTextScene implements Scene {
+export class TextDeleteTextScene implements Scene {
     @ModifyParams()
     start(ctx: TelegramContext, @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging) {
         SelectLanguageAction(ctx, studyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
-    @Apply({middlewares: [IsLearningLanguageMiddleware], possibleErrors: []})
+    @Apply({middlewares: [IsLearningLanguageMiddleware, IsNotTextsEmptyMiddleware], possibleErrors: []})
     @ModifyParams()
     afterSelectLanguage(
         ctx: TelegramContext,
         @GetFromStates('language') language: Languages,
         @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
+        @GetFromStates('texts') texts: AIText[],
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete
     ) {
-        const texts = studyLanguageManaging.getTexts(language);
-
         ListTextsWithStepsPartAction(ctx, texts, queueOnDelete);
     }
 
@@ -41,13 +44,13 @@ export class DeleteTextScene implements Scene {
         ctx: TelegramContext,
         @GetFromStates('language') language: Languages,
         @GetFromStates('textId') textId: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
+        @GetFromStates('texts') texts: AIText[],
         @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
+        @GetTextManaging() textManaging: TextManaging,
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete
     ) {
-        const texts = studyLanguageManaging.getTexts(language);
-
         ListTextsWithStepsPartAction(ctx, texts, queueOnDelete, textId, async() => {
-            await SendTextPartAction(ctx, texts[textId as number].text);
+            await SendTextPartAction(ctx,textManaging, texts.find(text => text.id === Number(textId))!.text);
 
             CreateReplyAction(ctx, 'QUESTIONS.ASK_DEL', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', ['REPLIES.YES', 'BUTTONS.CANCEL']);
         });

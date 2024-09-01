@@ -60,7 +60,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
     }
 
     @CreateTextComposer('newWord', false, true)
-    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: [WordLanguageIncorrectPossibleError]})
+    @Apply({middlewares: [IsNotBracketsMiddleware('newWord')], possibleErrors: [WordLanguageIncorrectPossibleError]})
     @ModifyParams()
     async afterInputNewWord(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto) {
         await AddToDTOPartAction(dto, 'word', ctx.scene.states.newWord);
@@ -75,7 +75,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
     }
 
     @CreateTextComposer('newTranslate', false, true)
-    @Apply({middlewares: [IsNotBracketsMiddleware], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
+    @Apply({middlewares: [IsNotBracketsMiddleware('newTranslate')], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
     @ModifyParams()
     async afterInputNewTranslate(
         ctx: TelegramContext,

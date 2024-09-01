@@ -1,23 +1,26 @@
 import { Apply, CreateScene } from '../../../../core';
 import { TelegramContext } from '../../../../core/ctx.class';
 import { ModifyParams } from '../../../../core/decorators/modify-params/modify-params.decorator';
-import { CreateSelectButtonComposer } from '../../../../core/decorators/scene/composers';
+import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
 import { AIText } from '../../../services/database/entities/ai-text/text.entity';
-import { SelectLanguageAction } from '../../../shared/actions';
+import { TextInfo } from '../../../services/database/entities/ai-text/types';
+import { EntityNames } from '../../../services/database/entities/entity-names';
+import { CreateReplyAction, CreateStartTestAction, SelectLanguageAction } from '../../../shared/actions';
 import { QueueOnDelete, StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging } from '../../../shared/modify-params';
-import { SendTextPartAction } from '../../../shared/part-actions';
+import { TestAnswerHandlingPartAction, TestSendQuestionPartAction } from '../../../shared/part-actions';
+import { TestManaging } from '../../../testing-alghoritm/types';
+import { AvailableTestModel } from '../../vocabulary/scenes/study-flashcards-strategy/enums';
 import { IsNotTextsEmptyMiddleware } from './shared/middlewares';
 import { ListTextsWithStepsPartAction } from './shared/part-actions';
-import { TextManaging } from './test-strategy/classes';
-import { GetTextManaging } from './test-strategy/modify-params';
+import { GetTestTextManaging } from './test-strategy/modify-params';
 
-@CreateScene('text-see-scene')
-export class TextSeeTextScene implements Scene {
+@CreateScene('text-study-scene')
+export class TextStudyTextScene implements Scene {
     @ModifyParams()
     start(ctx: TelegramContext, @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging) {
         SelectLanguageAction(ctx, studyLanguageManaging, true);
@@ -29,8 +32,8 @@ export class TextSeeTextScene implements Scene {
     afterSelectLanguage(
         ctx: TelegramContext,
         @GetFromStates('language') language: Languages,
-        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
         @GetFromStates('texts') texts: AIText[],
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete
     ) {
         ListTextsWithStepsPartAction(ctx, texts, queueOnDelete);
@@ -43,14 +46,39 @@ export class TextSeeTextScene implements Scene {
         @GetFromStates('language') language: Languages,
         @GetFromStates('textId') textId: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
         @GetFromStates('texts') texts: AIText[],
-        @GetTextManaging() textManaging: TextManaging,
         @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete
     ) {
         ListTextsWithStepsPartAction(ctx, texts, queueOnDelete, textId, async() => {
-            await SendTextPartAction(ctx, textManaging, texts.find(text => text.id === Number(textId))!.text);
-
-            ctx.scene.leaveScene();
+            CreateReplyAction(
+                ctx,
+                'INFO.SELECT_ACTION',
+                ctx.session[EntityNames.User].interfaceLanguage,
+                'button',
+                Object.values(AvailableTestModel)
+            );
         });
+    }
+
+    @CreateSelectButtonComposer('model', Object.values(AvailableTestModel), true)
+    @Apply({middlewares: [], possibleErrors: []})
+    @ModifyParams()
+    async afterSelectModel(
+        ctx: TelegramContext,
+        @GetTestTextManaging() testTextManaging: TestManaging<TextInfo>
+    ) {
+        await CreateStartTestAction(ctx, testTextManaging, ctx.scene.states.model, ['word', 'translate']);
+    }
+
+    @CreateTextComposer('answer', true)
+    @Apply({middlewares: [], possibleErrors: []})
+    @ModifyParams()
+    async afterInputAnswer(
+        ctx: TelegramContext,
+        @GetTestTextManaging() testTextManaging: TestManaging<TextInfo>
+    ) {
+        await TestAnswerHandlingPartAction(ctx, testTextManaging, ctx.scene.states.answer);
+
+        await TestSendQuestionPartAction(ctx, testTextManaging, ctx.scene.states.model, ['word', 'translate']);
     }
 }

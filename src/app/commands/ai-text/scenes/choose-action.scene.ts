@@ -21,7 +21,7 @@ const actions = [
 ]
 
 @CreateScene('text-choose-action-scene')
-export class VocabularyChooseActionScene implements Scene {
+export class TextChooseActionScene implements Scene {
     start(ctx: TelegramContext) {
         CreateReplyAction(ctx, 'INFO.SELECT_ACTION', ctx.session[EntityNames.User].interfaceLanguage, 'button', actionButtons);
     }

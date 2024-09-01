@@ -28,16 +28,12 @@ export class StudyLanguageManaging {
         return LanguagesList.filter(language => !selectedLanguages.includes(language as Languages)) as Languages[]
     }
 
-    findSelectedLanguage(language: Languages) {
-        return (this.#ctx.session[EntityNames.StudyLanguages] as StudyLanguages[]).find((st: StudyLanguages) => st.language === language);
-    }
-
     getVocabulary(language: Languages) {
         return this.getEntity(language).vocabularies;
     }
 
     getTexts(language: Languages) {
-        return this.getEntity(language).texts;
+        return this.getEntity(language)?.texts || [];
     }
 
     getEntity(language: Languages) {

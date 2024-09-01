@@ -12,6 +12,7 @@ export function ListTextsWithStepsPartAction(ctx: TelegramContext, texts: AIText
         texts,
         'associativeName',
         queueOnDelete,
-        'MIDDLEWARES.EMPTY_TEXTS'
+        value,
+        callback
     );
 }

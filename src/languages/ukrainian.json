@@ -65,7 +65,7 @@
       "FINISHED": "Текст додано"
     },
     "SEE_TEXT": {
-      "TITLE": "Переглянути текст",
+      "TITLE": "Переглянути текст"
     },
     "DEL_TEXT": {
       "TITLE": "Видалити текст",
@@ -83,6 +83,7 @@
     "INCORRECT_ANSWER": "Неправильно! Правильна відповідь: ",
     "SYNONYM": "Відповідь правильна, проте вона є синонімом. Точна відповідь: ",
     "ASK_MODEL": "Оберіть модель вивчення",
+    "FINISHED": "Тестування завершено!",
     "MODELS": {
       "WITHOUT_PHOTO_AND_OPTIONS": "Ручна відповідь",
       "WITH_OPTIONS": "Варіанти відповіді",
@@ -124,7 +125,8 @@
     "IS_NOT_LEARN_ANY_LANGUAGE": "Ви не вивчаєте жодної мови",
     "EMPTY_TEXTS": "Ви не маєте текстів",
     "NAME_IS_ALREADY_SET": "Ім'я вже зайнято",
-    "PROHIBITED_BRACKETS": "Скобки як [] заборонені"
+    "PROHIBITED_BRACKETS": "Скобки як [] заборонені",
+    "MUST_BE_MIN_10_ADD_WORDS": "Має бути не менше 10 слів щоб згенерувати текст"
   },
   "VALIDATORS": {
     "THE_VALUE_MUST_BE_LESS_LENGTH": "Ввод має бути меншої довжини",

@@ -11,9 +11,7 @@ export function CreateSelectBigButtonComposer(param: string, actions: string[] |
             composer!.on('text', (ctx: any) => {
                 const tgCtx = new TelegramContext(ctx);
 
-                ctx.text = buttonConfig.transformSelectBigButton(ctx.text, tgCtx);
-
-                ctx.wizard.state[param] = ctx.text;
+                ctx.wizard.state[param] = buttonConfig.transformSelectBigButton(ctx.text, tgCtx);
 
                 if(isCancel && buttonConfig.signalCancel(ctx.wizard.state[param], ctx)) {
                     buttonConfig.messageCancel(tgCtx);

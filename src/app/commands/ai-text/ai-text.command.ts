@@ -6,7 +6,7 @@ import { Command } from '../../../core/decorators/create-command/types';
 export class AiTextCommand implements Command {
 
     command(ctx: TelegramContext) {
-
+        ctx.scene.enterScene('text-choose-action-scene');
     }
 
 }

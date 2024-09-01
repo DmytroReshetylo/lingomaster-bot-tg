@@ -6,10 +6,10 @@ import { EntityNames } from '../../services/database/entities/entity-names';
 import { getNavigationButtons, transformToButtonActions } from '../../shared/utils';
 import { ShowTestDataFormat } from '../word-formats/types';
 import { AnswerResult } from './enums';
-import { QuestionProvider } from './question-provider.abstract-class';
+import { QuestionProvider } from './question-provider.class';
 
 export class TestMessageProvider {
-    private ctx: TelegramContext;
+    protected ctx: TelegramContext;
     private questionProvider: QuestionProvider;
     protected listAnswers: {type: AnswerResult, answer: (data: ShowTestDataFormat) => Promise<MessageInfo> }[] = [
         {
