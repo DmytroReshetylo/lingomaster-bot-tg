@@ -15,8 +15,8 @@ import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../.
 import { ApplyServicePartAction } from '../../../shared/part-actions';
 import { AiErrorPossibleError } from '../../../shared/possible-errors';
 import { TextManaging } from './shared/classes';
-import { TextFormatJson } from './shared/constants';
-import { TextFormat } from './shared/enums';
+import { LevelList, TextFormatJson } from './shared/constants';
+import { Level, TextFormat } from './shared/enums';
 import { InputSplitMiddleware, IsNameAlreadySetMiddleware } from './shared/middlewares';
 import { GetTextManaging } from './test-strategy/modify-params';
 
@@ -47,6 +47,11 @@ export class TextAddTextScene implements Scene {
 
     @CreateTextComposer('topic', false, true)
     afterInputTopic(ctx: TelegramContext) {
+        CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_LEVEL', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', [...LevelList, 'BUTTONS.CANCEL']);
+    }
+
+    @CreateSelectBigButtonComposer('level', LevelList, true)
+    afterSelectLevel(ctx: TelegramContext) {
         CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_WORDS', ctx.session[EntityNames.User].interfaceLanguage, 'button', ['BUTTONS.CANCEL']);
     }
 
@@ -65,11 +70,12 @@ export class TextAddTextScene implements Scene {
         @GetFromStates('format') format: TextFormat,
         @GetFromStates('topic') topic: string,
         @GetFromStates('words') input: string,
+        @GetFromStates('level') level: Level,
         @GetTextManaging() textManaging: TextManaging
     ) {
         ctx.scene.states.words = input.split('\n');
 
-        ctx.scene.states.text = await textGeneratorService.generateText(topic, format, ctx.scene.states.words, language);
+        ctx.scene.states.text = await textGeneratorService.generateText(topic, format, level, ctx.scene.states.words, language);
 
         await ctx.reply(textManaging.deleteBrackets(ctx.scene.states.text));
 

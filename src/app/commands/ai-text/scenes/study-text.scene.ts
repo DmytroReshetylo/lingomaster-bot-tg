@@ -11,7 +11,7 @@ import { CreateReplyAction, CreateStartTestAction, SelectLanguageAction } from '
 import { QueueOnDelete, StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging } from '../../../shared/modify-params';
+import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging, TransformIfNumber } from '../../../shared/modify-params';
 import { TestAnswerHandlingPartAction, TestSendQuestionPartAction } from '../../../shared/part-actions';
 import { TestManaging } from '../../../testing-alghoritm/types';
 import { AvailableTestModel } from '../../vocabulary/scenes/study-flashcards-strategy/enums';
@@ -44,7 +44,7 @@ export class TextStudyTextScene implements Scene {
     afterSelectTextID(
         ctx: TelegramContext,
         @GetFromStates('language') language: Languages,
-        @GetFromStates('textId') textId: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
+        @TransformIfNumber('textId') textId: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
         @GetFromStates('texts') texts: AIText[],
         @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete

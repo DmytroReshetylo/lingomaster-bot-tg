@@ -53,6 +53,13 @@
     }
   },
   "TEXT": {
+    "FORMAT_TEXT": {
+      "STORY": "Story",
+      "ARTICLE": "Article",
+      "CONVERSATION": "Conversation",
+      "NEWS": "News",
+      "REPORT": "Report"
+    },
     "ASK": {
       "SELECT_TEXT": "Select a text"
     },
@@ -60,6 +67,7 @@
       "TITLE": "Add a text",
       "ASK_NAME": "Input an associative name",
       "SELECT_FORMAT": "Select a format text",
+      "ASK_LEVEL": "Select a text's level",
       "ASK_TOPIC": "Input a topic text",
       "ASK_WORDS": "Input words. Write each word on a new line to add",
       "PROMPT_SAVE": "Would you like to save the text?",

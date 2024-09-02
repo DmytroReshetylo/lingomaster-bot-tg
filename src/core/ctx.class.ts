@@ -46,8 +46,6 @@ export class TelegramContext {
     }
 
     get data(): string {
-        console.log(this.#ctx.update.message.text);
-
         if(this.#ctx.update.message) {
             return this.#ctx.update.message.text;
         }
