@@ -13,13 +13,13 @@ class WordInfoService {
             });
 
             if(typeof chatCompletion.choices[0].message.content !== 'string') {
-                return null;
+                throw new Error('MIDDLEWARES.AI_ERROR');
             }
 
             return JSON.parse(chatCompletion.choices[0].message.content as string) as TextInfo[];
         }
         catch (err: any) {
-            return null;
+            throw new Error('MIDDLEWARES.AI_ERROR');
         }
     }
 
@@ -31,13 +31,13 @@ class WordInfoService {
             });
 
             if(typeof chatCompletion.choices[0].message.content !== 'string') {
-                return null;
+                throw new Error('MIDDLEWARES.AI_ERROR');
             }
 
             return chatCompletion.choices[0].message.content as string;
         }
         catch (arr: any) {
-            return null;
+            throw new Error('MIDDLEWARES.AI_ERROR');
         }
     }
 
@@ -49,13 +49,13 @@ class WordInfoService {
             });
 
             if(typeof chatCompletion.choices[0].message.content !== 'string') {
-                return null;
+                throw new Error('MIDDLEWARES.AI_ERROR');
             }
 
             return JSON.parse(chatCompletion.choices[0].message.content as string) as TextInfo[];
         }
         catch (arr: any) {
-            return null;
+            throw new Error('MIDDLEWARES.AI_ERROR');
         }
     }
 }

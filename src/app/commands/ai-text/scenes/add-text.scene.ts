@@ -7,16 +7,18 @@ import { Languages } from '../../../../core/language-interface/enums';
 import { textGeneratorService, wordInfoService } from '../../../services/ai';
 import { textService } from '../../../services/database/entities/ai-text/text.service';
 import { EntityNames } from '../../../services/database/entities/entity-names';
-import { CreateErrorReplyAction, CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
+import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware, IsNotBracketsMiddleware } from '../../../shared/middlewares';
+import { IsLearningLanguageMiddleware, IsNotPhohibitedSymbolsMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServicePartAction } from '../../../shared/part-actions';
+import { AiErrorPossibleError } from '../../../shared/possible-errors';
+import { TextManaging } from './shared/classes';
 import { TextFormatJson } from './shared/constants';
 import { TextFormat } from './shared/enums';
-import { IsNameAlreadySetMiddleware } from './shared/middlewares';
-import { TextManaging } from './test-strategy/classes';
+import { InputSplitMiddleware, IsNameAlreadySetMiddleware } from './shared/middlewares';
+import { GetTextManaging } from './test-strategy/modify-params';
 
 @CreateScene('text-add-scene')
 export class TextAddTextScene implements Scene {
@@ -49,29 +51,25 @@ export class TextAddTextScene implements Scene {
     }
 
     @CreateTextComposer('words', true, false)
-    @Apply({middlewares: [IsNotBracketsMiddleware('words')], possibleErrors: []})
+    @Apply({
+        middlewares: [
+            IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS'),
+            InputSplitMiddleware('\n', 10, 'MIDDLEWARES.MUST_BE_MIN_10_ADD_WORDS')
+        ],
+        possibleErrors: [AiErrorPossibleError]}
+    )
     @ModifyParams()
     async afterInputText(
         ctx: TelegramContext,
         @GetFromStates('language') language: Languages,
         @GetFromStates('format') format: TextFormat,
         @GetFromStates('topic') topic: string,
-        @GetFromStates('words') input: string
+        @GetFromStates('words') input: string,
+        @GetTextManaging() textManaging: TextManaging
     ) {
         ctx.scene.states.words = input.split('\n');
 
-        if(ctx.scene.states.words.length < 10) {
-            return ctx.reply('MUST_BE_MIN_10_ADD_WORDS', ctx.session[EntityNames.User].interfaceLanguage);
-        }
-
         ctx.scene.states.text = await textGeneratorService.generateText(topic, format, ctx.scene.states.words, language);
-
-        if(!ctx.scene.states.text) {
-            CreateErrorReplyAction(ctx, 'ERRORS.AI_ERROR');
-            return;
-        }
-
-        const textManaging = new TextManaging();
 
         await ctx.reply(textManaging.deleteBrackets(ctx.scene.states.text));
 
@@ -79,36 +77,27 @@ export class TextAddTextScene implements Scene {
     }
 
     @CreateSelectBigButtonComposer('confirmSave', ['REPLIES.YES'])
-    @Apply({middlewares: [], possibleErrors: []})
+    @Apply({middlewares: [], possibleErrors: [AiErrorPossibleError]})
     @ModifyParams()
     async afterConfirmSave(
         ctx: TelegramContext,
         @TransformLanguage('language') language: Languages,
         @GetFromStates('name') associativeName: string,
         @GetFromStates('text') text: string,
-        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
+        @GetTextManaging() textManaging: TextManaging
     ) {
-        const fragmentedText = await textGeneratorService.splitText(text);
-
-        if(!fragmentedText) {
-            CreateErrorReplyAction(ctx, 'ERRORS.AI_ERROR');
-            return;
-        }
+        const fragmentedText = textManaging.splitText(text);
 
         const flashcards = await wordInfoService.getTranslations(
-            fragmentedText.filter(value => !!value.sentence).map(value => value.word),
+            fragmentedText.map(value => value.word),
             ctx.session[EntityNames.User].nativeLanguage
         );
-
-        if(!flashcards) {
-            CreateErrorReplyAction(ctx, 'ERRORS.AI_ERROR');
-            return;
-        }
 
         await ApplyServicePartAction(ctx, textService, 'add', {}, {
             associativeName,
             text,
-            fragmentedText: fragmentedText.map(value => value.sentence).filter(sentence => !!sentence),
+            fragmentedText: fragmentedText.map(value => value.sentence),
             json: flashcards,
             studyLanguages: studyLanguageManaging.getEntity(language)
         });

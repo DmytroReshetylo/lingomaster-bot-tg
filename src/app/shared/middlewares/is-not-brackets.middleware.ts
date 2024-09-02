@@ -1,10 +1,12 @@
 import { TelegramContext } from '../../../core/ctx.class';
 
-export function IsNotBracketsMiddleware(param: string) {
+export function IsNotPhohibitedSymbolsMiddleware(prohibitedSymbols: string[], message: string) {
 
     return function (ctx: TelegramContext) {
-        if(ctx.scene.states[param].includes('[') || ctx.scene.states[param].includes(']')) {
-            return 'MIDDLEWARES.PROHIBITED_BRACKETS';
+        const result = prohibitedSymbols.find(symbol => ctx.data.includes(symbol));
+
+        if(result) {
+            return message;
         }
 
         return null;

@@ -7,7 +7,8 @@ import { QuestionProvider } from '../../../../../testing-alghoritm/test-handling
 import { TestAnswerHandler } from '../../../../../testing-alghoritm/test-handling/test-answer-handler.class';
 import { Testing } from '../../../../../testing-alghoritm/test-strategy/testing.class';
 import { TransformWord } from '../../../../../testing-alghoritm/word-formats/transform-word';
-import { TestTextChangeProgress, TestTextGetNextWord, TextManaging, TextTestingMessageProvider } from '../classes';
+import { TextManaging } from '../../shared/classes';
+import { TestTextChangeProgress, TestTextGetNextWord, TextTestingMessageProvider } from '../classes';
 
 export const GetTestTextManaging = createModifyParam(ctx => {
     if(!ctx.scene.states.testMananing) {

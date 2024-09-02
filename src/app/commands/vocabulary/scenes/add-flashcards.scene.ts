@@ -11,7 +11,7 @@ import { vocabularyService } from '../../../services/database/entities/vocabular
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware, IsNotBracketsMiddleware } from '../../../shared/middlewares';
+import { IsLearningLanguageMiddleware, IsNotPhohibitedSymbolsMiddleware } from '../../../shared/middlewares';
 import { GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { InputIncorrectPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
@@ -39,7 +39,10 @@ export class VocabularyAddFlashcardsScene implements Scene {
     }
 
     @CreateTextComposer('text', true)
-    @Apply({middlewares: [IsNotBracketsMiddleware('text')], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
+    @Apply({
+        middlewares: [IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS')],
+        possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]
+    })
     @ModifyParams()
     async afterInputFlashcards(
         ctx: TelegramContext,
@@ -49,7 +52,7 @@ export class VocabularyAddFlashcardsScene implements Scene {
         const input: string[] = ctx.scene.states.text.split('\n');
 
         const flashcards: Flashcard[] = await Promise.all(input.map(async (row: string) => {
-            const [word, translate, ...sth] = row.replace(/[\u2012-\u2015]/g, '-').split(' - ');
+            const [word, translate, ...sth] = row.replace(/[-‒–—―−‐‑]/g, '-').split('-');
 
             if (sth.length || !translate) {
                 throw new Error('VALIDATORS.INCORRECT_FORMAT_INPUT');

@@ -11,9 +11,9 @@ import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging } from '../../../shared/modify-params';
 import { SendTextPartAction } from '../../../shared/part-actions';
+import { TextManaging } from './shared/classes';
 import { IsNotTextsEmptyMiddleware } from './shared/middlewares';
 import { ListTextsWithStepsPartAction } from './shared/part-actions';
-import { TextManaging } from './test-strategy/classes';
 import { GetTextManaging } from './test-strategy/modify-params';
 
 @CreateScene('text-see-scene')

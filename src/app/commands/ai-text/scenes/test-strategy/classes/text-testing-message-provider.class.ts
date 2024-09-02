@@ -2,7 +2,7 @@ import { TelegramContext } from '../../../../../../core/ctx.class';
 import { QuestionProvider } from '../../../../../testing-alghoritm/test-handling/question-provider.class';
 import { TestMessageProvider } from '../../../../../testing-alghoritm/test-handling/test-message-provider.class';
 import { ShowTestDataFormat } from '../../../../../testing-alghoritm/word-formats/types';
-import { TextManaging } from './text-managing.class';
+import { TextManaging } from '../../shared/classes/text-managing.class';
 
 export class TextTestingMessageProvider extends TestMessageProvider {
     private textManaging: TextManaging;

@@ -13,9 +13,9 @@ import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging } from '../../../shared/modify-params';
 import { ApplyServicePartAction, SendTextPartAction } from '../../../shared/part-actions';
+import { TextManaging } from './shared/classes';
 import { IsNotTextsEmptyMiddleware } from './shared/middlewares';
 import { ListTextsWithStepsPartAction } from './shared/part-actions';
-import { TextManaging } from './test-strategy/classes';
 import { GetTextManaging } from './test-strategy/modify-params';
 
 @CreateScene('text-delete-scene')
@@ -50,7 +50,7 @@ export class TextDeleteTextScene implements Scene {
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete
     ) {
         ListTextsWithStepsPartAction(ctx, texts, queueOnDelete, textId, async() => {
-            await SendTextPartAction(ctx,textManaging, texts.find(text => text.id === Number(textId))!.text);
+            await SendTextPartAction(ctx, textManaging, texts.find(text => text.id === Number(textId))!.text);
 
             CreateReplyAction(ctx, 'QUESTIONS.ASK_DEL', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', ['REPLIES.YES', 'BUTTONS.CANCEL']);
         });

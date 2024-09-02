@@ -1,5 +1,5 @@
 import { createModifyParam } from '../../../../../../core/telegram-utils';
-import { TextManaging } from '../classes';
+import { TextManaging } from '../../shared/classes';
 
 export const GetTextManaging = createModifyParam(ctx => {
     if(!ctx.scene.states.TextManaging) {

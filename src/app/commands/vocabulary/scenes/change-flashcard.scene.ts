@@ -10,7 +10,7 @@ import { vocabularyService } from '../../../services/database/entities/vocabular
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware, IsNotBracketsMiddleware } from '../../../shared/middlewares';
+import { IsLearningLanguageMiddleware, IsNotPhohibitedSymbolsMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { AddToDTOPartAction, ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { IsDifferenceBetweenOldNewVersionsFlashcardPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
@@ -60,7 +60,10 @@ export class VocabularyChangeFlashcardScene implements Scene {
     }
 
     @CreateTextComposer('newWord', false, true)
-    @Apply({middlewares: [IsNotBracketsMiddleware('newWord')], possibleErrors: [WordLanguageIncorrectPossibleError]})
+    @Apply({
+        middlewares: [IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS')],
+        possibleErrors: [WordLanguageIncorrectPossibleError]
+    })
     @ModifyParams()
     async afterInputNewWord(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto) {
         await AddToDTOPartAction(dto, 'word', ctx.scene.states.newWord);
@@ -75,7 +78,10 @@ export class VocabularyChangeFlashcardScene implements Scene {
     }
 
     @CreateTextComposer('newTranslate', false, true)
-    @Apply({middlewares: [IsNotBracketsMiddleware('newTranslate')], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
+    @Apply({
+        middlewares: [IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS')],
+        possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]
+    })
     @ModifyParams()
     async afterInputNewTranslate(
         ctx: TelegramContext,

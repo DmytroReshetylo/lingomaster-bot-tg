@@ -1,1 +1,1 @@
-export * from './text.type';
+export * from './text-info.type';
