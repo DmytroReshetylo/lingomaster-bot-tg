@@ -9,7 +9,7 @@ import { SelectLanguageAction } from '../../../shared/actions';
 import { QueueOnDelete, StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging } from '../../../shared/modify-params';
+import { GetFromStates, GetQueueOnDelete, GetStudyLanguageManaging, TransformIfNumber } from '../../../shared/modify-params';
 import { SendTextPartAction } from '../../../shared/part-actions';
 import { TextManaging } from './shared/classes';
 import { IsNotTextsEmptyMiddleware } from './shared/middlewares';
@@ -41,14 +41,14 @@ export class TextSeeTextScene implements Scene {
     afterSelectTextID(
         ctx: TelegramContext,
         @GetFromStates('language') language: Languages,
-        @GetFromStates('textId') textId: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
+        @TransformIfNumber('textId') textId: 'BUTTONS.NEXT' | 'BUTTONS.BACK' | number,
         @GetFromStates('texts') texts: AIText[],
         @GetTextManaging() textManaging: TextManaging,
         @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging,
         @GetQueueOnDelete() queueOnDelete: QueueOnDelete
     ) {
         ListTextsWithStepsPartAction(ctx, texts, queueOnDelete, textId, async() => {
-            await SendTextPartAction(ctx, textManaging, texts.find(text => text.id === Number(textId))!.text);
+            await SendTextPartAction(ctx, textManaging, texts.find(text => text.id === textId)!.text);
 
             ctx.scene.leaveScene();
         });

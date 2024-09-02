@@ -14,7 +14,7 @@ export const GetTestTextManaging = createModifyParam(ctx => {
     if(!ctx.scene.states.testMananing) {
         const entity = (ctx.scene.states.StudyLanguageManaging as StudyLanguageManaging)
             .getTexts(ctx.scene.states.language)
-            .find(text => text.id === Number(ctx.scene.states.textId))!;
+            .find(text => text.id === ctx.scene.states.textId)!;
 
         if(!ctx.scene.states.TextManaging) {
             ctx.scene.states.TextManaging = new TextManaging();

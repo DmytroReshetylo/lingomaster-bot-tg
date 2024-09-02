@@ -46,7 +46,7 @@ export async function CreateButtonsWithStepsAction<
             break;
         }
         default: {
-            if(callback && buttons.find(button => button.id === Number(lastChoose))) {
+            if(callback && buttons.find(button => button.id === lastChoose)) {
                 await callback();
             }
 
