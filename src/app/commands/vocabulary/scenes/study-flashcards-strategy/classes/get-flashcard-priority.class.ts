@@ -1,6 +1,7 @@
-import { Flashcard } from '../../../../../services/database/vocabulary/types';
+import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
 import { random } from '../../../../../shared/utils';
 import { GetNextWord } from '../../../../../testing-alghoritm/test-strategy/get-word.abstract-class';
+import { FailedQueueInfo } from '../../../../../testing-alghoritm/test-strategy/types';
 
 export class TestGetNextFlashcard extends GetNextWord<Flashcard> {
 
@@ -13,7 +14,7 @@ export class TestGetNextFlashcard extends GetNextWord<Flashcard> {
     ];
 
     private getRandomFailedQueue(highPriority: boolean) {
-        const list = this.testing.queueFailed.filter(info => this.testing.move - info.moveLastTrying > 5 && (highPriority ? this.testing.dataTest[info.index].progress > 5 : this.testing.dataTest[info.index].progress <= 5));
+        const list = this.testing.queueFailed.filter((info: FailedQueueInfo) => this.testing.move - info.moveLastTrying > 5 && (highPriority ? this.testing.dataTest[info.index].progress > 5 : this.testing.dataTest[info.index].progress <= 5));
 
         if(!list.length) {
             return -1;
@@ -24,7 +25,7 @@ export class TestGetNextFlashcard extends GetNextWord<Flashcard> {
     }
 
     private getRandomQueue(highPriority: boolean) {
-        const list = this.testing.queue.filter(index => highPriority ? this.testing.dataTest[index].progress > 5 : this.testing.dataTest[index].progress <= 5);
+        const list = this.testing.queue.filter((index: number) => highPriority ? this.testing.dataTest[index].progress > 5 : this.testing.dataTest[index].progress <= 5);
 
         if(!list.length) {
             return -1;
@@ -50,7 +51,7 @@ export class TestGetNextFlashcard extends GetNextWord<Flashcard> {
     }
 
     private findRandomFlashcard() {
-        const list = [...this.testing.queue, ...this.testing.queueFailed.map(i => i.index)];
+        const list = [...this.testing.queue, ...this.testing.queueFailed.map((i: FailedQueueInfo) => i.index)];
 
         return list[random(0, list.length - 1)];
     }

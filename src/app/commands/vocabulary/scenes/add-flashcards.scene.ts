@@ -5,15 +5,14 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { Flashcard } from '../../../services/database/vocabulary/types';
-import { Vocabulary } from '../../../services/database/vocabulary/vocabulary.entity';
-import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
-import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
-import { SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { EntityNames } from '../../../services/database/entities/entity-names';
+import { Flashcard } from '../../../services/database/entities/vocabulary/types';
+import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
+import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetVocabularyManaging, TransformLanguage } from '../../../shared/modify-params';
+import { IsLearningLanguageMiddleware, IsNotPhohibitedSymbolsMiddleware } from '../../../shared/middlewares';
+import { GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { InputIncorrectPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
 import { checkValid } from '../../../shared/utils';
@@ -23,8 +22,8 @@ import { AddFlashcardDto } from './shared/dto';
 export class VocabularyAddFlashcardsScene implements Scene {
 
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
@@ -33,20 +32,27 @@ export class VocabularyAddFlashcardsScene implements Scene {
         CreateReplyAction(
             ctx,
             'VOCABULARY.ADD_FLASHCARDS.ASK_INPUT',
-            ctx.session['user'].interfaceLanguage,
+            ctx.session[EntityNames.User].interfaceLanguage,
             'button',
             ['BUTTONS.CANCEL']
         );
     }
 
     @CreateTextComposer('text', true)
-    @Apply({middlewares: [], possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]})
+    @Apply({
+        middlewares: [IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS')],
+        possibleErrors: [InputIncorrectPossibleError, WordLanguageIncorrectPossibleError]
+    })
     @ModifyParams()
-    async afterInputFlashcards(ctx: TelegramContext, @TransformLanguage('language') language: Languages) {
+    async afterInputFlashcards(
+        ctx: TelegramContext,
+        @TransformLanguage('language') language: Languages,
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
+    ) {
         const input: string[] = ctx.scene.states.text.split('\n');
 
         const flashcards: Flashcard[] = await Promise.all(input.map(async (row: string) => {
-            const [word, translate, ...sth] = row.replace(/[\u2012-\u2015]/g, '-').split(' - ');
+            const [word, translate, ...sth] = row.replace(/[-‒–—―−‐‑]/g, '-').split('-');
 
             if (sth.length || !translate) {
                 throw new Error('VALIDATORS.INCORRECT_FORMAT_INPUT');
@@ -62,8 +68,10 @@ export class VocabularyAddFlashcardsScene implements Scene {
             return addFlashcardDto.toFlashcardFormat();
         }));
 
-        await ApplyServiceLearningPartAction(ctx, ctx.session['user'], language, vocabularyService, 'add', flashcards);
+        const studyLanguageEntity = studyLanguageManaging.getEntity(language);
 
-        CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session['user'].interfaceLanguage);
+        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'add', flashcards);
+
+        CreateFinishReplyAction(ctx, 'VOCABULARY.ADD_FLASHCARDS.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }
 }

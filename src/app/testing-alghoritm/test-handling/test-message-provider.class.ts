@@ -2,30 +2,31 @@ import { TelegramContext } from '../../../core/ctx.class';
 import { translate } from '../../../core/language-interface/translate.alghoritm';
 import { createButtonKeyboard } from '../../../core/telegram-utils';
 import { MessageInfo } from '../../../core/types';
+import { EntityNames } from '../../services/database/entities/entity-names';
 import { getNavigationButtons, transformToButtonActions } from '../../shared/utils';
 import { ShowTestDataFormat } from '../word-formats/types';
 import { AnswerResult } from './enums';
-import { QuestionProvider } from './question-provider.abstract-class';
+import { QuestionProvider } from './question-provider.class';
 
 export class TestMessageProvider {
-    private ctx: TelegramContext;
+    protected ctx: TelegramContext;
     private questionProvider: QuestionProvider;
     protected listAnswers: {type: AnswerResult, answer: (data: ShowTestDataFormat) => Promise<MessageInfo> }[] = [
         {
             type: AnswerResult.Correct,
-            answer: data => this.ctx.reply(translate('STUDYING.CORRECT_ANSWER', this.ctx.session['user'].interfaceLanguage))
+            answer: data => this.ctx.reply(translate('STUDYING.CORRECT_ANSWER', this.ctx.session[EntityNames.User].interfaceLanguage))
         },
         {
             type: AnswerResult.AlmostCorrect,
-            answer: data => this.ctx.reply(`${translate('STUDYING.ALMOST_CORRECT_ANSWER', this.ctx.session['user'].interfaceLanguage)} ${data.backSide}`)
+            answer: data => this.ctx.reply(`${translate('STUDYING.ALMOST_CORRECT_ANSWER', this.ctx.session[EntityNames.User].interfaceLanguage)} ${data.backSide}`)
         },
         {
             type: AnswerResult.Synonym,
-            answer: data => this.ctx.reply(`${translate('STUDYING.SYNONYM', this.ctx.session['user'].interfaceLanguage)} ${data.backSide}`)
+            answer: data => this.ctx.reply(`${translate('STUDYING.SYNONYM', this.ctx.session[EntityNames.User].interfaceLanguage)} ${data.backSide}`)
         },
         {
             type: AnswerResult.Incorrect,
-            answer: data => this.ctx.reply(`${translate('STUDYING.INCORRECT_ANSWER', this.ctx.session['user'].interfaceLanguage)} ${data.backSide}`)
+            answer: data => this.ctx.reply(`${translate('STUDYING.INCORRECT_ANSWER', this.ctx.session[EntityNames.User].interfaceLanguage)} ${data.backSide}`)
         }
     ];
 
@@ -40,15 +41,15 @@ export class TestMessageProvider {
 
     async sendStarted() {
         return await this.ctx.reply(
-            translate('STUDYING.STARTED', this.ctx.session['user'].interfaceLanguage),
-            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], this.ctx.session['user'].interfaceLanguage)
+            translate('STUDYING.STARTED', this.ctx.session[EntityNames.User].interfaceLanguage),
+            createButtonKeyboard(transformToButtonActions(['BUTTONS.CANCEL'], this.ctx.session[EntityNames.User].interfaceLanguage)
             )
         );
     }
 
     async sendFinished() {
         return await this.ctx.reply(
-            translate('STUDYING.FINISHED', this.ctx.session['user'].interfaceLanguage),
+            translate('STUDYING.FINISHED', this.ctx.session[EntityNames.User].interfaceLanguage),
             getNavigationButtons()
         );
     }

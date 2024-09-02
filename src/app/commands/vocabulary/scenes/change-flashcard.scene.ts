@@ -5,14 +5,13 @@ import { ModifyParams } from '../../../../core/decorators/modify-params/modify-p
 import { CreateSelectButtonComposer, CreateTextComposer } from '../../../../core/decorators/scene/composers';
 import { Scene } from '../../../../core/decorators/scene/types';
 import { Languages } from '../../../../core/language-interface/enums';
-import { vocabularyService } from '../../../services/database/vocabulary/vocabulary.service';
-import { CreateFinishReplyAction, CreateReplyAction } from '../../../shared/actions';
-import { SelectLanguageAction } from '../../../shared/actions';
-import { VocabularyManaging } from '../../../shared/classes';
+import { EntityNames } from '../../../services/database/entities/entity-names';
+import { vocabularyService } from '../../../services/database/entities/vocabulary/vocabulary.service';
+import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
+import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
-import { IsLearningLanguageMiddleware } from '../../../shared/middlewares';
-import { GetFromStates, GetVocabularyManaging } from '../../../shared/modify-params';
-import { TransformLanguage } from '../../../shared/modify-params';
+import { IsLearningLanguageMiddleware, IsNotPhohibitedSymbolsMiddleware } from '../../../shared/middlewares';
+import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { AddToDTOPartAction, ApplyServiceLearningPartAction } from '../../../shared/part-actions';
 import { IsDifferenceBetweenOldNewVersionsFlashcardPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
 import { ChangeFlashcardDto } from './shared/dto';
@@ -21,8 +20,8 @@ import { IsFoundWordInVocabularyMiddleware } from './shared/middlewares';
 @CreateScene('vocabulary-change-flashcard-scene')
 export class VocabularyChangeFlashcardScene implements Scene {
     @ModifyParams()
-    start(ctx: TelegramContext, @GetVocabularyManaging() vocabularyManaging: VocabularyManaging ) {
-        SelectLanguageAction(ctx, vocabularyManaging, true);
+    start(ctx: TelegramContext, @GetStudyLanguageManaging() StudyLanguageManaging: StudyLanguageManaging ) {
+        SelectLanguageAction(ctx, StudyLanguageManaging, true);
     }
 
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
@@ -31,7 +30,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
         CreateReplyAction(
             ctx,
             'VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT',
-            ctx.session['user'].interfaceLanguage,
+            ctx.session[EntityNames.User].interfaceLanguage,
             'button',
             ['BUTTONS.CANCEL']
         );
@@ -47,21 +46,24 @@ export class VocabularyChangeFlashcardScene implements Scene {
                 word: '',
                 wordLanguage: language,
                 translate: '',
-                oldFlashcardVersion: ctx.scene.states.vocabulary.flashcards[ctx.scene.states.id]
+                oldFlashcardVersion: ctx.scene.states.vocabulary.json[ctx.scene.states.id]
             }
         );
 
         CreateReplyAction(
             ctx,
             'VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_WORD',
-            ctx.session['user'].interfaceLanguage,
+            ctx.session[EntityNames.User].interfaceLanguage,
             'bigButton',
             [ctx.scene.states.newFlashcard.oldFlashcardVersion.word, 'BUTTONS.CANCEL']
         );
     }
 
     @CreateTextComposer('newWord', false, true)
-    @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError]})
+    @Apply({
+        middlewares: [IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS')],
+        possibleErrors: [WordLanguageIncorrectPossibleError]
+    })
     @ModifyParams()
     async afterInputNewWord(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto) {
         await AddToDTOPartAction(dto, 'word', ctx.scene.states.newWord);
@@ -69,20 +71,30 @@ export class VocabularyChangeFlashcardScene implements Scene {
         CreateReplyAction(
             ctx,
             'VOCABULARY.CHANGE_FLASHCARD.ASK_INPUT_NEW_TRANSLATE',
-            ctx.session['user'].interfaceLanguage,
+            ctx.session[EntityNames.User].interfaceLanguage,
             'bigButton',
             [ctx.scene.states.newFlashcard.oldFlashcardVersion.translate, 'BUTTONS.CANCEL']
         );
     }
 
     @CreateTextComposer('newTranslate', false, true)
-    @Apply({middlewares: [], possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]})
+    @Apply({
+        middlewares: [IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS')],
+        possibleErrors: [WordLanguageIncorrectPossibleError, IsDifferenceBetweenOldNewVersionsFlashcardPossibleError]
+    })
     @ModifyParams()
-    async afterInputNewTranslate(ctx: TelegramContext, @GetFromStates('newFlashcard') dto: ChangeFlashcardDto, @TransformLanguage('language') language: Languages) {
+    async afterInputNewTranslate(
+        ctx: TelegramContext,
+        @GetFromStates('newFlashcard') dto: ChangeFlashcardDto,
+        @TransformLanguage('language') language: Languages,
+        @GetStudyLanguageManaging() studyLanguageManaging: StudyLanguageManaging
+    ) {
         await AddToDTOPartAction(dto, 'translate', ctx.scene.states.newTranslate);
 
-        await ApplyServiceLearningPartAction(ctx, ctx.session['user'], language, vocabularyService, 'update', dto.toFlashcardFormat());
+        const studyLanguageEntity = studyLanguageManaging.getEntity(language);
 
-        CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session['user'].interfaceLanguage);
+        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'update', dto.toFlashcardFormat());
+
+        CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }
 }

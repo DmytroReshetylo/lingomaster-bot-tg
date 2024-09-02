@@ -1,5 +1,5 @@
 import { PhotoGeneratorConfig } from '../configs';
-import { PhotoGenerator } from './types';
+import { PhotoGenerator } from '../types';
 
 const axios = require("axios").default;
 

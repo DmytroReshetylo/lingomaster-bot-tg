@@ -24,13 +24,12 @@
     "ASK": "Select a new interface language",
     "FINISHED": "The new interface language has been set!"
   },
+  "STUDY_NEW_LANGUAGE": {
+    "FINISHED": "The language has been added to study"
+  },
   "VOCABULARY": {
     "SEE_FLASHCARDS": {
       "TITLE": "See flashcards"
-    },
-    "STUDY_NEW_LANGUAGE": {
-      "TITLE": "Add a new language to study",
-      "FINISHED": "The language has been added to study"
     },
     "STUDY_FLASHCARDS": {
       "TITLE": "Study flashcards"
@@ -53,6 +52,38 @@
       "FINISHED": "The flashcard has been updated"
     }
   },
+  "TEXT": {
+    "FORMAT_TEXT": {
+      "STORY": "Story",
+      "ARTICLE": "Article",
+      "CONVERSATION": "Conversation",
+      "NEWS": "News",
+      "REPORT": "Report"
+    },
+    "ASK": {
+      "SELECT_TEXT": "Select a text"
+    },
+    "ADD_TEXT": {
+      "TITLE": "Add a text",
+      "ASK_NAME": "Input an associative name",
+      "SELECT_FORMAT": "Select a format text",
+      "ASK_LEVEL": "Select a text's level",
+      "ASK_TOPIC": "Input a topic text",
+      "ASK_WORDS": "Input words. Write each word on a new line to add",
+      "PROMPT_SAVE": "Would you like to save the text?",
+      "FINISHED": "The text has been added"
+    },
+    "SEE_TEXT": {
+      "TITLE": "See a text"
+    },
+    "DEL_TEXT": {
+      "TITLE": "Remove a text",
+      "FINISHED": "The TEXT has been removed"
+    },
+    "STUDY": {
+      "TITLE": "Start test using a text"
+    }
+  },
   "STUDYING": {
     "STARTED": "Started!",
     "ASK": "Next word: ",
@@ -61,6 +92,7 @@
     "INCORRECT_ANSWER": "Wrong! The correct answer is ",
     "SYNONYM": "You are right, but you wrote a synonym. Really answer is ",
     "ASK_MODEL": "Select a model to study",
+    "FINISHED": "The testing have been finished!",
     "MODELS": {
       "WITHOUT_PHOTO_AND_OPTIONS": "Write answer",
       "WITH_OPTIONS": "Select answer",
@@ -69,13 +101,22 @@
     }
   },
   "BUTTONS": {
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "NEXT": "Next",
+    "BACK": "Back"
   },
   "INFO": {
     "CANCELLED": "Cancelled",
     "SELECT_ACTION": "Select action",
     "CHOOSE_LANGUAGE": "Choose language",
     "COMMAND_DONT_EXIST": "The command doesn't exist"
+  },
+  "QUESTIONS": {
+    "ASK_ADD": "Would toy like to save this?",
+    "ASK_DEL": "Are you sure you want to delete this?"
+  },
+  "REPLIES": {
+    "YES": "YES"
   },
   "MIDDLEWARES": {
     "USER_ALREADY_REGISTERED": "You have already signed up",
@@ -90,7 +131,11 @@
     "ALREADY_SELECTED_INTERFACE_LANGUAGE": "The language is already set as your interface language",
     "EMPTY_VOCABULARY": "The vocabulary is empty",
     "CANT_STUDY_NATIVE_LANGUAGE": "You can't study your native language",
-    "IS_NOT_LEARN_ANY_LANGUAGE": "You have not been learning any language"
+    "IS_NOT_LEARN_ANY_LANGUAGE": "You have not been learning any language",
+    "EMPTY_TEXTS": "You have no texts",
+    "NAME_IS_ALREADY_SET": "The name is already set",
+    "PROHIBITED_BRACKETS": "Brackets as [] is prohibited",
+    "MUST_BE_MIN_10_ADD_WORDS": "Must have at least 10 words to generate text"
   },
   "VALIDATORS": {
     "THE_VALUE_MUST_BE_LESS_LENGTH": "The input must be shorter",

@@ -1,2 +1,1 @@
-export * from './db.connection'
-export * from './service.abstract-class'
+export * from './db.connection';

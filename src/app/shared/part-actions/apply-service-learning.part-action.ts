@@ -1,12 +1,11 @@
 import { TelegramContext } from '../../../core/ctx.class';
-import { Languages } from '../../../core/language-interface/enums';
-import { ServiceLearning } from '../../services/database/service-learning.abstract-class';
-import { ServiceWithJson } from '../../services/database/service-with-json.type';
-import { User } from '../../services/database/user/user.entity';
+import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
+import { StudyLanguages } from '../../services/database/entities/study-languages/study-language.entity';
+import { EntityLearningType, JSONLearning } from '../../services/database/types/entity-learning.type';
 import { photoManagerService } from '../../services/photo-manager/photo-manager.service';
 import { PhotoManagerSubscribers } from '../../services/photo-manager/photo-manager.subscribers';
+import { StudyLanguageServicesSubscribers } from '../session/study-language-services-subscribers';
 import { UpdateSessionJSONSubscriber } from '../session/update-data-service-json-session.util';
-import { SessionSubscribers } from '../session/update-session-subscribers';
 
 export type Actions<T> = {
     update: T,
@@ -15,33 +14,32 @@ export type Actions<T> = {
 }
 
 export async function ApplyServiceLearningPartAction<
-    T,
-    TT extends ServiceWithJson,
+    T extends JSONLearning,
     K extends keyof Actions<T>,
     ENTITY extends Actions<T>[K]
->(ctx: TelegramContext, user: User, language: Languages, service: ServiceLearning<TT, any, any>, action: K, data: ENTITY) {
-    let entity: TT | false = false;
+>(ctx: TelegramContext, studyLanguageEntity: StudyLanguages, idRow: number, service: ServiceLearning<T, EntityLearningType<T>, any>, action: K, data: ENTITY) {
+    let entity: EntityLearningType<T> | false = false;
 
     switch (action) {
         case 'update': {
-            entity = await service.updateRecord(user, language, data as any);
+            entity = await service.updateRecord({id: idRow}, data as any);
             break;
         }
         case 'add': {
-            entity = await service.addRecord(user, language, data as any);
+            entity = await service.addRecord({id: idRow}, data as any);
             break;
         }
         case 'remove': {
-            entity = await service.removeRecord(user, language, data as any);
+            entity = await service.removeRecord({id: idRow}, data as any);
             break;
         }
     }
 
     if (entity && PhotoManagerSubscribers.includes(service)) {
-        photoManagerService.generatePhotoDescriptorsForUser(user, service, entity as any);
+        photoManagerService.generatePhotoDescriptorsForUser(service, entity);
     }
 
-    if (entity && SessionSubscribers.has(service)) {
-        UpdateSessionJSONSubscriber(ctx, service, entity as any, language);
+    if (StudyLanguageServicesSubscribers.has(service)) {
+        await UpdateSessionJSONSubscriber(ctx, service, studyLanguageEntity);
     }
 }

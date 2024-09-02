@@ -19,7 +19,7 @@ export function CreateSelectBigButtonComposer(param: string, actions: string[] |
                     return ctx.scene.leave();
                 }
 
-                if(actions !== 'any' && actions.includes(ctx.wizard.state[param])) {
+                if(actions === 'any' || actions.includes(ctx.wizard.state[param])) {
                     method(tgCtx);
                 }
             });

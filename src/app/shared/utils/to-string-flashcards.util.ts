@@ -1,5 +1,5 @@
-import { Vocabulary } from '../../services/database/vocabulary/vocabulary.entity';
+import { Vocabulary } from '../../services/database/entities/vocabulary/vocabulary.entity';
 
 export function toStringFlashcards(vocabulary: Vocabulary) {
-    return vocabulary.flashcards.map(flashcard => `${flashcard.word} - ${flashcard.translate}`).join('\n');
+    return vocabulary.json.map(flashcard => `${flashcard.word} - ${flashcard.translate}`).join('\n');
 }

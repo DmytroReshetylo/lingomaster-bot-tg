@@ -1,18 +1,13 @@
-import { FindOptionsWhere } from 'typeorm';
-import { Languages } from '../../../core/language-interface/enums';
-import { ServiceLearning } from '../../services/database/service-learning.abstract-class';
-import { User } from '../../services/database/user/user.entity';
+import { ServiceLearning } from '../../services/database/abstract-services/service-learning.abstract-class';
+import { EntityLearningType, JSONLearning } from '../../services/database/types/entity-learning.type';
 import { ChangeProgress } from './change-progress.abstract-class';
 import { GetNextWord } from './get-word.abstract-class';
 import { FailedQueueInfo } from './types';
-import { ServiceWithJson } from '../../services/database/service-with-json.type';
 
-export class Testing<T, TT extends ServiceWithJson> {
-    protected user: User;
+export class Testing<T extends JSONLearning> {
+    private idEntity: number;
     readonly dataTest: T[];
-    protected service: ServiceLearning<TT, any, any>;
-    protected language: Languages;
-    protected paramDataTest: string;
+    protected service: ServiceLearning<T, EntityLearningType<T>, any>;
 
     private changeProgressExemplar: ChangeProgress<T>;
     private getWordExemplar: GetNextWord<T>;
@@ -23,19 +18,14 @@ export class Testing<T, TT extends ServiceWithJson> {
     queueFailed: FailedQueueInfo[] = [];
 
     constructor(
-        user: User,
-        language: Languages,
-        dataTest: T[],
-        service: ServiceLearning<TT, any, any>,
-        paramDataTest: string,
+        entity: EntityLearningType<T>,
+        service: ServiceLearning<T, EntityLearningType<T>, any>,
         changeProgressClass: ChangeProgress<T>,
         getWordClass: GetNextWord<T>
     ) {
-        this.user = user;
-        this.dataTest = dataTest;
+        this.dataTest = entity.json;
+        this.idEntity = entity.id;
         this.service = service;
-        this.language = language;
-        this.paramDataTest = paramDataTest;
         this.changeProgressExemplar = changeProgressClass;
         this.getWordExemplar = getWordClass;
 
@@ -51,10 +41,7 @@ export class Testing<T, TT extends ServiceWithJson> {
     }
 
     async sendProgress() {
-        const changeOptions: any = {};
-        changeOptions[this.paramDataTest] = this.dataTest;
-
-        await this.service.update({user: this.user, language: this.language} as FindOptionsWhere<TT>, changeOptions);
+        await this.service.updateFullRecords({id: this.idEntity} as any, this.dataTest);
     }
 
     getNextWordIndex() {

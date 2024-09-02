@@ -1,6 +1,6 @@
 import { generateAsync } from 'stability-client';
 import { PhotoGeneratorConfig } from '../configs';
-import { PhotoGenerator } from './types';
+import { PhotoGenerator } from '../types';
 
 class StabilityPhotoGeneratorService implements PhotoGenerator {
 

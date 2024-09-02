@@ -1,13 +1,10 @@
-import { ServiceWithJson } from '../../services/database/service-with-json.type';
 import { TelegramContext } from '../../../core/ctx.class';
+import { JSONLearning } from '../../services/database/types/entity-learning.type';
 import { TestManaging } from '../../testing-alghoritm/types';
 
-export async function TestAnswerHandlingPartAction<
-    T extends Record<string, any>,
-    TT extends ServiceWithJson,
->(
+export async function TestAnswerHandlingPartAction<T extends JSONLearning>(
    ctx: TelegramContext,
-   testManaging: TestManaging<T, TT>,
+   testManaging: TestManaging<T>,
    answer: string
 ) {
     testManaging.queueOnDelete.push(ctx.message.message_id);

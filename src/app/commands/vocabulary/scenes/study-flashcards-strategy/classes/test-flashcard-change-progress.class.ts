@@ -1,4 +1,4 @@
-import { Flashcard } from '../../../../../services/database/vocabulary/types';
+import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
 import { ChangeProgress } from '../../../../../testing-alghoritm/test-strategy/change-progress.abstract-class';
 import { ProgressFailedChanges } from '../constants';
 
