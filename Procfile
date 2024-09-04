@@ -1,0 +1,1 @@
+worker: tsnd --respawn ./src/start.ts
