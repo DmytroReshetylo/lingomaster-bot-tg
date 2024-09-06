@@ -6,10 +6,10 @@ export class TestAnswerHandler {
 
     async check(answer: string, displayFormat: ShowTestDataFormat) {
         switch (true) {
-            case(answer === displayFormat.backSide): {
+            case(answer.trim() === displayFormat.backSide.trim()): {
                 return {correct: true, message: AnswerResult.Correct};
             }
-            case(similarityDetectorService.detect(answer, displayFormat.backSide)): {
+            case(await similarityDetectorService.detect(answer, displayFormat.backSide)): {
                 return {correct: true, message: AnswerResult.AlmostCorrect};
             }
             case(await similarityDetectorService.detectWithSynonyms(answer, displayFormat.backSide)): {

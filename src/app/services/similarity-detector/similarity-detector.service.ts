@@ -1,44 +1,42 @@
-import { JaroWinklerDistance, WordNet } from 'natural';
+import Groq from 'groq-sdk';
 
 class SimilarityDetectorService {
-    #wordNet = new WordNet();
+    #client = new Groq({apiKey: process.env['groq_api_key']});
 
-    async #getSynonyms(s: string) {
-        return new Promise((resolve, reject) => {
-            this.#wordNet.lookup(s, res => {
-                const synonyms = res
-                    .map(record => {
-                        return record.synonyms.map(syn => syn.replace(/_/g, ' '))
-                    })
-                    .reduce((acc, syn) => [...acc, ...syn], []);
+    async detect(s1: string, s2: string) {
+        try {
+            const chatCompletion = await this.#client.chat.completions.create({
+                messages: [{ role: 'user', content: `Check if the two words '{${s1})' and '{${s2}}' are different forms of the same word. In reply return ONLY 1 if true, 0 if false.`}],
+                model: 'llama-3.1-70b-versatile',
+            });
 
-                resolve(new Set(synonyms));
-            })
-        });
-    }
-
-    detect(s1: string, s2: string) {
-        if(s1.length/s2.length >= 0.8) {
-            if(s2.includes(s1) || s1.includes(s2)) {
-                return true;
+            if(typeof chatCompletion.choices[0].message.content !== 'string') {
+                return false;
             }
+
+            return !!Number(chatCompletion.choices[0].message.content);
         }
-
-        const result = JaroWinklerDistance(s1, s2);
-
-        return result >= 0.90;
+        catch (arr: any) {
+            return false;
+        }
     }
 
     async detectWithSynonyms(s1: string, s2: string) {
-        const synonyms = await this.#getSynonyms(s2) as Set<string>;
+        try {
+            const chatCompletion = await this.#client.chat.completions.create({
+                messages: [{ role: 'user', content: `Check if the two words '{${s1}}' and '{${s2}}' have the same meaning. In reply return ONLY 1 if true, 0 if false.`}],
+                model: 'llama-3.1-70b-versatile',
+            });
 
-        for(const synonym of synonyms) {
-            if(this.detect(s1, synonym)) {
-                return true;
+            if(typeof chatCompletion.choices[0].message.content !== 'string') {
+                return false;
             }
-        }
 
-        return false;
+            return !!Number(chatCompletion.choices[0].message.content);
+        }
+        catch (arr: any) {
+            return false;
+        }
     }
 }
 

@@ -20,5 +20,5 @@ export async function TestAnswerHandlingPartAction<T extends JSONLearning>(
 
     testManaging.queueOnDelete.push(message.message_id);
 
-    testManaging.queueOnDelete.deleteAllMessagesInQueue(3000);
+    testManaging.queueOnDelete.deleteAllMessagesInQueue(5000);
 }
