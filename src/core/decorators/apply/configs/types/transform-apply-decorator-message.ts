@@ -1,1 +1,0 @@
-export type TransformApplyDecoratorMessage = (message: string, ctx: any) => string;
