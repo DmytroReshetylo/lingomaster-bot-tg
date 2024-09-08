@@ -12,7 +12,7 @@ export async function IsFoundWordInVocabularyMiddleware(ctx: TelegramContext) {
     ctx.scene.states.vocabulary = getVocabulary(ctx.session[EntityNames.StudyLanguages], ctx.scene.states.language);
 
     ctx.scene.states.id = (ctx.scene.states.vocabulary as Vocabulary)
-    .json.findIndex(async (flashcard) => await similarityDetectorService.detect(flashcard.word, ctx.scene.states.word))
+    .json.findIndex((flashcard) => similarityDetectorService.detect(flashcard.word, ctx.scene.states.word))
 
     if(ctx.scene.states.id === -1) {
         return 'MIDDLEWARES.WORD_NOT_FOUND';

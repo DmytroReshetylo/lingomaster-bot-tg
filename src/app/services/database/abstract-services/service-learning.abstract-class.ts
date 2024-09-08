@@ -21,7 +21,7 @@ export abstract class ServiceLearning<
 
         if (!entity) return false;
 
-        const index = entity.json.findIndex(async(item) => await similarityDetectorService.detect(item[this.diffProperty], record[this.diffProperty]))!;
+        const index = entity.json.findIndex((item) => similarityDetectorService.detect(item[this.diffProperty], record[this.diffProperty]))!;
 
         if(index === -1) return false;
 
@@ -50,8 +50,8 @@ export abstract class ServiceLearning<
 
         records = records.filter(
             (record) =>
-                !entity.json.find(async (record2) =>
-                    await similarityDetectorService.detect(record2[this.diffProperty] as string, record[this.diffProperty] as string)
+                !entity.json.find((record2) =>
+                    similarityDetectorService.detect(record2[this.diffProperty] as string, record[this.diffProperty] as string)
                 )
         );
 
@@ -68,8 +68,8 @@ export abstract class ServiceLearning<
 
         entity.json = entity.json.filter(
             (record) =>
-                !words.find(async(word) =>
-                    await similarityDetectorService.detect(word, record[this.diffProperty] as string)
+                !words.find((word) =>
+                    similarityDetectorService.detect(word, record[this.diffProperty] as string)
                 )
         ) as T[];
 

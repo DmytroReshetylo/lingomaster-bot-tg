@@ -2,7 +2,7 @@ import { createModifyParam } from '../../../../../../core/telegram-utils';
 import { textService } from '../../../../../services/database/entities/ai-text/text.service';
 import { TextInfo } from '../../../../../services/database/entities/ai-text/types';
 import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
-import { QueueOnDelete, StudyLanguageManaging } from '../../../../../shared/classes';
+import { QueueOnDelete } from '../../../../../shared/classes';
 import { QuestionProvider } from '../../../../../testing-alghoritm/test-handling/question-provider.class';
 import { TestAnswerHandler } from '../../../../../testing-alghoritm/test-handling/test-answer-handler.class';
 import { Testing } from '../../../../../testing-alghoritm/test-strategy/testing.class';
@@ -10,11 +10,10 @@ import { TransformWord } from '../../../../../testing-alghoritm/word-formats/tra
 import { TextManaging } from '../../shared/classes';
 import { TestTextChangeProgress, TestTextGetNextWord, TextTestingMessageProvider } from '../classes';
 
-export const GetTestTextManaging = createModifyParam(ctx => {
+export const GetTestTextManaging = createModifyParam(async(ctx) => {
     if(!ctx.scene.states.testMananing) {
-        const entity = (ctx.scene.states.StudyLanguageManaging as StudyLanguageManaging)
-            .getTexts(ctx.scene.states.language)
-            .find(text => text.id === ctx.scene.states.textId)!;
+
+        const entity = (await textService.getEntity({id: ctx.scene.states.textId}))!;
 
         if(!ctx.scene.states.TextManaging) {
             ctx.scene.states.TextManaging = new TextManaging();

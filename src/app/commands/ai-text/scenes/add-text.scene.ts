@@ -7,13 +7,14 @@ import { Languages } from '../../../../core/language-interface/enums';
 import { textGeneratorService, wordInfoService } from '../../../services/ai';
 import { textService } from '../../../services/database/entities/ai-text/text.service';
 import { EntityNames } from '../../../services/database/entities/entity-names';
+import { languageDetectorService } from '../../../services/language-detector';
 import { CreateFinishReplyAction, CreateReplyAction, SelectLanguageAction } from '../../../shared/actions';
 import { StudyLanguageManaging } from '../../../shared/classes';
 import { LanguageJsonFormat } from '../../../shared/constants';
 import { IsLearningLanguageMiddleware, IsNotPhohibitedSymbolsMiddleware } from '../../../shared/middlewares';
 import { GetFromStates, GetStudyLanguageManaging, TransformLanguage } from '../../../shared/modify-params';
 import { ApplyServicePartAction } from '../../../shared/part-actions';
-import { AiErrorPossibleError } from '../../../shared/possible-errors';
+import { AiErrorPossibleError, WordLanguageIncorrectPossibleError } from '../../../shared/possible-errors';
 import { TextManaging } from './shared/classes';
 import { LevelList, TextFormatJson } from './shared/constants';
 import { Level, TextFormat } from './shared/enums';
@@ -42,10 +43,10 @@ export class TextAddTextScene implements Scene {
 
     @CreateSelectBigButtonComposer('format', TextFormatJson, true)
     afterInputFormat(ctx: TelegramContext) {
-        CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_TOPIC', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', ['BUTTONS.CANCEL']);
+        CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_TOPIC', ctx.session[EntityNames.User].interfaceLanguage, 'button', ['BUTTONS.CANCEL']);
     }
 
-    @CreateTextComposer('topic', false, true)
+    @CreateTextComposer('topic', true, false)
     afterInputTopic(ctx: TelegramContext) {
         CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_LEVEL', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', [...LevelList, 'BUTTONS.CANCEL']);
     }
@@ -61,7 +62,7 @@ export class TextAddTextScene implements Scene {
             IsNotPhohibitedSymbolsMiddleware(['[', ']'], 'MIDDLEWARES.PROHIBITED_BRACKETS'),
             InputSplitMiddleware('\n', 10, 'MIDDLEWARES.MUST_BE_MIN_10_ADD_WORDS')
         ],
-        possibleErrors: [AiErrorPossibleError]}
+        possibleErrors: [AiErrorPossibleError, WordLanguageIncorrectPossibleError]}
     )
     @ModifyParams()
     async afterInputText(
@@ -74,6 +75,12 @@ export class TextAddTextScene implements Scene {
         @GetTextManaging() textManaging: TextManaging
     ) {
         ctx.scene.states.words = input.split('\n');
+
+        for(const word of ctx.scene.states.words) {
+            if(!(await languageDetectorService.detect(word, language))) {
+                throw new Error('VALIDATORS.WORD_INCORRECT_LANGUAGE');
+            }
+        }
 
         ctx.scene.states.text = await textGeneratorService.generateText(topic, format, level, ctx.scene.states.words, language);
 

@@ -16,12 +16,12 @@ export class ChangeFlashcardDto {
 
     oldFlashcardVersion!: Flashcard;
 
-    async toFlashcardFormat(): Promise<Flashcard> {
+     toFlashcardFormat(): Flashcard {
         return {
             word: this.word,
             translate: this.translate,
             progress: this.oldFlashcardVersion.progress,
-            photoUrl: await similarityDetectorService.detect(this.word, this.oldFlashcardVersion.word) ? this.oldFlashcardVersion.photoUrl : null
+            photoUrl: similarityDetectorService.detect(this.word, this.oldFlashcardVersion.word) ? this.oldFlashcardVersion.photoUrl : null
         }
     }
 }

@@ -93,7 +93,7 @@ export class VocabularyChangeFlashcardScene implements Scene {
 
         const studyLanguageEntity = studyLanguageManaging.getEntity(language);
 
-        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'update', await dto.toFlashcardFormat());
+        await ApplyServiceLearningPartAction(ctx, studyLanguageEntity, studyLanguageEntity[EntityNames.Vocabulary].id, vocabularyService, 'update', dto.toFlashcardFormat());
 
         CreateFinishReplyAction(ctx, 'VOCABULARY.CHANGE_FLASHCARD.FINISHED', ctx.session[EntityNames.User].interfaceLanguage);
     }

@@ -1,4 +1,5 @@
 import { createModifyParam } from '../../../../../../core/telegram-utils';
+import { StudyLanguages } from '../../../../../services/database/entities/study-languages/study-language.entity';
 import { Flashcard } from '../../../../../services/database/entities/vocabulary/types';
 import { vocabularyService } from '../../../../../services/database/entities/vocabulary/vocabulary.service';
 import { QueueOnDelete } from '../../../../../shared/classes';
@@ -9,13 +10,17 @@ import { Testing } from '../../../../../testing-alghoritm/test-strategy/testing.
 import { TransformWord } from '../../../../../testing-alghoritm/word-formats/transform-word';
 import { TestFlashcardChangeProgress, TestGetNextFlashcard } from '../classes';
 
-export const GetTestFlashcardsManaging = createModifyParam(ctx => {
+export const GetTestFlashcardsManaging = createModifyParam(async(ctx) => {
     if(!ctx.scene.states.testMananing) {
+        const studyLanguageEntity = ctx.scene.states.StudyLanguageManaging.getEntity(ctx.scene.states.language) as StudyLanguages;
+
+        const vocabulary = (await vocabularyService.getEntity({studyLanguages: {id: studyLanguageEntity.id}}))!;
+
         ctx.scene.states.testMananing = {
             queueOnDelete: new QueueOnDelete(ctx),
 
             strategy: new Testing<Flashcard>(
-                ctx.scene.states.StudyLanguageManaging.getVocabulary(ctx.scene.states.language),
+                vocabulary,
                 vocabularyService,
                 new TestFlashcardChangeProgress(),
                 new TestGetNextFlashcard()

@@ -9,7 +9,7 @@ export function ModifyParams() {
             const modifiedParams: ModifiedParams = Reflect.getOwnMetadata('modifiedParams', target, propertyKey) || new Map<number, (ctx: TelegramContext) => any>();
 
             for (const [index, [modify, additionArgs]] of modifiedParams) {
-                args[index - 1] = modify(ctx, ...additionArgs);
+                args[index - 1] = await modify(ctx, ...additionArgs);
             }
 
             await originalMethod(ctx, ...args);
