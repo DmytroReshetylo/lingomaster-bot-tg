@@ -9,7 +9,7 @@ export class TextManaging {
     }
 
     splitText(text: string) {
-        const sentences = text.split('.');
+        const sentences = text.split(']');
 
         return sentences.reduce((acc, sentence: string, index: number) => {
 
