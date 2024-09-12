@@ -1,4 +1,5 @@
-import { MessageInfo, SceneManaging } from './types';
+import { MessageInfo } from '../types/message-info.type';
+import { SceneManaging } from '../types/scene-managing.type';
 
 export class TelegramContext {
     #ctx: any;
@@ -37,8 +38,8 @@ export class TelegramContext {
 
     get scene(): SceneManaging {
         return {
-            nextAction: (): void => this.#ctx.wizard.next(),
-            backAction: (): void => this.#ctx.wizard.back(),
+            nextComposer: (): void => this.#ctx.wizard.next(),
+            backComposer: (): void => this.#ctx.wizard.back(),
             leaveScene: (): void => this.#ctx.scene.leave(),
             enterScene: (nameScene: string): void => this.#ctx.scene.enter(nameScene),
             states: this.#ctx.wizard ? this.#ctx.wizard.state : {}

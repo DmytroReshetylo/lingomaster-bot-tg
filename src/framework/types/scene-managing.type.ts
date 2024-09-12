@@ -1,6 +1,6 @@
 export type SceneManaging = {
-    nextAction: () => void,
-    backAction: () => void,
+    nextComposer: () => void,
+    backComposer: () => void,
     leaveScene: () => void,
     enterScene: (nameScene: string) => void,
     states: {[p: string]: any}
