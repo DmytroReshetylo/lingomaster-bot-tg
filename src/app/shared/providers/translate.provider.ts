@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Languages } from '../../../framework/enums/languages.enum';
+import { Languages } from '../enums/languages.enum';
 
 @injectable()
 export class TranslateProvider {
@@ -7,7 +7,7 @@ export class TranslateProvider {
 
     static forRoot(languages: Languages[]) {
         for(const language of languages) {
-            import('../../languages/' + language.toLowerCase() + '.json').then(json => {
+            import('../../../languages/' + language.toLowerCase() + '.json').then(json => {
                 this.languagesJSON.set(language, json);
             });
         }

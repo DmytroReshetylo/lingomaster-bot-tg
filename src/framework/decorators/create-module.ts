@@ -14,6 +14,6 @@ export function CreateModule(config: ModuleConfig) {
 
         SetContainerParent(container, [...config.modules, ...config.scenes, ...config.triggers]);
 
-        //QueueDependencies.push(() => LaunchTriggersAndScenes(container, config.scenes));
+        //QueueDependencies.push(() => LaunchTrigger(container, config.scenes));
     }
 }

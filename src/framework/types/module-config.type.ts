@@ -1,9 +1,9 @@
-import { CodeStructure } from './composer-structure.type';
 import { Constructor } from './contructor.type';
+import { TriggerStructure } from './trigger-structure.type';
 
 export type ModuleConfig = {
     modules: Constructor<any>[];
-    triggers: Constructor<CodeStructure>[];
+    triggers: Constructor<TriggerStructure>[];
     scenes: Constructor<any>[];
     providers: any[];
 }

@@ -1,6 +1,5 @@
-import { TelegramContext } from '../classes/ctx.class';
-import { defaultBotMethods } from '../default-bot-methods';
-import { ProtectConfig } from '../types/protect-config.type';
+import { TelegramContext } from '../../../framework/classes/ctx.class';
+import { ProtectConfig } from '../../../framework/types/protect-config.type';
 import { GetFirstReturn } from './get-first-return.util';
 
 export async function ApplyCodeWithProtect(ctx: any, code: (ctx: TelegramContext) => void, { middlewares, errors }: ProtectConfig) {

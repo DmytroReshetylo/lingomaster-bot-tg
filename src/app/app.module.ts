@@ -1,6 +1,6 @@
 import { CreateModule } from '../framework/decorators/create-module';
-import { Languages } from '../framework/enums/languages.enum';
 import { StartModule } from './commands/start/start.module';
+import { Languages } from './shared/enums/languages.enum';
 import { TranslateProvider } from './shared/providers/translate.provider';
 import 'reflect-metadata';
 

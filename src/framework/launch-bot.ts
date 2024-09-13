@@ -2,12 +2,13 @@ import { Scenes, session } from 'telegraf';
 import { AppBotModule } from '../app/app.module';
 import { bot } from './bot-connect';
 import { botManaging } from './classes/bot-managing';
-import { QueueDependenciesConstant } from './constants/queue-dependencies.constant';
+import { QueueCommandsConstant } from './constants/queue-commands.constant';
+import { QueueStagesConstant } from './constants/queue-stages.constant';
 
 export function LaunchBot() {
     new AppBotModule();
 
-    for(const launch of QueueDependenciesConstant.reverse()) {
+    for(const launch of [...QueueStagesConstant.reverse(), ...QueueCommandsConstant.reverse()]) {
         launch();
     }
 

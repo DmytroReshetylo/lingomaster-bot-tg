@@ -1,14 +1,14 @@
 import { inject } from 'inversify';
 import { TelegramContext } from '../../../framework/classes/ctx.class';
 import { CreateCommand } from '../../../framework/decorators/create-command';
-import { CodeStructure } from '../../../framework/types/composer-structure.type';
+import { TriggerStructure } from '../../../framework/types/trigger-structure.type';
 import { TranslateProvider } from '../../shared/providers/translate.provider';
 
 @CreateCommand({
     trigger: 'start',
     providers: []
 })
-export class StartCommand implements CodeStructure {
+export class StartCommand implements TriggerStructure {
     constructor(
         @inject(TranslateProvider) private readonly translator: TranslateProvider
     ) {}
