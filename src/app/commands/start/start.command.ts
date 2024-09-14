@@ -16,7 +16,7 @@ export class StartCommand implements TriggerStructure {
     code(ctx: TelegramContext) {
         ctx.reply('1');
 
-        console.log(this);
+        ctx.scene.enterScene('sign-up-scene');
     }
 
     protect() {

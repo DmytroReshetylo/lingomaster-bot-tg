@@ -1,4 +1,4 @@
 export type TriggerConfig = {
-    trigger: string,
-    providers: any[]
+    trigger: string;
+    providers: any[];
 }

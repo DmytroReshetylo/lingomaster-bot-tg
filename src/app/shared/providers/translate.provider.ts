@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Languages } from '../enums/languages.enum';
+import { Languages } from '../../core/enums/languages.enum';
 
 @injectable()
 export class TranslateProvider {
@@ -16,7 +16,7 @@ export class TranslateProvider {
     }
 
 
-    private translate(key: string, language: Languages): string {
+     translate(key: string, language: Languages): string {
         let json = TranslateProvider.languagesJSON.get(language);
 
         if(!json) {
@@ -74,5 +74,21 @@ export class TranslateProvider {
         }
 
         return find('', s, json) as string;
+    }
+
+    translateWithReplace(key: string, language: Languages, replaceValues: any[]) {
+        let translate = this.translate(key, language);
+
+        for(let i = 0; i < replaceValues.length; i++) {
+            const regExp = new RegExp(String.raw`/${i}/g`);
+
+            translate = translate.replace(regExp, replaceValues[i]);
+        }
+
+        return translate;
+    }
+
+    translateArray(keys: string[], language: Languages) {
+        return keys.map(key => this.translate(key, language));
     }
 }

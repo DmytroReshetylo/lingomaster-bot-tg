@@ -7,9 +7,12 @@ import 'reflect-metadata';
 export function CreateSelectButtonComposer() {
     return function (target: Constructor<ComposerStructure>) {
         CreateComposer(target, function (composer, afterInput) {
-            composer.on('callback_query', async(ctx: any) => {
-                afterInput(new TelegramContext(ctx));
-            });
+            composer.on('callback_query', async function (ctx: any) {
+                //@ts-ignore
+                afterInput.call(this, new TelegramContext(ctx));
+
+                //@ts-ignore
+            }.bind(this));
         })
     }
 }
