@@ -11,7 +11,7 @@ export function CreateModule(config: ModuleConfig) {
 
         const container = new Container();
 
-        ProvideDependencies(container, target, [...config.providers]);
+        ProvideDependencies(container, target, config.providers);
 
         SetContainerParent(container, [...config.modules, ...config.scenes, ...config.triggers]);
     }

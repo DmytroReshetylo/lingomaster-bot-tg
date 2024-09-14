@@ -21,7 +21,15 @@ export class SelectNativeLanguageComposer extends SelectButtonComposerWithoutTra
         );
     }
 
-    codeIfAvailableAction(ctx: TelegramContext) {
+    async codeIfAvailableAction(ctx: TelegramContext) {
+        await ctx.reply(
+            this.translator.translateWithReplace(
+                'DEFAULT_MESSAGES.YOU_SELECTED_SOMETHING',
+                GetTranslateLanguage(ctx),
+                [this.translator.translate(ctx.data, GetTranslateLanguage(ctx))]
+            )
+        );
+
         ctx.scene.nextComposer();
     }
 

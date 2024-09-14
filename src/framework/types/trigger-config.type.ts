@@ -1,4 +1,6 @@
+import { Provider } from './provider.type';
+
 export type TriggerConfig = {
     trigger: string;
-    providers: any[];
+    providers: Provider<any, any>[];
 }
