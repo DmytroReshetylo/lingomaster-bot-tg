@@ -6,6 +6,7 @@ import { EndComposer } from '../../../shared/classes/end-composer.class';
 @CreateInputTextComposer()
 export class SignUpComposer extends EndComposer {
     endComposer(ctx: TelegramContext) {
+        console.log(ctx.scene.states);
         ctx.reply('TEST');
     }
 
