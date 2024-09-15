@@ -14,7 +14,7 @@ export class SelectNativeLanguageComposer extends SelectButtonComposerWithoutTra
     readonly listAvailableActions = LanguageListConstant;
     readonly nameState = 'nativeLanguage';
 
-    beforeInput(ctx: TelegramContext) {
+    beforeAnswer(ctx: TelegramContext) {
         ctx.reply(
             this.translator.translate('SIGN_UP.SELECT_NATIVE_LANGUAGE', GetTranslateLanguage(ctx)),
             createButtonKeyboard(CreateDataButtonFormat(this.listAvailableActions, this.translator, GetTranslateLanguage(ctx)))

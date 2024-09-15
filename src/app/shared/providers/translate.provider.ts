@@ -80,7 +80,7 @@ export class TranslateProvider {
         let translate = this.translate(key, language);
 
         for(let i = 0; i < replaceValues.length; i++) {
-            const regExp = new RegExp(String.raw`/${i}/g`);
+            const regExp = new RegExp(`\\{${i}\\}`, 'g');
 
             translate = translate.replace(regExp, replaceValues[i]);
         }

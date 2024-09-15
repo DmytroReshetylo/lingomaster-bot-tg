@@ -11,13 +11,13 @@ export abstract class EndComposer implements ComposerStructure {
 
     abstract endComposer(ctx: TelegramContext): void;
 
-    async beforeInput(ctx: TelegramContext) {
+    async beforeAnswer(ctx: TelegramContext) {
         await ApplyProtect(ctx, this.translator, this.protect(), this.endComposer.bind(this));
 
         return ctx.scene.leaveScene();
     }
 
-    afterInput(ctx: TelegramContext) {}
+    afterAnswer(ctx: TelegramContext) {}
 
     abstract protect(): Protect;
 }

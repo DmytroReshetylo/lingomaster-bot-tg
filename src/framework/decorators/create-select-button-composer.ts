@@ -6,13 +6,10 @@ import 'reflect-metadata';
 
 export function CreateSelectButtonComposer() {
     return function (target: Constructor<ComposerStructure>) {
-        CreateComposer(target, function (composer, afterInput) {
+        CreateComposer(target, function (composer, sample) {
             composer.on('callback_query', async function (ctx: any) {
-                //@ts-ignore
-                afterInput.call(this, new TelegramContext(ctx));
-
-                //@ts-ignore
-            }.bind(this));
+                sample.afterAnswer.call(sample, new TelegramContext(ctx));
+            });
         })
     }
 }

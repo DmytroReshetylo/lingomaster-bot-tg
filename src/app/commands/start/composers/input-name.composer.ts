@@ -8,7 +8,7 @@ import { ComposerWithoutTransform } from '../../../shared/classes/composer-witho
 export class InputNameComposer extends ComposerWithoutTransform {
     readonly nameState = 'name';
 
-    beforeInput(ctx: TelegramContext) {
+    beforeAnswer(ctx: TelegramContext) {
         ctx.reply(this.translator.translate('SIGN_UP.INPUT_NAME', GetTranslateLanguage(ctx)));
     }
 

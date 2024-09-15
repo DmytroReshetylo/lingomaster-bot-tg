@@ -6,7 +6,7 @@ import { ComposerWithProtect } from './composer-with-protect.class';
 export abstract class ComposerWithoutTransform extends ComposerWithProtect {
     abstract readonly nameState: string;
 
-    async afterInputWithCheck(ctx: TelegramContext) {
+    async afterAnswerWithCheck(ctx: TelegramContext) {
         ctx.scene.states[this.nameState] = ctx.data;
 
         await this.codeAfterGettingData(ctx, ctx.scene.states[this.nameState]);

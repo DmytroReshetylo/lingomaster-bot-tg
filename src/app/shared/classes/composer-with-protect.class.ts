@@ -9,13 +9,13 @@ import { TranslateProvider } from '../providers/translate.provider';
 export abstract class ComposerWithProtect implements ComposerStructure {
     constructor(@inject(TranslateProvider) protected readonly translator: TranslateProvider) {}
 
-    async afterInput(ctx: TelegramContext) {
-        await ApplyProtect(ctx, this.translator, this.protect(), this.afterInputWithCheck.bind(this));
+    async afterAnswer(ctx: TelegramContext) {
+        await ApplyProtect(ctx, this.translator, this.protect(), this.afterAnswerWithCheck.bind(this));
     }
 
-    abstract afterInputWithCheck(ctx: TelegramContext): void;
+    abstract afterAnswerWithCheck(ctx: TelegramContext): void;
 
-    abstract beforeInput(ctx: TelegramContext): void;
+    abstract beforeAnswer(ctx: TelegramContext): void;
 
     abstract protect(): Protect;
 }

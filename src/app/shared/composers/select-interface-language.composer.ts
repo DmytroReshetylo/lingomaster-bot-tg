@@ -15,7 +15,7 @@ export class SelectInterfaceLanguageComposer extends SelectButtonComposerWithout
     readonly listAvailableActions = TransformAsKeyFormat('LANGUAGES', [Languages.en, Languages.uk]);
     readonly nameState = 'interfaceLanguage';
 
-    beforeInput(ctx: TelegramContext) {
+    beforeAnswer(ctx: TelegramContext) {
         ctx.reply(
             'DEFAULT_QUESTIONS.SELECT_INTERFACE_LANGUAGE',
             createButtonKeyboard(CreateDataButtonFormat(this.listAvailableActions, this.translator, GetTranslateLanguage(ctx)))
