@@ -32,7 +32,7 @@ export class TextAddTextScene implements Scene {
     @CreateSelectButtonComposer('language', LanguageJsonFormat, true)
     @Apply({middlewares: [IsLearningLanguageMiddleware], possibleErrors: []})
     afterSelectLanguage(ctx: TelegramContext) {
-        CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_NAME', ctx.session[EntityNames.User].interfaceLanguage, 'bigButton', ['BUTTONS.CANCEL']);
+        CreateReplyAction(ctx, 'TEXT.ADD_TEXT.ASK_NAME', ctx.session[EntityNames.User].interfaceLanguage, 'button', ['BUTTONS.CANCEL']);
     }
 
     @CreateTextComposer('name', false, true)

@@ -19,23 +19,30 @@ class PhotoManagerService {
 
         this.#listActive.push(entity.id);
 
-        const dataWithoutPhoto = service.getJSON(entity).filter(data => !data.photoUrl);
+        try {
+            const dataWithoutPhoto = service.getJSON(entity).filter(data => !data.photoUrl);
 
-        for(const data of dataWithoutPhoto) {
-            try {
-                const url = await photoGeneratorService.generate(service.getDataDifferenceValue(data));
+            for(const data of dataWithoutPhoto) {
+                try {
+                    const url = await photoGeneratorService.generate(service.getDataDifferenceValue(data));
 
-                if(url) {
-                    data.photoUrl = await imgurService.upload(url);
+                    if(url) {
+                        data.photoUrl = await imgurService.upload(url);
+                    }
+
+                    console.log(data.photoUrl);
+
                 }
-
-                console.log(data.photoUrl);
-
+                catch (err: any) {}
             }
-            catch (err: any) {}
+
+            await service.updateFullRecords({id: entity.id}, service.getJSON(entity))
+
+        } catch (err: any) {
+            console.log(err);
+            console.log(service, entity)
         }
 
-        await service.updateFullRecords({id: entity.id}, service.getJSON(entity))
 
         this.#listActive = this.#listActive.filter(id => id !== entity.id);
     }
