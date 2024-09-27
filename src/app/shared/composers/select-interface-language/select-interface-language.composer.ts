@@ -1,22 +1,23 @@
 import { TelegramContext } from '../../../../framework/classes/ctx.class';
 import { CreateSelectButtonComposer } from '../../../../framework/decorators/create-select-button-composer';
-import { LanguageListConstant } from '../../../core/constants/language-list.constant';
+import { Languages } from '../../../core/enums/languages.enum';
 import { Protect } from '../../../core/types/protect.type';
 import { createButtonKeyboard } from '../../../core/utils/create-button-keyboard.util';
 import { CreateDataButtonFormat } from '../../../core/utils/create-data-button-format.util';
 import { GetTranslateLanguage } from '../../../core/utils/get-translate-language.util';
-import { SelectButtonComposerWithoutTransform } from '../../../shared/composers/select-button-composer-without-transform.class';
+import { TransformAsKeyFormat } from '../../../core/utils/transform-as-key-format.util';
+import { SelectButtonComposerWithoutTransform } from '../select-button-composer-without-transform.class';
 
 @CreateSelectButtonComposer()
-export class SelectNativeLanguageComposer extends SelectButtonComposerWithoutTransform {
+export class SelectInterfaceLanguageComposer extends SelectButtonComposerWithoutTransform {
 
     readonly cancelButton = false;
-    readonly listAvailableActions = LanguageListConstant;
-    readonly nameState = 'nativeLanguage';
+    readonly listAvailableActions = TransformAsKeyFormat('LANGUAGES', [Languages.ENGLISH, Languages.UKRAINIAN]);
+    readonly nameState = 'interfaceLanguage';
 
     beforeAnswer(ctx: TelegramContext) {
         ctx.reply(
-            this.translator.translate('SIGN_UP.SELECT_NATIVE_LANGUAGE', GetTranslateLanguage(ctx)),
+            this.translator.translate('DEFAULT_QUESTIONS.SELECT_INTERFACE_LANGUAGE', GetTranslateLanguage(ctx)),
             createButtonKeyboard(CreateDataButtonFormat(this.listAvailableActions, this.translator, GetTranslateLanguage(ctx)))
         );
     }

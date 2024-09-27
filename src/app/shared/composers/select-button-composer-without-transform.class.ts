@@ -14,7 +14,7 @@ export abstract class SelectButtonComposerWithoutTransform extends ComposerWitho
         }
 
         if(this.listAvailableActions.includes(ctx.scene.states[this.nameState])) {
-            this.codeIfAvailableAction(ctx, ctx.scene.states[this.nameState]);
+            await this.codeIfAvailableAction(ctx, ctx.scene.states[this.nameState]);
         }
     }
 

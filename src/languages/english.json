@@ -11,7 +11,8 @@
     "PORTUGUESE": "Portuguese"
   },
   "SIGN_UP": {
-    "SELECT_NATIVE_LANGUAGE": "Select native language"
+    "SELECT_NATIVE_LANGUAGE": "Select native language",
+    "INPUT_NAME": "Input your name"
   },
   "NAVIGATION": {
 

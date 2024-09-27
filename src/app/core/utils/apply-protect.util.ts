@@ -1,5 +1,5 @@
 import { TelegramContext } from '../../../framework/classes/ctx.class';
-import { TranslateProvider } from '../../shared/providers/translate.provider';
+import { TranslateProvider } from '../providers/translate.provider';
 import { Protect } from '../types/protect.type';
 import { GetFirstReturn } from './get-first-return.util';
 import { GetTranslateLanguage } from './get-translate-language.util';

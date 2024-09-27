@@ -2,7 +2,7 @@ import { inject } from 'inversify';
 import { TelegramContext } from '../../../framework/classes/ctx.class';
 import { CreateCommand } from '../../../framework/decorators/create-command';
 import { TriggerStructure } from '../../../framework/types/trigger-structure.type';
-import { TranslateProvider } from '../../shared/providers/translate.provider';
+import { TranslateProvider } from '../../core/providers/translate.provider';
 
 @CreateCommand({
     trigger: 'start',

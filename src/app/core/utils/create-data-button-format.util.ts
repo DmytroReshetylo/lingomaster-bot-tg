@@ -1,5 +1,5 @@
-import { TranslateProvider } from '../../shared/providers/translate.provider';
 import { Languages } from '../enums/languages.enum';
+import { TranslateProvider } from '../providers/translate.provider';
 
 export function CreateDataButtonFormat(keys: string[], translator: TranslateProvider, translateLanguage: Languages) {
     return keys.map(key => ({

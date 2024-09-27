@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Languages } from '../../core/enums/languages.enum';
+import { Languages } from '../enums/languages.enum';
 
 @injectable()
 export class TranslateProvider {

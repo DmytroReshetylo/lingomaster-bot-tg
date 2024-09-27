@@ -8,20 +8,20 @@ export function ProvideDependencies(container: Container, target: Constructor<an
     for(const dependency of dependencies) {
         const data = (!dependency.constructor ? dependency : {
             token: dependency,
-            type: TypeProvider.USECLASS,
+            type: TypeProvider.useClass,
             provider: dependency
         }) as FullDependency<any, any>;
 
         switch (data.type) {
-            case TypeProvider.USEVALUE: {
+            case TypeProvider.useValue: {
                 container.bind(data.token).toConstantValue(data.provider);
                 break;
             }
-            case TypeProvider.USEFACTORY: {
+            case TypeProvider.useFactory: {
                 container.bind(data.token).toConstantValue((data.provider as any).call(container.get));
                 break;
             }
-            case TypeProvider.USECLASS: {
+            case TypeProvider.useClass: {
                 container.bind(data.token).to(data.provider as any);
                 break;
             }

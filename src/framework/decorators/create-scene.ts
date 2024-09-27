@@ -1,6 +1,7 @@
 import { Container, injectable } from 'inversify';
 import { botManaging } from '../classes/bot-managing.class';
 import { QueueStagesConstant } from '../constants/queue-stages.constant';
+import { ComposerStructure } from '../types/composer-structure.type';
 import { Constructor } from '../types/contructor.type';
 import { SceneConfig } from '../types/scene-config.type';
 import { CreateWizard } from '../utils/create-wizard.util';
@@ -14,16 +15,22 @@ export function CreateScene(config: SceneConfig) {
 
         const container = new Container();
 
-        ProvideDependencies(container, target,[...config.providers, ...config.composers]);
+        const uniqueComposers = new Set(config.composers);
+
+        ProvideDependencies(container, target,[...config.providers, ...uniqueComposers]);
 
         QueueStagesConstant.push(() => {
-            const nameComposers = config.composers.map(composer => {
+            const composersWithName = new Map<Constructor<ComposerStructure>, string>();
+
+            for(const composer of uniqueComposers) {
                 const name = randomSymbols(12);
 
                 CreateWizard(container, name, composer);
 
-                return name;
-            });
+                composersWithName.set(composer, name);
+            }
+
+            const nameComposers = config.composers.map(composer => composersWithName.get(composer)!);
 
             botManaging.registerScene(config.name, nameComposers);
         });
